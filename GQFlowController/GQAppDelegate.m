@@ -7,6 +7,7 @@
 //
 
 #import "GQAppDelegate.h"
+#import "Test1ViewController.h"
 
 @implementation GQAppDelegate
 
@@ -15,7 +16,13 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    self.flowController = [[GQFlowController alloc] initWithRootViewController:[[Test1ViewController alloc] init]];
+    
+    self.window.rootViewController = self.flowController;
+    
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

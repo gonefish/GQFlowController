@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GQViewController.h"
 
-@interface GQFlowController : UIViewController
+@interface GQFlowController : GQViewController
+
+- (id)initWithRootViewController:(GQViewController *)rootViewController;
+
+- (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated;
+- (void)flowOutViewControllerAnimated:(BOOL)animated;
+
+@property (nonatomic, copy) NSArray *viewControllers;
+@property (nonatomic, readonly, weak) GQViewController *topViewController;
 
 @end
