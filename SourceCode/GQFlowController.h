@@ -16,7 +16,9 @@
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated;
 - (void)flowOutViewControllerAnimated:(BOOL)animated;
 
+
+
 @property (nonatomic, copy) NSArray *viewControllers;
-@property (nonatomic, readonly, weak) GQViewController *topViewController;
+@property (nonatomic, strong, readonly) GQViewController *topViewController;
 
 @end

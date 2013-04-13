@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GQViewControllerDelegate.h"
 
 @class GQFlowController;
 
@@ -22,5 +23,7 @@ typedef enum {
 @property (nonatomic) GQFlowDirection outDirection;
 @property (nonatomic) GQFlowDirection inDirection;
 @property (nonatomic, strong) GQFlowController *flowController;
+@property (nonatomic, weak) id <GQViewControllerDelegate> delegate;
 
 @end
+
