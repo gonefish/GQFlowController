@@ -13,8 +13,8 @@
 @property (nonatomic, strong) GQViewController *topViewController;
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
 
-@property (nonatomic) CGFloat prevX;
-@property (nonatomic) CGPoint startPoint;
+@property (nonatomic) CGPoint prevPoint;
+@property (nonatomic) CGPoint basePoint;
 @property (nonatomic, strong) UIView *pressView;
 @property (nonatomic, strong) UILongPressGestureRecognizer *pressGestureRecognizer;
 
@@ -177,14 +177,15 @@
     
     if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
-        self.startPoint = pressPoint;
+        self.basePoint = pressPoint;
+        self.prevPoint = pressPoint;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         if (self.pressView == nil) {
             GQViewControllerFlowDirection direction = GQViewControllerFlowDirectionRight;
             
             // 判断移动的方向
-            CGFloat x = pressPoint.x - self.startPoint.x;
-            CGFloat y = pressPoint.y - self.startPoint.y;
+            CGFloat x = pressPoint.x - self.basePoint.x;
+            CGFloat y = pressPoint.y - self.basePoint.y;
             
             if (ABS(x) > ABS(y)) {
                 if (x > .0) {
@@ -207,10 +208,14 @@
             } else {
                 self.pressView = self.pressGestureRecognizer.view;
             }
-        } else {
-            CGFloat offset = pressPoint.x - self.prevX;
+        }
+        
+        if (self.pressView) {
+            CGFloat offset = pressPoint.x - self.prevPoint.x;
             
             if (offset != .0) {
+                // 问delegate是否移动
+                
                 CGRect frame = self.pressView.frame;
                 frame = CGRectMake(frame.origin.x + offset,
                                    frame.origin.y,
@@ -218,8 +223,8 @@
                                    frame.size.height);
                 
                 self.pressView.frame = frame;
-                
-                self.prevX = pressPoint.x;
+
+                self.prevPoint = pressPoint;
                 
                 NSLog(@"move");
             }
@@ -229,20 +234,28 @@
         
         if (self.topViewController.delegate
             && [self.topViewController.delegate respondsToSelector:@selector(flowController:shouldFlowingView:atOffset:)]) {
-            // offset怎么算？
+            CGFloat offset = pressPoint.x - self.basePoint.x;
+            
             shouldFlowing = [self.topViewController.delegate flowController:self
                                                           shouldFlowingView:self.pressView
-                                                                   atOffset:.0];
+                                                                   atOffset:offset];
         }
         
         CGRect frame2;
         
         if (shouldFlowing) {
+            // 问delegate终点
             // 自动移动到最终点
-            frame2 = CGRectMake(320, self.pressView.frame.origin.y, self.pressView.frame.size.width, self.pressView.frame.size.height);
+            frame2 = CGRectMake(self.view.frame.size.width,
+                                self.pressView.frame.origin.y,
+                                self.pressView.frame.size.width,
+                                self.pressView.frame.size.height);
         } else {
             // 回退到最终点
-            frame2 = CGRectMake(0, self.pressView.frame.origin.x, self.pressView.frame.size.width, self.pressView.frame.size.height);
+            frame2 = CGRectMake(0,
+                                self.pressView.frame.origin.x,
+                                self.pressView.frame.size.width,
+                                self.pressView.frame.size.height);
         }
         
         [UIView animateWithDuration:0.5
@@ -250,7 +263,7 @@
                              self.pressView.frame = frame2;
                          }
                          completion:^(BOOL finished){
-                             
+                             // 重新处理top view
                          }];
     }
     

@@ -19,6 +19,9 @@ typedef enum {
 
 @protocol GQViewControllerDelegate <NSObject>
 
+// 目标frame
+- (CGRect)destinationRectForFlowController:(GQFlowController *)controller inFlowingView:(UIView *)view;
+
 @optional
 // 滑动的UIView
 - (UIView *)viewForFlowController:(GQFlowController *)controller direction:(GQViewControllerFlowDirection)direction;
@@ -26,5 +29,7 @@ typedef enum {
 // 判断是否到达目标位置
 - (BOOL)flowController:(GQFlowController *)controller shouldFlowingView:(UIView *)view atOffset:(CGFloat)offset;
 
+// 是否移动
+- (BOOL)flowController:(GQFlowController *)controller shouldMoveFlowingView:(UIView *)view atPoint:(CGPoint)point;
 
 @end
