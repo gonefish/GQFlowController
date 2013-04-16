@@ -11,25 +11,23 @@
 @class GQFlowController;
 
 typedef enum {
-    GQViewControllerFlowDirectionRight  = UISwipeGestureRecognizerDirectionRight,
-    GQViewControllerFlowDirectionLeft   = UISwipeGestureRecognizerDirectionLeft,
-    GQViewControllerFlowDirectionUp     = UISwipeGestureRecognizerDirectionUp,
-    GQViewControllerFlowDirectionDown   = UISwipeGestureRecognizerDirectionDown
-} GQViewControllerFlowDirection;
+    GQFlowDirectionRight    = UISwipeGestureRecognizerDirectionRight,
+    GQFlowDirectionLeft     = UISwipeGestureRecognizerDirectionLeft,
+    GQFlowDirectionUp       = UISwipeGestureRecognizerDirectionUp,
+    GQFlowDirectionDown     = UISwipeGestureRecognizerDirectionDown
+} GQFlowDirection;
 
 @protocol GQViewControllerDelegate <NSObject>
 
 // 目标frame
-- (CGRect)destinationRectForFlowController:(GQFlowController *)controller inFlowingView:(UIView *)view;
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view;
 
 @optional
+
 // 滑动的UIView
-- (UIView *)viewForFlowController:(GQFlowController *)controller direction:(GQViewControllerFlowDirection)direction;
+- (UIView *)flowController:(GQFlowController *)flowController viewForFlowDirection:(GQFlowDirection)direction;
 
-// 判断是否到达目标位置
-- (BOOL)flowController:(GQFlowController *)controller shouldFlowingView:(UIView *)view atOffset:(CGFloat)offset;
-
-// 是否移动
-- (BOOL)flowController:(GQFlowController *)controller shouldMoveFlowingView:(UIView *)view atPoint:(CGPoint)point;
+// 是否移动UIView
+- (BOOL)flowController:(GQFlowController *)controller shouldMoveView:(UIView *)view toFrame:(CGRect)frame;
 
 @end

@@ -181,7 +181,7 @@
         self.prevPoint = pressPoint;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         if (self.pressView == nil) {
-            GQViewControllerFlowDirection direction = GQViewControllerFlowDirectionRight;
+            GQFlowDirection direction = GQFlowDirectionRight;
             
             // 判断移动的方向
             CGFloat x = pressPoint.x - self.basePoint.x;
@@ -189,82 +189,64 @@
             
             if (ABS(x) > ABS(y)) {
                 if (x > .0) {
-                    direction = GQViewControllerFlowDirectionRight;
+                    direction = GQFlowDirectionRight;
                 } else if (x < .0) {
-                    direction = GQViewControllerFlowDirectionLeft;
+                    direction = GQFlowDirectionLeft;
                 }
             } else if (ABS(x) < ABS(y)) {
                 if (y > 0) {
-                    direction = GQViewControllerFlowDirectionUp;
+                    direction = GQFlowDirectionUp;
                 } else if (y < .0) {
-                    direction = GQViewControllerFlowDirectionDown;
+                    direction = GQFlowDirectionDown;
                 }
             }
-            
+
             if (self.topViewController.delegate
-                && [self.topViewController.delegate respondsToSelector:@selector(viewForFlowController:direction:)]) {
-                self.pressView = [self.topViewController.delegate viewForFlowController:self
-                                                                              direction:direction];
+                && [self.topViewController.delegate respondsToSelector:@selector(flowController:viewForFlowDirection:)]) {
+                self.pressView = [self.topViewController.delegate flowController:self
+                                                            viewForFlowDirection:direction];
             } else {
                 self.pressView = self.pressGestureRecognizer.view;
             }
         }
         
         if (self.pressView) {
-            CGFloat offset = pressPoint.x - self.prevPoint.x;
+            // 移动到的frame
+            CGRect newFrame = CGRectZero;
             
-            if (offset != .0) {
-                // 问delegate是否移动
-                
-                CGRect frame = self.pressView.frame;
-                frame = CGRectMake(frame.origin.x + offset,
-                                   frame.origin.y,
-                                   frame.size.width,
-                                   frame.size.height);
-                
-                self.pressView.frame = frame;
-
-                self.prevPoint = pressPoint;
+            // 能否移动
+            BOOL shouldMove = YES;
+            
+            if (self.topViewController.delegate
+                && [self.topViewController.delegate respondsToSelector:@selector(flowController:shouldMoveView:toFrame:)]) {
+                shouldMove = [self.topViewController.delegate flowController:self
+                                                              shouldMoveView:self.pressView
+                                                                     toFrame:newFrame];
+            }
+            
+            if (shouldMove) {
+                self.pressView.frame = newFrame;
                 
                 NSLog(@"move");
             }
+            
+            self.prevPoint = pressPoint;
         }
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        BOOL shouldFlowing = YES;
-        
-        if (self.topViewController.delegate
-            && [self.topViewController.delegate respondsToSelector:@selector(flowController:shouldFlowingView:atOffset:)]) {
-            CGFloat offset = pressPoint.x - self.basePoint.x;
+        if ([self.topViewController.delegate conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
+            CGRect frame = [self.topViewController.delegate flowController:self
+                                                    destinationRectForView:self.pressView];
             
-            shouldFlowing = [self.topViewController.delegate flowController:self
-                                                          shouldFlowingView:self.pressView
-                                                                   atOffset:offset];
-        }
-        
-        CGRect frame2;
-        
-        if (shouldFlowing) {
-            // 问delegate终点
-            // 自动移动到最终点
-            frame2 = CGRectMake(self.view.frame.size.width,
-                                self.pressView.frame.origin.y,
-                                self.pressView.frame.size.width,
-                                self.pressView.frame.size.height);
+            [UIView animateWithDuration:0.5
+                             animations:^{
+                                 self.pressView.frame = frame;
+                             }
+                             completion:^(BOOL finished){
+                                 // 重新处理top view
+                             }];
         } else {
-            // 回退到最终点
-            frame2 = CGRectMake(0,
-                                self.pressView.frame.origin.x,
-                                self.pressView.frame.size.width,
-                                self.pressView.frame.size.height);
+            NSAssert(NO, @"?");
         }
-        
-        [UIView animateWithDuration:0.5
-                         animations:^{
-                             self.pressView.frame = frame2;
-                         }
-                         completion:^(BOOL finished){
-                             // 重新处理top view
-                         }];
     }
     
     NSLog(@"%f", pressPoint.x);
