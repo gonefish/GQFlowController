@@ -16,6 +16,7 @@
 @property (nonatomic) CGPoint prevPoint;
 @property (nonatomic) CGPoint basePoint;
 @property (nonatomic, strong) UIView *pressView;
+@property (nonatomic) GQFlowDirection pressViewDirection;
 @property (nonatomic, strong) UILongPressGestureRecognizer *pressGestureRecognizer;
 
 - (void)addPressGestureRecognizerForTopView;
@@ -181,7 +182,7 @@
         self.prevPoint = pressPoint;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         if (self.pressView == nil) {
-            GQFlowDirection direction = GQFlowDirectionRight;
+            self.pressViewDirection = GQFlowDirectionUnknow;
             
             // 判断移动的方向
             CGFloat x = pressPoint.x - self.basePoint.x;
@@ -189,22 +190,27 @@
             
             if (ABS(x) > ABS(y)) {
                 if (x > .0) {
-                    direction = GQFlowDirectionRight;
+                    self.pressViewDirection = GQFlowDirectionRight;
                 } else if (x < .0) {
-                    direction = GQFlowDirectionLeft;
+                    self.pressViewDirection = GQFlowDirectionLeft;
                 }
             } else if (ABS(x) < ABS(y)) {
-                if (y > 0) {
-                    direction = GQFlowDirectionUp;
+                if (y > .0) {
+                    self.pressViewDirection = GQFlowDirectionUp;
                 } else if (y < .0) {
-                    direction = GQFlowDirectionDown;
+                    self.pressViewDirection = GQFlowDirectionDown;
                 }
+            }
+            
+            // 没有变化
+            if (self.pressViewDirection == GQFlowDirectionUnknow) {
+                return;
             }
 
             if (self.topViewController.delegate
                 && [self.topViewController.delegate respondsToSelector:@selector(flowController:viewForFlowDirection:)]) {
                 self.pressView = [self.topViewController.delegate flowController:self
-                                                            viewForFlowDirection:direction];
+                                                            viewForFlowDirection:self.pressViewDirection];
             } else {
                 self.pressView = self.pressGestureRecognizer.view;
             }
@@ -213,6 +219,17 @@
         if (self.pressView) {
             // 移动到的frame
             CGRect newFrame = CGRectZero;
+            
+            if (self.pressViewDirection == GQFlowDirectionLeft
+                || self.pressViewDirection == GQFlowDirectionRight) {
+                CGFloat x = pressPoint.x - self.prevPoint.x;
+                
+                newFrame = CGRectOffset(self.pressView.frame, x, .0);
+            } else if (self.pressViewDirection == GQFlowDirectionUp
+                       || self.pressViewDirection == GQFlowDirectionDown) {
+                CGFloat y = pressPoint.y - self.prevPoint.y;
+                newFrame = CGRectOffset(self.pressView.frame, .0, y);
+            }
             
             // 能否移动
             BOOL shouldMove = YES;
@@ -226,8 +243,6 @@
             
             if (shouldMove) {
                 self.pressView.frame = newFrame;
-                
-                NSLog(@"move");
             }
             
             self.prevPoint = pressPoint;
@@ -245,7 +260,7 @@
                                  // 重新处理top view
                              }];
         } else {
-            NSAssert(NO, @"?");
+            //NSAssert(NO, @"?");
         }
     }
     

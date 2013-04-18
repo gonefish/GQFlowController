@@ -11,10 +11,11 @@
 @class GQFlowController;
 
 typedef enum {
-    GQFlowDirectionRight    = UISwipeGestureRecognizerDirectionRight,
-    GQFlowDirectionLeft     = UISwipeGestureRecognizerDirectionLeft,
-    GQFlowDirectionUp       = UISwipeGestureRecognizerDirectionUp,
-    GQFlowDirectionDown     = UISwipeGestureRecognizerDirectionDown
+    GQFlowDirectionUnknow,
+    GQFlowDirectionRight,
+    GQFlowDirectionLeft,
+    GQFlowDirectionUp,
+    GQFlowDirectionDown
 } GQFlowDirection;
 
 @protocol GQViewControllerDelegate <NSObject>
