@@ -1,22 +1,18 @@
 //
-//  Test2ViewController.m
+//  Demo3ViewController.m
 //  GQFlowController
 //
-//  Created by 钱国强 on 13-4-10.
+//  Created by 钱国强 on 13-4-21.
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "Test2ViewController.h"
+#import "Demo3ViewController.h"
 
-@interface Test2ViewController ()
+@interface Demo3ViewController ()
 
 @end
 
-@implementation Test2ViewController
-
-- (IBAction)back:(id)sender {
-    [self.flowController flowOutViewControllerAnimated:YES];
-}
+@implementation Demo3ViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

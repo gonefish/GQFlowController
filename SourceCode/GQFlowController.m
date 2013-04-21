@@ -228,7 +228,7 @@
 
             if ([self.topViewController respondsToSelector:@selector(flowController:viewForFlowDirection:)]) {
                 self.pressView = [self.topViewController flowController:self
-                                                            viewForFlowDirection:self.pressViewDirection];
+                                                   viewForFlowDirection:self.pressViewDirection];
             } else {
                 self.pressView = self.pressGestureRecognizer.view;
             }
@@ -254,8 +254,8 @@
             
             if ([self.topViewController respondsToSelector:@selector(flowController:shouldMoveView:toFrame:)]) {
                 shouldMove = [self.topViewController flowController:self
-                                                              shouldMoveView:self.pressView
-                                                                     toFrame:newFrame];
+                                                     shouldMoveView:self.pressView
+                                                            toFrame:newFrame];
             }
             
             if (shouldMove) {
@@ -267,7 +267,7 @@
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         if ([self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
             CGRect frame = [self.topViewController flowController:self
-                                                    destinationRectForView:self.pressView];
+                                           destinationRectForView:self.pressView];
             
             [UIView animateWithDuration:0.5
                              animations:^{
@@ -277,7 +277,7 @@
                                  // 重新处理top view
                              }];
         } else {
-            //NSAssert(NO, @"?");
+            NSAssert(NO, @"?");
         }
     }
     

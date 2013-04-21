@@ -1,19 +1,18 @@
 //
-//  Test1ViewController.m
+//  Demo2ViewController.m
 //  GQFlowController
 //
-//  Created by 钱国强 on 13-3-24.
+//  Created by 钱国强 on 13-4-21.
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "Test1ViewController.h"
-#import "Test2ViewController.h"
+#import "Demo2ViewController.h"
 
-@interface Test1ViewController ()
+@interface Demo2ViewController ()
 
 @end
 
-@implementation Test1ViewController
+@implementation Demo2ViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -22,12 +21,6 @@
         // Custom initialization
     }
     return self;
-}
-
-- (IBAction)push:(id)sender {
-    Test2ViewController *test2 = [[Test2ViewController alloc] init];
-    [self.flowController flowInViewController:test2
-                                     animated:YES];
 }
 
 - (void)viewDidLoad

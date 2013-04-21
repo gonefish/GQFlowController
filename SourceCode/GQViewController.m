@@ -18,7 +18,11 @@
 
 - (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view
 {
-    return CGRectMake(320, 0, view.frame.size.width, view.frame.size.height);
+    // 这里写死了
+    return CGRectMake(320,
+                      0,
+                      view.frame.size.width,
+                      view.frame.size.height);
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

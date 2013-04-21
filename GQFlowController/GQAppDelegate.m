@@ -7,7 +7,9 @@
 //
 
 #import "GQAppDelegate.h"
-#import "Test1ViewController.h"
+#import "Demo1ViewController.h"
+#import "Demo2ViewController.h"
+#import "Demo3ViewController.h"
 
 @implementation GQAppDelegate
 
@@ -17,12 +19,13 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     
-    self.flowController = [[GQFlowController alloc] initWithRootViewController:[[Test1ViewController alloc] init]];
+    self.flowController = [[GQFlowController alloc] init];
     
-//    UIViewController *a1 = [[UIViewController alloc] init];
-//    UIViewController *a2 = [[Test1ViewController alloc] init];
-//    
-//    self.flowController.viewControllers = @[a1, a2];
+    Demo1ViewController *d1 = [[Demo1ViewController alloc] init];
+    Demo2ViewController *d2 = [[Demo2ViewController alloc] init];
+    Demo3ViewController *d3 = [[Demo3ViewController alloc] init];
+    
+    self.flowController.viewControllers = @[d3, d2, d1];
     
     self.window.rootViewController = self.flowController;
     
