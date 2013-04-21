@@ -14,6 +14,13 @@
 
 @implementation GQViewController
 
+#pragma mark - GQViewControllerDelegate
+
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view
+{
+    return CGRectMake(320, 0, view.frame.size.width, view.frame.size.height);
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];

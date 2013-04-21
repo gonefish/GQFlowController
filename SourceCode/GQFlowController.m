@@ -207,9 +207,8 @@
                 return;
             }
 
-            if (self.topViewController.delegate
-                && [self.topViewController.delegate respondsToSelector:@selector(flowController:viewForFlowDirection:)]) {
-                self.pressView = [self.topViewController.delegate flowController:self
+            if ([self.topViewController respondsToSelector:@selector(flowController:viewForFlowDirection:)]) {
+                self.pressView = [self.topViewController flowController:self
                                                             viewForFlowDirection:self.pressViewDirection];
             } else {
                 self.pressView = self.pressGestureRecognizer.view;
@@ -234,9 +233,8 @@
             // 能否移动
             BOOL shouldMove = YES;
             
-            if (self.topViewController.delegate
-                && [self.topViewController.delegate respondsToSelector:@selector(flowController:shouldMoveView:toFrame:)]) {
-                shouldMove = [self.topViewController.delegate flowController:self
+            if ([self.topViewController respondsToSelector:@selector(flowController:shouldMoveView:toFrame:)]) {
+                shouldMove = [self.topViewController flowController:self
                                                               shouldMoveView:self.pressView
                                                                      toFrame:newFrame];
             }
@@ -248,8 +246,8 @@
             self.prevPoint = pressPoint;
         }
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if ([self.topViewController.delegate conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
-            CGRect frame = [self.topViewController.delegate flowController:self
+        if ([self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
+            CGRect frame = [self.topViewController flowController:self
                                                     destinationRectForView:self.pressView];
             
             [UIView animateWithDuration:0.5

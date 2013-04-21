@@ -11,10 +11,9 @@
 
 @class GQFlowController;
 
-@interface GQViewController : UIViewController
+@interface GQViewController : UIViewController <GQViewControllerDelegate>
 
 @property (nonatomic, strong) GQFlowController *flowController;
-@property (nonatomic, weak) id <GQViewControllerDelegate> delegate;
 
 @end
 
