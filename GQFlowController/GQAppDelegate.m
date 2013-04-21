@@ -19,6 +19,11 @@
     
     self.flowController = [[GQFlowController alloc] initWithRootViewController:[[Test1ViewController alloc] init]];
     
+//    UIViewController *a1 = [[UIViewController alloc] init];
+//    UIViewController *a2 = [[Test1ViewController alloc] init];
+//    
+//    self.flowController.viewControllers = @[a1, a2];
+    
     self.window.rootViewController = self.flowController;
     
     [self.window makeKeyAndVisible];

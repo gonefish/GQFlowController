@@ -44,6 +44,25 @@
     return [self.innerViewControllers copy];
 }
 
+- (void)setViewControllers:(NSArray *)aViewControllers
+{
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    
+    [aViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        if (![obj isKindOfClass:[GQViewController class]]) {
+            [indexSet addIndex:idx];
+        }
+    }];
+    
+    NSMutableArray *newArray = [NSMutableArray arrayWithArray:aViewControllers];
+    
+    [newArray removeObjectsAtIndexes:indexSet];
+    
+    self.innerViewControllers = newArray;
+    
+    [self layoutFlowViews];
+}
+
 - (id)initWithRootViewController:(GQViewController *)rootViewController
 {
     self = [self init];

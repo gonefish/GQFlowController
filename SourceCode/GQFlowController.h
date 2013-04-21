@@ -19,6 +19,7 @@
 
 
 @property (nonatomic, copy) NSArray *viewControllers;
+
 @property (nonatomic, strong, readonly) GQViewController *topViewController;
 
 @end
