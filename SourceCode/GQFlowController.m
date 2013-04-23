@@ -39,6 +39,17 @@
     return self;
 }
 
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+{
+    self = [super initWithNibName:nibName bundle:nibBundle];
+    
+    if (self) {
+        self.innerViewControllers = [NSMutableArray array];
+    }
+    
+    return self;
+}
+
 - (NSArray *)viewControllers
 {
     return [self.innerViewControllers copy];
