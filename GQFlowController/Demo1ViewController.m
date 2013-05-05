@@ -7,6 +7,7 @@
 //
 
 #import "Demo1ViewController.h"
+#import "GQFlowController.h"
 
 @interface Demo1ViewController ()
 
@@ -18,19 +19,41 @@
 
 - (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view
 {
-    CGRect destinationFrect = CGRectZero;
-    
+    CGRect destinationFrect = [super flowController:flowController destinationRectForView:view];
+        
     if (view.frame.origin.x > 0
         && view.frame.origin.x < 100) {
         destinationFrect = CGRectMake(0,
                                       0,
                                       view.frame.size.width,
                                       view.frame.size.height);
-    } else if (view.frame.origin.x > 100) {
+        
+        [[[[flowController viewControllers] objectAtIndex:1] view] setHidden:NO];
+        [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:YES];
+
+    } else if (view.frame.origin.x > 100
+               && view.frame.origin.x < view.frame.size.width) {
         destinationFrect = CGRectMake(view.frame.size.width - 100,
                                       0,
                                       view.frame.size.width,
                                       view.frame.size.height);
+        [[[[flowController viewControllers] objectAtIndex:1] view] setHidden:NO];
+        [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:YES];
+    } else if (view.frame.origin.x < -100) {
+        destinationFrect = CGRectMake(-view.frame.size.width + 100,
+                                      0,
+                                      view.frame.size.width,
+                                      view.frame.size.height);
+        [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:NO];
+        [[[[flowController viewControllers] objectAtIndex:1] view] setHidden:YES];
+    } else if (view.frame.origin.x > -100
+               && view.frame.origin.x < 0) {
+        destinationFrect = CGRectMake(0,
+                                      0,
+                                      view.frame.size.width,
+                                      view.frame.size.height);
+        [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:NO];
+        [[[[flowController viewControllers] objectAtIndex:1] view] setHidden:YES];
     }
     
     return destinationFrect;

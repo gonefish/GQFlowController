@@ -19,7 +19,7 @@
 
 - (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view
 {
-    // 默认滑出GQFlowController界面
+    // 默认滑出GQFlowController的显示界面
     return CGRectMake(flowController.view.frame.size.width,
                       0,
                       view.frame.size.width,
