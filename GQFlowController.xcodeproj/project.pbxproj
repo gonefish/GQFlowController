@@ -68,6 +68,7 @@
 		E34A643F16FF4D140053A496 /* GQViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewController.h; sourceTree = "<group>"; };
 		E34A644016FF4D150053A496 /* GQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewController.m; sourceTree = "<group>"; };
 		E3665AED1716AB4D00BC2FD3 /* GQViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerDelegate.h; sourceTree = "<group>"; };
+		E37F0B28173957FA001829F4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		E3CEF5631723B7C400A33CFE /* Demo1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1ViewController.h; sourceTree = "<group>"; };
 		E3CEF5641723B7C400A33CFE /* Demo1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1ViewController.m; sourceTree = "<group>"; };
 		E3CEF5651723B7C400A33CFE /* Demo1ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1ViewController.xib; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 		E34A63F116FEB8DD0053A496 = {
 			isa = PBXGroup;
 			children = (
+				E37F0B28173957FA001829F4 /* README.md */,
 				E34A643316FEB9D30053A496 /* SourceCode */,
 				E34A640316FEB8DD0053A496 /* GQFlowController */,
 				E34A642116FEB8DD0053A496 /* GQFlowControllerTests */,
