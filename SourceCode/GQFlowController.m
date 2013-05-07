@@ -24,6 +24,11 @@
 
 - (void)layoutFlowViews;
 
+/**
+ * 计算移动到目标位置所需要的时间
+ */
+- (NSTimeInterval)durationForMovePressViewToFrame:(CGRect)aRect;
+
 @end
 
 @implementation GQFlowController
@@ -181,7 +186,23 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - 
+#pragma mark - Private Method
+
+- (NSTimeInterval)durationForMovePressViewToFrame:(CGRect)aRect;
+{
+    CGFloat range = .0;
+    
+    // TODO:需要处理斜线运动
+    if (self.pressViewDirection == GQFlowDirectionRight
+        || self.pressViewDirection == GQFlowDirectionLeft) {
+        range = aRect.origin.x - self.pressView.frame.origin.x;
+    } else {
+        range = aRect.origin.y - self.pressView.frame.origin.y;
+    }
+    
+    // 速度以1秒移动一屏为基准
+    return 1.0 / 320.0 * ABS(range);
+}
 
 // 添加手势
 - (void)addPressGestureRecognizerForTopView
@@ -280,7 +301,7 @@
             CGRect frame = [self.topViewController flowController:self
                                            destinationRectForView:self.pressView];
             
-            [UIView animateWithDuration:0.5
+            [UIView animateWithDuration:[self durationForMovePressViewToFrame:frame]
                              animations:^{
                                  self.pressView.frame = frame;
                              }
