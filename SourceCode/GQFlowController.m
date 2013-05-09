@@ -62,6 +62,7 @@
 
 - (void)setViewControllers:(NSArray *)aViewControllers
 {
+    // 判断是否为GQViewController的子类，如不是丢弃
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
     [aViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
@@ -159,7 +160,7 @@
 // 将需要添加的view添加的superview中
 - (void)layoutFlowViews
 {
-    for (UIViewController *controller in self.innerViewControllers) {
+    for (GQViewController *controller in self.innerViewControllers) {
         [self addChildViewController:controller];
         
         controller.view.frame = CGRectMake(0,
@@ -170,6 +171,9 @@
         [self.view addSubview:controller.view];
         
         [controller didMoveToParentViewController:self];
+        
+        // 默认为非激活状态
+        controller.active = NO;
     }
     
     // 只有一层是不添加按住手势
@@ -177,6 +181,8 @@
         self.topViewController = [self.innerViewControllers lastObject];
         
         [self addPressGestureRecognizerForTopView];
+        
+        self.topViewController.active = YES;
     }
 }
 
@@ -231,6 +237,8 @@
         // 设置初始点
         self.basePoint = pressPoint;
         self.prevPoint = pressPoint;
+        
+        self.topViewController.active = NO;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.pressView == nil) {
@@ -309,10 +317,16 @@
                              animations:^{
                                  self.pressView.frame = frame;
                              }
-                             completion:^(BOOL finished){
-                                 // 重新处理top view
-                                 
+                             completion:^(BOOL finished){                                 
+                                 // 清理pressview的信息
                                  self.pressView = nil;
+                                 
+                                 self.topViewController.active = YES;
+                                 
+                                 if ([self.topViewController respondsToSelector:@selector(flowController:didMoveViewToDestination:)]) {
+                                     [self.topViewController flowController:self
+                                                   didMoveViewToDestination:self.pressView];
+                                 }
                              }];
         } else {
             NSAssert(NO, @"?");

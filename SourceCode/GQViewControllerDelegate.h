@@ -31,4 +31,7 @@ typedef enum {
 // 是否移动UIView
 - (BOOL)flowController:(GQFlowController *)controller shouldMoveView:(UIView *)view toFrame:(CGRect)frame;
 
+// 移动到终点结束
+- (void)flowController:(GQFlowController *)controller didMoveViewToDestination:(UIView *)view;
+
 @end
