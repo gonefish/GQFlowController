@@ -15,5 +15,7 @@
 
 @property (nonatomic, strong) GQFlowController *flowController;
 
+@property (nonatomic, getter=isActive) BOOL active;
+
 @end
 

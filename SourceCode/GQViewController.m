@@ -11,9 +11,31 @@
 
 @interface GQViewController ()
 
+@property (nonatomic, strong) UIView *activeView;
+
 @end
 
 @implementation GQViewController
+
+- (UIView *)activeView
+{
+    if (_activeView == nil) {
+        _activeView = [[UIView alloc] initWithFrame:self.view.frame];
+    }
+    
+    return _activeView;
+}
+
+- (void)setActive:(BOOL)active
+{
+    _active = active;
+    
+    if (self.isActive) {
+        [self.activeView removeFromSuperview];
+    } else {
+        [self.view addSubview:self.activeView];
+    }
+}
 
 #pragma mark - GQViewControllerDelegate
 
