@@ -17,13 +17,10 @@
 
 #pragma mark - GQViewControllerDelegate
 
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view flowDirection:(GQFlowDirection)direction
 {
-    // 默认滑出GQFlowController的显示界面
-    return CGRectMake(flowController.view.frame.size.width,
-                      0,
-                      view.frame.size.width,
-                      view.frame.size.height);
+    // 默认保持不动
+    return view.frame;
 }
 
 @end

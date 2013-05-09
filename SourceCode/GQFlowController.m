@@ -232,6 +232,7 @@
         self.basePoint = pressPoint;
         self.prevPoint = pressPoint;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        // 判断移动的视图
         if (self.pressView == nil) {
             self.pressViewDirection = GQFlowDirectionUnknow;
             
@@ -293,13 +294,16 @@
             if (shouldMove) {
                 self.pressView.frame = newFrame;
             }
-            
-            self.prevPoint = pressPoint;
         }
+        
+        // 记住上一个点
+        self.prevPoint = pressPoint;
+
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         if ([self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
             CGRect frame = [self.topViewController flowController:self
-                                           destinationRectForView:self.pressView];
+                                           destinationRectForView:self.pressView
+                                                    flowDirection:self.pressViewDirection];
             
             [UIView animateWithDuration:[self durationForMovePressViewToFrame:frame]
                              animations:^{
@@ -307,6 +311,8 @@
                              }
                              completion:^(BOOL finished){
                                  // 重新处理top view
+                                 
+                                 self.pressView = nil;
                              }];
         } else {
             NSAssert(NO, @"?");

@@ -21,7 +21,7 @@ typedef enum {
 @protocol GQViewControllerDelegate <NSObject>
 
 // 目标frame
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view;
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view flowDirection:(GQFlowDirection)direction;
 
 @optional
 
