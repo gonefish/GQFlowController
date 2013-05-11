@@ -87,7 +87,9 @@
     self = [self init];
     
     if (self) {
-        rootViewController.flowController = self;
+        [rootViewController performSelector:@selector(_setFlowController:)
+                                 withObject:self];
+
         [self.innerViewControllers addObject:rootViewController];
         self.topViewController = rootViewController;
     }
@@ -120,8 +122,9 @@
 }
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
-{
-    viewController.flowController = self;
+{    
+    [viewController performSelector:@selector(_setFlowController:)
+                         withObject:self];
     
     [self addChildViewController:viewController];
     

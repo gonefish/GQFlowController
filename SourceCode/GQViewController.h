@@ -13,9 +13,11 @@
 
 @interface GQViewController : UIViewController <GQViewControllerDelegate>
 
-@property (nonatomic, strong) GQFlowController *flowController;
+@property (nonatomic, strong, readonly) GQFlowController *flowController;
 
 @property (nonatomic, getter=isActive) BOOL active;
+
+@property (nonatomic, strong, readonly) GQViewController *activeViewController;
 
 @end
 

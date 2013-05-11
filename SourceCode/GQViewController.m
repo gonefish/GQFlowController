@@ -11,19 +11,27 @@
 
 @interface GQViewController ()
 
-@property (nonatomic, strong) UIView *activeView;
+- (void)_setFlowController:(GQFlowController *)flowController;
+
+- (void)_setActiveViewController:(GQViewController *)viewController;
+
+@property (nonatomic, strong) UIView *coverView;
+
+@property (nonatomic, strong) GQViewController *activeViewController;
+
+@property (nonatomic, strong) GQFlowController *flowController;
 
 @end
 
 @implementation GQViewController
 
-- (UIView *)activeView
+- (UIView *)coverView
 {
-    if (_activeView == nil) {
-        _activeView = [[UIView alloc] initWithFrame:self.view.frame];
+    if (_coverView == nil) {
+        _coverView = [[UIView alloc] initWithFrame:self.view.frame];
     }
     
-    return _activeView;
+    return _coverView;
 }
 
 - (void)setActive:(BOOL)active
@@ -31,9 +39,9 @@
     _active = active;
     
     if (self.isActive) {
-        [self.activeView removeFromSuperview];
+        [self.coverView removeFromSuperview];
     } else {
-        [self.view addSubview:self.activeView];
+        [self.view addSubview:self.coverView];
     }
 }
 
@@ -43,6 +51,18 @@
 {
     // 默认保持不动
     return view.frame;
+}
+
+#pragma mark - Priveate Method
+
+- (void)_setFlowController:(GQFlowController *)flowController
+{
+    self.flowController = flowController;
+}
+
+- (void)_setActiveViewController:(GQViewController *)viewController
+{
+    self.activeViewController = viewController;
 }
 
 @end
