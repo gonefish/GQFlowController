@@ -35,7 +35,7 @@
     return self.view;
 }
 
-- (BOOL)flowController:(GQFlowController *)controller shouldMoveView:(UIView *)view toFrame:(CGRect)frame
+- (BOOL)flowController:(GQFlowController *)flowController shouldMoveView:(UIView *)view toFrame:(CGRect)frame
 {
     // 不允许上下移动
     if (frame.origin.y != .0) {
@@ -108,6 +108,21 @@
     }
     
     return destinationFrect;
+}
+
+- (void)flowController:(GQFlowController *)flowController didMoveViewToDestination:(UIView *)view
+{
+    if (view.frame.origin.x > 0) {
+        [[[flowController viewControllers] objectAtIndex:1] setActive:YES];
+        [[[flowController viewControllers] objectAtIndex:2] setActive:NO];
+    } else if (view.frame.origin.x < 0) {
+        [[[flowController viewControllers] objectAtIndex:0] setActive:YES];
+        [[[flowController viewControllers] objectAtIndex:2] setActive:NO];
+    } else {
+        [[[flowController viewControllers] objectAtIndex:1] setActive:NO];
+        [[[flowController viewControllers] objectAtIndex:0] setActive:NO];
+        [[[flowController viewControllers] objectAtIndex:2] setActive:YES];
+    }
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

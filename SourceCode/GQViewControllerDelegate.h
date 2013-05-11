@@ -29,9 +29,9 @@ typedef enum {
 - (UIView *)flowController:(GQFlowController *)flowController viewForFlowDirection:(GQFlowDirection)direction;
 
 // 是否移动UIView
-- (BOOL)flowController:(GQFlowController *)controller shouldMoveView:(UIView *)view toFrame:(CGRect)frame;
+- (BOOL)flowController:(GQFlowController *)flowController shouldMoveView:(UIView *)view toFrame:(CGRect)frame;
 
 // 移动到终点结束
-- (void)flowController:(GQFlowController *)controller didMoveViewToDestination:(UIView *)view;
+- (void)flowController:(GQFlowController *)flowController didMoveViewToDestination:(UIView *)view;
 
 @end

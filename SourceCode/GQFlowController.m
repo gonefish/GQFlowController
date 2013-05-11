@@ -306,8 +306,13 @@
         
         // 记住上一个点
         self.prevPoint = pressPoint;
-
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        // 如果没有发生移动就什么也不做
+        if (CGPointEqualToPoint(self.basePoint, self.prevPoint)) {
+            // TODO: 清理prev信息
+            return;
+        }
+        
         if ([self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
             CGRect frame = [self.topViewController flowController:self
                                            destinationRectForView:self.pressView
@@ -318,15 +323,15 @@
                                  self.pressView.frame = frame;
                              }
                              completion:^(BOOL finished){                                 
-                                 // 清理pressview的信息
-                                 self.pressView = nil;
-                                 
                                  self.topViewController.active = YES;
                                  
                                  if ([self.topViewController respondsToSelector:@selector(flowController:didMoveViewToDestination:)]) {
                                      [self.topViewController flowController:self
                                                    didMoveViewToDestination:self.pressView];
                                  }
+                                 
+                                 // 清理pressview的信息
+                                 self.pressView = nil;
                              }];
         } else {
             NSAssert(NO, @"?");
