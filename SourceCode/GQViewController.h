@@ -17,7 +17,6 @@
 
 @property (nonatomic, getter=isActive) BOOL active;
 
-@property (nonatomic, strong, readonly) GQViewController *activeViewController;
 
 @end
 

@@ -13,11 +13,8 @@
 
 - (void)_setFlowController:(GQFlowController *)flowController;
 
-- (void)_setActiveViewController:(GQViewController *)viewController;
 
 @property (nonatomic, strong) UIView *coverView;
-
-@property (nonatomic, strong) GQViewController *activeViewController;
 
 @property (nonatomic, strong) GQFlowController *flowController;
 
@@ -60,9 +57,6 @@
     self.flowController = flowController;
 }
 
-- (void)_setActiveViewController:(GQViewController *)viewController
-{
-    self.activeViewController = viewController;
-}
+
 
 @end

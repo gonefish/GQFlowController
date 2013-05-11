@@ -10,15 +10,6 @@
 
 @interface GQFlowController ()
 
-@property (nonatomic, strong) GQViewController *topViewController;
-@property (nonatomic, strong) NSMutableArray *innerViewControllers;
-
-@property (nonatomic) CGPoint prevPoint;
-@property (nonatomic) CGPoint basePoint;
-@property (nonatomic, strong) UIView *pressView;
-@property (nonatomic) GQFlowDirection pressViewDirection;
-@property (nonatomic, strong) UILongPressGestureRecognizer *pressGestureRecognizer;
-
 - (void)addPressGestureRecognizerForTopView;
 - (void)removeTopViewPressGestureRecognizer;
 
@@ -31,9 +22,19 @@
 
 - (void)resetLongPressStatus;
 
+@property (nonatomic, strong) GQViewController *topViewController;
+@property (nonatomic, strong) NSMutableArray *innerViewControllers;
+@property (nonatomic) CGPoint prevPoint;
+@property (nonatomic) CGPoint basePoint;
+@property (nonatomic, strong) UIView *pressView;
+@property (nonatomic) GQFlowDirection pressViewDirection;
+@property (nonatomic, strong) UILongPressGestureRecognizer *pressGestureRecognizer;
+
 @end
 
 @implementation GQFlowController
+
+
 
 - (id)init
 {
