@@ -326,6 +326,8 @@
             // 重置长按状态信息
             [self resetLongPressStatus];
             
+            self.topViewController.active = YES;
+            
             return;
         }
         
