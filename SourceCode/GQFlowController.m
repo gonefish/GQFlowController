@@ -24,10 +24,12 @@
 
 - (void)layoutFlowViews;
 
-/**
- * 计算移动到目标位置所需要的时间
- */
+/** 计算移动到目标位置所需要的时间
+
+*/
 - (NSTimeInterval)durationForMovePressViewToFrame:(CGRect)aRect;
+
+- (void)resetLongPressStatus;
 
 @end
 
@@ -194,6 +196,14 @@
 
 #pragma mark - Private Method
 
+- (void)resetLongPressStatus
+{
+    self.pressView = nil;
+    self.basePoint = CGPointZero;
+    self.prevPoint = CGPointZero;
+    self.pressViewDirection = GQFlowDirectionUnknow;
+}
+
 - (NSTimeInterval)durationForMovePressViewToFrame:(CGRect)aRect;
 {
     CGFloat range = .0;
@@ -309,7 +319,9 @@
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         // 如果没有发生移动就什么也不做
         if (CGPointEqualToPoint(self.basePoint, self.prevPoint)) {
-            // TODO: 清理prev信息
+            // 重置长按状态信息
+            [self resetLongPressStatus];
+            
             return;
         }
         
@@ -330,8 +342,8 @@
                                                    didMoveViewToDestination:self.pressView];
                                  }
                                  
-                                 // 清理pressview的信息
-                                 self.pressView = nil;
+                                 // 重置长按状态信息
+                                 [self resetLongPressStatus];
                              }];
         } else {
             NSAssert(NO, @"?");
