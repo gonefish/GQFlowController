@@ -7,9 +7,9 @@
 //
 
 #import "GQAppDelegate.h"
-#import "Demo1ViewController.h"
-#import "Demo2ViewController.h"
-#import "Demo3ViewController.h"
+#import "Demo1TopViewController.h"
+#import "Demo1LeftViewController.h"
+#import "Demo1RightViewController.h"
 
 @implementation GQAppDelegate
 
@@ -21,9 +21,9 @@
     
     self.flowController = [[GQFlowController alloc] init];
     
-    Demo1ViewController *d1 = [[Demo1ViewController alloc] init];
-    Demo2ViewController *d2 = [[Demo2ViewController alloc] init];
-    Demo3ViewController *d3 = [[Demo3ViewController alloc] init];
+    Demo1TopViewController *d1 = [[Demo1TopViewController alloc] init];
+    Demo1LeftViewController *d2 = [[Demo1LeftViewController alloc] init];
+    Demo1RightViewController *d3 = [[Demo1RightViewController alloc] init];
     
     self.flowController.viewControllers = @[d3, d2, d1];
     

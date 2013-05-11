@@ -6,16 +6,16 @@
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "Demo1ViewController.h"
+#import "Demo1TopViewController.h"
 #import "GQFlowController.h"
 
 #define OFFSET 70.0
 
-@interface Demo1ViewController ()
+@interface Demo1TopViewController ()
 
 @end
 
-@implementation Demo1ViewController
+@implementation Demo1TopViewController
 
 #pragma mark - GQViewControllerDelegate
 

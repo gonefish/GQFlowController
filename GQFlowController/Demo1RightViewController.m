@@ -1,18 +1,18 @@
 //
-//  Demo2ViewController.m
+//  Demo3ViewController.m
 //  GQFlowController
 //
 //  Created by 钱国强 on 13-4-21.
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "Demo2ViewController.h"
+#import "Demo1RightViewController.h"
 
-@interface Demo2ViewController ()
+@interface Demo1RightViewController ()
 
 @end
 
-@implementation Demo2ViewController
+@implementation Demo1RightViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

@@ -8,6 +8,6 @@
 
 #import "GQViewController.h"
 
-@interface Demo3ViewController : GQViewController
+@interface Demo1RightViewController : GQViewController
 
 @end

@@ -1,5 +1,5 @@
 //
-//  Demo1ViewController.h
+//  Demo2ViewController.h
 //  GQFlowController
 //
 //  Created by 钱国强 on 13-4-21.
@@ -8,6 +8,6 @@
 
 #import "GQViewController.h"
 
-@interface Demo1ViewController : GQViewController
+@interface Demo1LeftViewController : GQViewController
 
 @end
