@@ -217,7 +217,7 @@
     }
     
     // 速度以1秒移动一屏为基准
-    return 1.0 / 320.0 * ABS(range);
+    return 0.618 / 320.0 * ABS(range);
 }
 
 // 添加手势
@@ -325,7 +325,8 @@
             return;
         }
         
-        if ([self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
+        if (self.pressView
+            && [self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
             CGRect frame = [self.topViewController flowController:self
                                            destinationRectForView:self.pressView
                                                     flowDirection:self.pressViewDirection];
