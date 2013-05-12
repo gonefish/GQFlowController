@@ -22,9 +22,8 @@
 		E34A642616FEB8DD0053A496 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E34A642416FEB8DD0053A496 /* InfoPlist.strings */; };
 		E34A642916FEB8DD0053A496 /* GQFlowControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */; };
 		E34A643616FEB9E80053A496 /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A643516FEB9E80053A496 /* GQFlowController.m */; };
-		E34A643716FEB9E80053A496 /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A643516FEB9E80053A496 /* GQFlowController.m */; };
 		E34A644116FF4D150053A496 /* GQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A644016FF4D150053A496 /* GQViewController.m */; };
-		E34A644216FF4D150053A496 /* GQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A644016FF4D150053A496 /* GQViewController.m */; };
+		E372229B173FF701001907BE /* GQViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E372229A173FF701001907BE /* GQViewControllerTests.m */; };
 		E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3B7D4E5173E319100B82719 /* Demo2ViewController.m */; };
 		E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */; };
 		E3CEF5661723B7C400A33CFE /* Demo1TopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */; };
@@ -70,6 +69,8 @@
 		E34A643F16FF4D140053A496 /* GQViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewController.h; sourceTree = "<group>"; };
 		E34A644016FF4D150053A496 /* GQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewController.m; sourceTree = "<group>"; };
 		E3665AED1716AB4D00BC2FD3 /* GQViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerDelegate.h; sourceTree = "<group>"; };
+		E3722299173FF701001907BE /* GQViewControllerTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerTests.h; sourceTree = "<group>"; };
+		E372229A173FF701001907BE /* GQViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewControllerTests.m; sourceTree = "<group>"; };
 		E37F0B28173957FA001829F4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		E3B7D4E4173E319100B82719 /* Demo2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2ViewController.h; sourceTree = "<group>"; };
 		E3B7D4E5173E319100B82719 /* Demo2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2ViewController.m; sourceTree = "<group>"; };
@@ -172,6 +173,8 @@
 			children = (
 				E34A642716FEB8DD0053A496 /* GQFlowControllerTests.h */,
 				E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */,
+				E3722299173FF701001907BE /* GQViewControllerTests.h */,
+				E372229A173FF701001907BE /* GQViewControllerTests.m */,
 				E34A642216FEB8DD0053A496 /* Supporting Files */,
 			);
 			path = GQFlowControllerTests;
@@ -354,8 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E34A642916FEB8DD0053A496 /* GQFlowControllerTests.m in Sources */,
-				E34A643716FEB9E80053A496 /* GQFlowController.m in Sources */,
-				E34A644216FF4D150053A496 /* GQViewController.m in Sources */,
+				E372229B173FF701001907BE /* GQViewControllerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
