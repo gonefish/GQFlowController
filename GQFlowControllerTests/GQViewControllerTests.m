@@ -8,7 +8,6 @@
 
 #import "GQViewControllerTests.h"
 
-
 @implementation GQViewControllerTests
 
 - (void)setUp
@@ -18,6 +17,8 @@
     // Set-up code here.
     
     self.viewController = [[GQViewController alloc] init];
+    
+    id connection = [OCMockObject mockForClass:[GQViewController class]];
 }
 
 - (void)tearDown

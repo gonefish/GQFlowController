@@ -7,6 +7,7 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
+#import <OCMock/OCMock.h>
 #import "GQViewController.h"
 
 @interface GQViewControllerTests : SenTestCase
