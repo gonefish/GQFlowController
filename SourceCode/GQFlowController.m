@@ -220,7 +220,7 @@
         range = aRect.origin.y - self.pressView.frame.origin.y;
     }
     
-    // 速度以1秒移动一屏为基准
+    // 速度以0.618秒移动一屏为基准
     return 0.618 / 320.0 * ABS(range);
 }
 

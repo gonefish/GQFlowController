@@ -13,6 +13,15 @@
 
 @implementation GQAppDelegate
 
+- (NSArray *)demo1ViewControllers
+{
+    Demo1TopViewController *d1 = [[Demo1TopViewController alloc] init];
+    Demo1LeftViewController *d2 = [[Demo1LeftViewController alloc] init];
+    Demo1RightViewController *d3 = [[Demo1RightViewController alloc] init];
+    
+    return @[d3, d2, d1];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];

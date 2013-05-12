@@ -25,6 +25,8 @@
 		E34A643716FEB9E80053A496 /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A643516FEB9E80053A496 /* GQFlowController.m */; };
 		E34A644116FF4D150053A496 /* GQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A644016FF4D150053A496 /* GQViewController.m */; };
 		E34A644216FF4D150053A496 /* GQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A644016FF4D150053A496 /* GQViewController.m */; };
+		E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3B7D4E5173E319100B82719 /* Demo2ViewController.m */; };
+		E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */; };
 		E3CEF5661723B7C400A33CFE /* Demo1TopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */; };
 		E3CEF5671723B7C400A33CFE /* Demo1TopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF5651723B7C400A33CFE /* Demo1TopViewController.xib */; };
 		E3CEF56B1723B7E400A33CFE /* Demo1LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5691723B7E400A33CFE /* Demo1LeftViewController.m */; };
@@ -69,6 +71,9 @@
 		E34A644016FF4D150053A496 /* GQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewController.m; sourceTree = "<group>"; };
 		E3665AED1716AB4D00BC2FD3 /* GQViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerDelegate.h; sourceTree = "<group>"; };
 		E37F0B28173957FA001829F4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		E3B7D4E4173E319100B82719 /* Demo2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2ViewController.h; sourceTree = "<group>"; };
+		E3B7D4E5173E319100B82719 /* Demo2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2ViewController.m; sourceTree = "<group>"; };
+		E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2ViewController.xib; sourceTree = "<group>"; };
 		E3CEF5631723B7C400A33CFE /* Demo1TopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1TopViewController.h; sourceTree = "<group>"; };
 		E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1TopViewController.m; sourceTree = "<group>"; };
 		E3CEF5651723B7C400A33CFE /* Demo1TopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1TopViewController.xib; sourceTree = "<group>"; };
@@ -143,6 +148,7 @@
 				E34A640C16FEB8DD0053A496 /* GQAppDelegate.h */,
 				E34A640D16FEB8DD0053A496 /* GQAppDelegate.m */,
 				E3B7D4E3173E185700B82719 /* Demo1 */,
+				E3B7D4EA173E319F00B82719 /* Demo2 */,
 			);
 			path = GQFlowController;
 			sourceTree = "<group>";
@@ -206,6 +212,16 @@
 				E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */,
 			);
 			name = Demo1;
+			sourceTree = "<group>";
+		};
+		E3B7D4EA173E319F00B82719 /* Demo2 */ = {
+			isa = PBXGroup;
+			children = (
+				E3B7D4E4173E319100B82719 /* Demo2ViewController.h */,
+				E3B7D4E5173E319100B82719 /* Demo2ViewController.m */,
+				E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */,
+			);
+			name = Demo2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -287,6 +303,7 @@
 				E3CEF5671723B7C400A33CFE /* Demo1TopViewController.xib in Resources */,
 				E3CEF56C1723B7E400A33CFE /* Demo1LeftViewController.xib in Resources */,
 				E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */,
+				E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +345,7 @@
 				E3CEF5661723B7C400A33CFE /* Demo1TopViewController.m in Sources */,
 				E3CEF56B1723B7E400A33CFE /* Demo1LeftViewController.m in Sources */,
 				E3CEF5751723BAB100A33CFE /* Demo1RightViewController.m in Sources */,
+				E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
