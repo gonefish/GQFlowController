@@ -11,7 +11,7 @@
 
 @interface GQFlowController : GQViewController
 
-- (id)initWithRootViewController:(GQViewController *)rootViewController;
+- (id)initWithViewControllers:(NSArray *)viewControllers;
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated;
 - (void)flowOutViewControllerAnimated:(BOOL)animated;

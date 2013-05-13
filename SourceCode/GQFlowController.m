@@ -34,25 +34,14 @@
 
 @implementation GQFlowController
 
-
-
-- (id)init
+- (id)initWithViewControllers:(NSArray *)viewControllers
 {
     self = [super init];
     
     if (self) {
-        self.innerViewControllers = [NSMutableArray array];
-    }
-    
-    return self;
-}
-
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
-{
-    self = [super initWithNibName:nibName bundle:nibBundle];
-    
-    if (self) {
-        self.innerViewControllers = [NSMutableArray array];
+        self.viewControllers = viewControllers;
+        
+        self.topViewController = [viewControllers lastObject];
     }
     
     return self;
@@ -71,6 +60,9 @@
     [aViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         if (![obj isKindOfClass:[GQViewController class]]) {
             [indexSet addIndex:idx];
+        } else {
+            [obj performSelector:@selector(_setFlowController:)
+                      withObject:self];
         }
     }];
     
@@ -83,20 +75,6 @@
     [self layoutFlowViews];
 }
 
-- (id)initWithRootViewController:(GQViewController *)rootViewController
-{
-    self = [self init];
-    
-    if (self) {
-        [rootViewController performSelector:@selector(_setFlowController:)
-                                 withObject:self];
-
-        [self.innerViewControllers addObject:rootViewController];
-        self.topViewController = rootViewController;
-    }
-    
-    return self;
-}
 
 - (void)flowOutViewControllerAnimated:(BOOL)animated
 {
