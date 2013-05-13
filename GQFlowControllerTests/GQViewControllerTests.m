@@ -17,8 +17,6 @@
     // Set-up code here.
     
     self.viewController = [[GQViewController alloc] init];
-    
-    id connection = [OCMockObject mockForClass:[GQViewController class]];
 }
 
 - (void)tearDown
@@ -39,6 +37,18 @@
     [self.viewController setActive:NO];
     
     STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)1, @"coverView add view");
+}
+
+- (void)testPrivateFlowControllerSetter
+{
+    STAssertNil(self.viewController.flowController, @"don't setting flowController");
+    
+    GQFlowController *flowController = [[GQFlowController alloc] init];
+    
+    [self.viewController performSelector:@selector(_setFlowController:)
+                              withObject:flowController];
+    
+    STAssertNotNil(self.viewController.flowController, @"flowController settings");
 }
 
 @end

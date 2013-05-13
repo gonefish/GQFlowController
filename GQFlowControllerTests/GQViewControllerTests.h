@@ -8,7 +8,8 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import <OCMock/OCMock.h>
-#import "GQViewController.h"
+
+#import "GQFlowController.h"
 
 @interface GQViewControllerTests : SenTestCase
 

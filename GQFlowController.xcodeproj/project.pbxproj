@@ -511,6 +511,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/GQFlowControllerTests\"",
 				);
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -533,6 +534,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/GQFlowControllerTests\"",
 				);
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
