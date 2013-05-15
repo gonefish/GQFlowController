@@ -21,3 +21,9 @@
 @property (nonatomic, strong, readonly) GQViewController *topViewController;
 
 @end
+
+@interface GQViewController (GQViewControllerItem)
+
+@property (nonatomic, strong, readonly) GQFlowController *flowController;
+
+@end

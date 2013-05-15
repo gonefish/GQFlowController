@@ -7,16 +7,12 @@
 //
 
 #import "GQViewController.h"
-#import "GQFlowController.h"
 
 @interface GQViewController ()
 
-- (void)_setFlowController:(GQFlowController *)flowController;
-
-
 @property (nonatomic, strong) UIView *coverView;
 
-@property (nonatomic, strong) GQFlowController *flowController;
+@property (nonatomic, strong) UIViewController *parentFlowController;
 
 @end
 
@@ -52,11 +48,14 @@
 
 #pragma mark - Priveate Method
 
-- (void)_setFlowController:(GQFlowController *)flowController
+- (void)_setParentFlowController:(UIViewController *)flowController
 {
-    self.flowController = flowController;
+    self.parentFlowController = flowController;
 }
 
-
+- (UIViewController *)_parentFlowController
+{
+    return self.parentFlowController;
+}
 
 @end

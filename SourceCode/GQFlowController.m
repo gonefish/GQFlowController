@@ -61,7 +61,7 @@
         if (![obj isKindOfClass:[GQViewController class]]) {
             [indexSet addIndex:idx];
         } else {
-            [obj performSelector:@selector(_setFlowController:)
+            [obj performSelector:@selector(_setParentFlowController:)
                       withObject:self];
         }
     }];
@@ -102,7 +102,7 @@
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {    
-    [viewController performSelector:@selector(_setFlowController:)
+    [viewController performSelector:@selector(_setParentFlowController:)
                          withObject:self];
     
     [self addChildViewController:viewController];
@@ -339,3 +339,13 @@
 }
 
 @end
+
+@implementation GQViewController (GQViewControllerItem)
+
+- (GQFlowController *)flowController
+{
+    return (GQFlowController *)[self performSelector:@selector(_parentFlowController)];
+}
+
+@end
+

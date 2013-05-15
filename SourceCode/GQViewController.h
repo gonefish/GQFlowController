@@ -9,11 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "GQViewControllerDelegate.h"
 
-@class GQFlowController;
-
 @interface GQViewController : UIViewController <GQViewControllerDelegate>
-
-@property (nonatomic, strong, readonly) GQFlowController *flowController;
 
 @property (nonatomic, getter=isActive) BOOL active;
 
