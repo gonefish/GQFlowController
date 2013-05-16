@@ -12,8 +12,6 @@
 
 @property (nonatomic, strong) UIView *coverView;
 
-@property (nonatomic, strong) UIViewController *parentFlowController;
-
 @end
 
 @implementation GQViewController
@@ -47,15 +45,5 @@
 }
 
 #pragma mark - Priveate Method
-
-- (void)_setParentFlowController:(UIViewController *)flowController
-{
-    self.parentFlowController = flowController;
-}
-
-- (UIViewController *)_parentFlowController
-{
-    return self.parentFlowController;
-}
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "GQFlowController.h"
+#import <objc/runtime.h>
 
 @interface GQFlowController ()
 
@@ -61,7 +62,7 @@
         if (![obj isKindOfClass:[GQViewController class]]) {
             [indexSet addIndex:idx];
         } else {
-            [obj performSelector:@selector(_setParentFlowController:)
+            [obj performSelector:@selector(setFlowController:)
                       withObject:self];
         }
     }];
@@ -102,7 +103,7 @@
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {    
-    [viewController performSelector:@selector(_setParentFlowController:)
+    [viewController performSelector:@selector(setFlowController:)
                          withObject:self];
     
     [self addChildViewController:viewController];
@@ -340,11 +341,22 @@
 
 @end
 
+#pragma mark -
+
+static char kGQFlowControllerObjectKey;
+
 @implementation GQViewController (GQViewControllerItem)
 
+@dynamic flowController;
+
 - (GQFlowController *)flowController
+{    
+    return (GQFlowController *)objc_getAssociatedObject(self, &kGQFlowControllerObjectKey);
+}
+
+- (void)setFlowController:(GQFlowController *)flowController
 {
-    return (GQFlowController *)[self performSelector:@selector(_parentFlowController)];
+    objc_setAssociatedObject(self, &kGQFlowControllerObjectKey, flowController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
