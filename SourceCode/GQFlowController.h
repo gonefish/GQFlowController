@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "GQViewController.h"
 
-@interface GQFlowController : GQViewController
+@interface GQFlowController : GQViewController <UIGestureRecognizerDelegate>
 
 - (id)initWithViewControllers:(NSArray *)viewControllers;
 

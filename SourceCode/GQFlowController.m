@@ -41,8 +41,6 @@
     
     if (self) {
         self.viewControllers = viewControllers;
-        
-        self.topViewController = [viewControllers lastObject];
     }
     
     return self;
@@ -121,7 +119,7 @@
     
     [UIView animateWithDuration:0.5
                      animations:^{
-                         viewController.view.frame = CGRectMake(0,
+                         viewController.view.frame = CGRectMake(self.view.frame.size.width - viewController.view.frame.size.width,
                                                                 0,
                                                                 self.view.frame.size.width,
                                                                 self.view.frame.size.height);
@@ -161,13 +159,14 @@
         controller.active = NO;
     }
     
+    self.topViewController = [self.innerViewControllers lastObject];
+    self.topViewController.active = YES;
+    
     // 只有一层是不添加按住手势
     if ([self.innerViewControllers count] > 1) {
         self.topViewController = [self.innerViewControllers lastObject];
         
         [self addPressGestureRecognizerForTopView];
-        
-        self.topViewController.active = YES;
     }
 }
 
@@ -209,6 +208,7 @@
     if (self.pressGestureRecognizer == nil) {
         self.pressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(pressMoveGesture)];
+        self.pressGestureRecognizer.delegate = self;
         self.pressGestureRecognizer.minimumPressDuration = .0;
     }
     
@@ -337,6 +337,18 @@
     }
     
     NSLog(@"%f", pressPoint.x);
+}
+
+
+#pragma mark - UIGestureRecognizerDelegate Protocol
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{    
+    if (self.topViewController.view == touch.view) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 @end
