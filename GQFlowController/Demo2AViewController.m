@@ -1,20 +1,18 @@
 //
-//  Demo2ViewController.m
+//  Demo2AViewController.m
 //  GQFlowController
 //
-//  Created by 钱国强 on 13-5-11.
+//  Created by 钱国强 on 13-5-14.
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "Demo2ViewController.h"
 #import "Demo2AViewController.h"
-//#import "GQFlowController.h"
 
-@interface Demo2ViewController ()
+@interface Demo2AViewController ()
 
 @end
 
-@implementation Demo2ViewController
+@implementation Demo2AViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -23,10 +21,6 @@
         // Custom initialization
     }
     return self;
-}
-
-- (IBAction)flowAction:(id)sender {
-    //[self.flowController flowInViewController:nil animated:YES];
 }
 
 - (void)viewDidLoad

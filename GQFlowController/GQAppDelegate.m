@@ -10,6 +10,7 @@
 #import "Demo1TopViewController.h"
 #import "Demo1LeftViewController.h"
 #import "Demo1RightViewController.h"
+#import "Demo2ViewController.h"
 
 @implementation GQAppDelegate
 
@@ -22,19 +23,20 @@
     return @[d3, d2, d1];
 }
 
+- (NSArray *)demo2ViewControllers
+{
+    Demo2ViewController *d1 = [[Demo2ViewController alloc] init];
+    
+    return @[d1];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     
-    self.flowController = [[GQFlowController alloc] init];
-    
-    Demo1TopViewController *d1 = [[Demo1TopViewController alloc] init];
-    Demo1LeftViewController *d2 = [[Demo1LeftViewController alloc] init];
-    Demo1RightViewController *d3 = [[Demo1RightViewController alloc] init];
-    
-    self.flowController.viewControllers = @[d3, d2, d1];
+    self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
     
     self.window.rootViewController = self.flowController;
     

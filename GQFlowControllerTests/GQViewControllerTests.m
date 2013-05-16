@@ -45,7 +45,7 @@
     
     GQFlowController *flowController = [[GQFlowController alloc] init];
     
-    [self.viewController performSelector:@selector(_setFlowController:)
+    [self.viewController performSelector:@selector(setFlowController:)
                               withObject:flowController];
     
     STAssertNotNil(self.viewController.flowController, @"flowController settings");
