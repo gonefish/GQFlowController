@@ -77,6 +77,11 @@
 
 - (void)flowOutViewControllerAnimated:(BOOL)animated
 {
+    if ([NSThread isMainThread]) {
+        NSLog(@"This method must in main thread");
+        return;
+    }
+    
     [UIView animateWithDuration:0.5
                      animations:^{
                          CGRect destFrame = CGRectMake(self.view.frame.size.width,
@@ -100,7 +105,12 @@
 }
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
-{    
+{
+    if ([NSThread isMainThread]) {
+        NSLog(@"This method must in main thread");
+        return;
+    }
+    
     [viewController performSelector:@selector(setFlowController:)
                          withObject:self];
     
