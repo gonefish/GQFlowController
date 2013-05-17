@@ -6,7 +6,7 @@
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "GQViewController.h"
+#import "GQFlowController.h"
 
 @interface Demo2ViewController : GQViewController
 

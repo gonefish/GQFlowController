@@ -21,6 +21,8 @@
 */
 - (NSTimeInterval)durationForMovePressViewToFrame:(CGRect)aRect;
 
+- (NSTimeInterval)durationForMoveLength:(CGFloat)length;
+
 - (void)resetLongPressStatus;
 
 @property (nonatomic, strong) GQViewController *topViewController;
@@ -34,6 +36,7 @@
 @end
 
 @implementation GQFlowController
+@dynamic viewControllers;
 
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
@@ -77,7 +80,7 @@
 
 - (void)flowOutViewControllerAnimated:(BOOL)animated
 {
-    if ([NSThread isMainThread]) {
+    if (![NSThread isMainThread]) {
         NSLog(@"This method must in main thread");
         return;
     }
@@ -106,7 +109,7 @@
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
-    if ([NSThread isMainThread]) {
+    if (![NSThread isMainThread]) {
         NSLog(@"This method must in main thread");
         return;
     }
@@ -210,6 +213,12 @@
     
     // 速度以0.618秒移动一屏为基准
     return 0.618 / 320.0 * ABS(range);
+}
+
+- (NSTimeInterval)durationForMoveLength:(CGFloat)length
+{
+    // 速度以0.618秒移动一屏为基准
+    return 0.618 / 320.0 * ABS(length);
 }
 
 // 添加手势
@@ -363,7 +372,7 @@
 
 @end
 
-#pragma mark -
+#pragma mark - GQViewControllerItem Category
 
 static char kGQFlowControllerObjectKey;
 

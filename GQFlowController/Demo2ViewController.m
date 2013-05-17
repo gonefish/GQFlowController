@@ -8,7 +8,6 @@
 
 #import "Demo2ViewController.h"
 #import "Demo2AViewController.h"
-//#import "GQFlowController.h"
 
 @interface Demo2ViewController ()
 
@@ -26,7 +25,8 @@
 }
 
 - (IBAction)flowAction:(id)sender {
-    //[self.flowController flowInViewController:nil animated:YES];
+    Demo2AViewController *controller = [[Demo2AViewController alloc] initWithNibName:@"Demo2AViewController" bundle:nil];
+    [self.flowController flowInViewController:controller animated:YES];
 }
 
 - (void)viewDidLoad

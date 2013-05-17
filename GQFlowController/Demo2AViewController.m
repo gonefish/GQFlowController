@@ -23,6 +23,10 @@
     return self;
 }
 
+- (IBAction)backAction:(id)sender {
+    [self.flowController flowOutViewControllerAnimated:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

@@ -133,6 +133,9 @@
     }
     return self;
 }
+- (IBAction)clickAction:(id)sender {
+    NSLog(@"Click");
+}
 
 - (void)viewDidLoad
 {
