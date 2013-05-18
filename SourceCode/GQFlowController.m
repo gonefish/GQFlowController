@@ -27,10 +27,12 @@
 
 @property (nonatomic, strong) GQViewController *topViewController;
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
+
 @property (nonatomic) CGPoint prevPoint;
 @property (nonatomic) CGPoint basePoint;
-@property (nonatomic, strong) UIView *pressView;
-@property (nonatomic) GQFlowDirection pressViewDirection;
+@property (nonatomic, strong) GQViewController *moveViewController;
+@property (nonatomic) GQFlowDirection moveViewDirection;
+
 @property (nonatomic, strong) UILongPressGestureRecognizer *pressGestureRecognizer;
 
 @end
@@ -124,6 +126,53 @@
                      }];
 }
 
+- (void)addViewController:(GQViewController *)viewController
+{
+    [self.innerViewControllers addObject:viewController];
+    
+    [self addChildViewController:viewController];
+    
+    CGRect startFrame = CGRectZero;
+    
+    CGRect viewFrame = viewController.view.frame;
+    
+    switch (viewController.inFlowDirection) {
+        case GQFlowDirectionLeft:
+            startFrame = CGRectMake(self.view.frame.size.width,
+                                    viewFrame.origin.y,
+                                    viewFrame.size.width,
+                                    viewFrame.size.height);
+            break;
+        case GQFlowDirectionRight:
+            startFrame = CGRectMake(-viewFrame.size.width,
+                                    viewFrame.origin.y,
+                                    viewFrame.size.width,
+                                    viewFrame.size.height);
+            break;
+        case GQFlowDirectionUp:
+            startFrame = CGRectMake(viewFrame.origin.x,
+                                    self.view.frame.size.height,
+                                    viewFrame.size.width,
+                                    viewFrame.size.height);
+            break;
+        case GQFlowDirectionDown:
+            startFrame = CGRectMake(viewFrame.origin.x,
+                                    -viewFrame.size.height,
+                                    viewFrame.size.width,
+                                    viewFrame.size.height);
+            break;
+        default:
+            startFrame = viewFrame;
+            break;
+    }
+    
+    viewController.view.frame = startFrame;
+    
+    [self.view addSubview:viewController.view];
+    
+    [viewController didMoveToParentViewController:self];
+}
+
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
     if (![NSThread isMainThread]) {
@@ -136,58 +185,30 @@
     
     self.topViewController = viewController;
     
-    [self.innerViewControllers addObject:viewController];
+    // 添加到容器中，并设置将要滑入的起始位置
+    [self addViewController:viewController];
     
-    [self addChildViewController:viewController];
-    
-    CGRect startFrame = CGRectZero;
+    // 设置要滑入的结束位置
+    CGRect startFrame = viewController.view.frame;
     CGRect endFrame = CGRectZero;
-    CGRect viewFrame = viewController.view.frame;
     
     switch (viewController.inFlowDirection) {
-        case GQFlowDirectionLeft:
-            startFrame = CGRectMake(self.view.frame.size.width,
-                                    viewFrame.origin.y,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
-            
-            endFrame = CGRectOffset(startFrame, -viewFrame.size.width, .0);
+        case GQFlowDirectionLeft:            
+            endFrame = CGRectOffset(startFrame, -startFrame.size.width, .0);
             break;
         case GQFlowDirectionRight:
-            startFrame = CGRectMake(-viewFrame.size.width,
-                                    viewFrame.origin.y,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
-            
-            endFrame = CGRectOffset(startFrame, viewFrame.size.width, .0);
+            endFrame = CGRectOffset(startFrame, startFrame.size.width, .0);
             break;
         case GQFlowDirectionUp:
-            startFrame = CGRectMake(viewFrame.origin.x,
-                                    self.view.frame.size.height,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
-            
-            endFrame = CGRectOffset(startFrame, .0, -viewFrame.size.height);
+            endFrame = CGRectOffset(startFrame, .0, -startFrame.size.height);
             break;
-        case GQFlowDirectionDown:
-            startFrame = CGRectMake(viewFrame.origin.x,
-                                    -viewFrame.size.height,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
-            
-            endFrame = CGRectOffset(startFrame, .0, viewFrame.size.height);
+        case GQFlowDirectionDown:            
+            endFrame = CGRectOffset(startFrame, .0, startFrame.size.height);
             break;
         default:
-            startFrame = viewFrame;
-            endFrame = viewFrame;
+            endFrame = startFrame;
             break;
     }
-    
-    viewController.view.frame = startFrame;
-    
-    [self.view addSubview:viewController.view];
-    
-    [viewController didMoveToParentViewController:self];
     
     [UIView animateWithDuration:0.5
                      animations:^{
@@ -245,12 +266,14 @@
 
 #pragma mark - Private Method
 
+
+
 - (void)resetLongPressStatus
 {
-    self.pressView = nil;
+    self.moveViewController = nil;
     self.basePoint = CGPointZero;
     self.prevPoint = CGPointZero;
-    self.pressViewDirection = GQFlowDirectionUnknow;
+    self.moveViewDirection = GQFlowDirectionUnknow;
 }
 
 - (NSTimeInterval)durationForMovePressViewToFrame:(CGRect)aRect;
@@ -258,11 +281,11 @@
     CGFloat range = .0;
     
     // TODO:需要处理斜线运动
-    if (self.pressViewDirection == GQFlowDirectionRight
-        || self.pressViewDirection == GQFlowDirectionLeft) {
-        range = aRect.origin.x - self.pressView.frame.origin.x;
+    if (self.moveViewDirection == GQFlowDirectionRight
+        || self.moveViewDirection == GQFlowDirectionLeft) {
+        range = aRect.origin.x - self.moveViewController.view.frame.origin.x;
     } else {
-        range = aRect.origin.y - self.pressView.frame.origin.y;
+        range = aRect.origin.y - self.moveViewController.view.frame.origin.y;
     }
     
     // 速度以0.618秒移动一屏为基准
@@ -307,119 +330,123 @@
 
 - (void)pressMoveGesture
 {
-//    CGPoint pressPoint = [self.pressGestureRecognizer locationInView:nil];
-//    
-//    if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
-//        // 设置初始点
-//        self.basePoint = pressPoint;
-//        self.prevPoint = pressPoint;
-//        
-//        self.topViewController.active = NO;
-//    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
-//        // 判断移动的视图
-//        if (self.pressView == nil) {
-//            self.pressViewDirection = GQFlowDirectionUnknow;
-//            
-//            // 判断移动的方向
-//            CGFloat x = pressPoint.x - self.basePoint.x;
-//            CGFloat y = pressPoint.y - self.basePoint.y;
-//            
-//            if (ABS(x) > ABS(y)) {
-//                if (x > .0) {
-//                    self.pressViewDirection = GQFlowDirectionRight;
-//                } else if (x < .0) {
-//                    self.pressViewDirection = GQFlowDirectionLeft;
-//                }
-//            } else if (ABS(x) < ABS(y)) {
-//                if (y > .0) {
-//                    self.pressViewDirection = GQFlowDirectionUp;
-//                } else if (y < .0) {
-//                    self.pressViewDirection = GQFlowDirectionDown;
-//                }
-//            }
-//            
-//            // 没有变化
-//            if (self.pressViewDirection == GQFlowDirectionUnknow) {
-//                return;
-//            }
-//
-//            if ([self.topViewController respondsToSelector:@selector(flowController:viewForFlowDirection:)]) {
-//                self.pressView = [self.topViewController flowController:self
-//                                                   viewForFlowDirection:self.pressViewDirection];
-//            } else {
-//                self.pressView = self.pressGestureRecognizer.view;
-//            }
-//        }
-//        
-//        if (self.pressView) {
-//            // 移动到的frame
-//            CGRect newFrame = CGRectZero;
-//            
-//            if (self.pressViewDirection == GQFlowDirectionLeft
-//                || self.pressViewDirection == GQFlowDirectionRight) {
-//                CGFloat x = pressPoint.x - self.prevPoint.x;
-//                
-//                newFrame = CGRectOffset(self.pressView.frame, x, .0);
-//            } else if (self.pressViewDirection == GQFlowDirectionUp
-//                       || self.pressViewDirection == GQFlowDirectionDown) {
-//                CGFloat y = pressPoint.y - self.prevPoint.y;
-//                newFrame = CGRectOffset(self.pressView.frame, .0, y);
-//            }
-//            
-//            // 能否移动
-//            BOOL shouldMove = YES;
-//            
-//            if ([self.topViewController respondsToSelector:@selector(flowController:shouldMoveView:toFrame:)]) {
-//                shouldMove = [self.topViewController flowController:self
-//                                                     shouldMoveView:self.pressView
-//                                                            toFrame:newFrame];
-//            }
-//            
-//            if (shouldMove) {
-//                self.pressView.frame = newFrame;
-//            }
-//        }
-//        
-//        // 记住上一个点
-//        self.prevPoint = pressPoint;
-//    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-//        // 如果没有发生移动就什么也不做
-//        if (CGPointEqualToPoint(self.basePoint, self.prevPoint)) {
-//            // 重置长按状态信息
-//            [self resetLongPressStatus];
-//            
-//            self.topViewController.active = YES;
-//            
-//            return;
-//        }
-//        
-//        if (self.pressView
-//            && [self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
-//            CGRect frame = [self.topViewController flowController:self
-//                                           destinationRectForView:self.pressView
-//                                                    flowDirection:self.pressViewDirection];
-//            
-//            [UIView animateWithDuration:[self durationForMovePressViewToFrame:frame]
-//                             animations:^{
-//                                 self.pressView.frame = frame;
-//                             }
-//                             completion:^(BOOL finished){                                 
-//                                 self.topViewController.active = YES;
-//                                 
-//                                 if ([self.topViewController respondsToSelector:@selector(flowController:didMoveViewToDestination:)]) {
-//                                     [self.topViewController flowController:self
-//                                                   didMoveViewToDestination:self.pressView];
-//                                 }
-//                                 
-//                                 // 重置长按状态信息
-//                                 [self resetLongPressStatus];
-//                             }];
-//        } else {
-//            NSAssert(NO, @"?");
-//        }
-//    }
+    CGPoint pressPoint = [self.pressGestureRecognizer locationInView:nil];
     
-//    NSLog(@"%f", pressPoint.x);
+    if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        // 设置初始点
+        self.basePoint = pressPoint;
+        self.prevPoint = pressPoint;
+        
+        self.topViewController.active = NO;
+    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        // 判断移动的视图
+        if (self.moveViewController == nil) {
+            self.moveViewDirection = GQFlowDirectionUnknow;
+            
+            // 判断移动的方向
+            CGFloat x = pressPoint.x - self.basePoint.x;
+            CGFloat y = pressPoint.y - self.basePoint.y;
+            
+            if (ABS(x) > ABS(y)) {
+                if (x > .0) {
+                    self.moveViewDirection = GQFlowDirectionRight;
+                } else {
+                    self.moveViewDirection = GQFlowDirectionLeft;
+                }
+            } else {
+                if (y > .0) {
+                    self.moveViewDirection = GQFlowDirectionUp;
+                } else {
+                    self.moveViewDirection = GQFlowDirectionDown;
+                }
+            }
+
+            if ([self.topViewController respondsToSelector:@selector(flowController:moveViewControllerForFlowDirection:)]) {
+                self.moveViewController = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+                                                                            moveViewControllerForFlowDirection:self.moveViewDirection];
+                
+                // 如果不是topViewController则添加到容器中
+                if (self.moveViewController != self.topViewController) {
+                    [self addViewController:self.moveViewController];
+                    
+                    self.topViewController = self.moveViewController;
+                    
+                    [self.moveViewController performSelector:@selector(setFlowController:)
+                                                  withObject:self];
+                }
+            } else {
+                self.moveViewController = self.topViewController;
+            }
+        }
+
+        if (self.moveViewController) {
+            // 移动到的frame
+            CGRect newFrame = CGRectZero;
+            
+            if (self.moveViewDirection == GQFlowDirectionLeft
+                || self.moveViewDirection == GQFlowDirectionRight) {
+                CGFloat x = pressPoint.x - self.prevPoint.x;
+                
+                newFrame = CGRectOffset(self.moveViewController.view.frame, x, .0);
+            } else if (self.moveViewDirection == GQFlowDirectionUp
+                       || self.moveViewDirection == GQFlowDirectionDown) {
+                CGFloat y = pressPoint.y - self.prevPoint.y;
+                newFrame = CGRectOffset(self.moveViewController.view.frame, .0, y);
+            }
+            
+            // 能否移动
+            BOOL shouldMove = YES;
+            
+            if ([self.topViewController respondsToSelector:@selector(flowController:shouldMoveViewController:toFrame:)]) {
+                shouldMove = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+                                                                         shouldMoveViewController:self.moveViewController
+                                                                                          toFrame:newFrame];
+            }
+            
+            if (shouldMove) {
+                self.moveViewController.view.frame = newFrame;
+            }
+        }
+        
+        // 记住上一个点
+        self.prevPoint = pressPoint;
+    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        // 如果没有发生移动就什么也不做
+        if (CGPointEqualToPoint(self.basePoint, self.prevPoint)) {
+            // 重置长按状态信息
+            [self resetLongPressStatus];
+            
+            self.topViewController.active = YES;
+            
+            return;
+        }
+
+        if (self.moveViewController) {
+            CGRect frame = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+                                                               destinationRectForViewController:self.moveViewController
+                                                                                  flowDirection:self.moveViewDirection];
+            
+            [UIView animateWithDuration:[self durationForMovePressViewToFrame:frame]
+                             animations:^{
+                                 self.moveViewController.view.frame = frame;
+                             }
+                             completion:^(BOOL finished){                                 
+                                 self.topViewController.active = YES;
+                                 
+                                 if ([self.topViewController respondsToSelector:@selector(flowController:didMoveViewController:)]) {
+                                     [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+                                                                                    didMoveViewController:self.moveViewController];
+                                 }
+                                 
+                                 // 重置长按状态信息
+                                 [self resetLongPressStatus];
+                             }];
+        } else {
+            NSAssert(NO, @"?");
+        }
+    }
+    
+    NSLog(@"%f", pressPoint.x);
 }
 
 

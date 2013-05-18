@@ -10,7 +10,7 @@
 
 @interface GQViewController ()
 
-@property (nonatomic, strong) UIView *coverView;
+@property (nonatomic, strong) UIView *flowingOverlayView;
 
 @end
 
@@ -42,11 +42,11 @@
 
 - (UIView *)coverView
 {
-    if (_coverView == nil) {
-        _coverView = [[UIView alloc] initWithFrame:self.view.frame];
+    if (_flowingOverlayView == nil) {
+        _flowingOverlayView = [[UIView alloc] initWithFrame:self.view.frame];
     }
     
-    return _coverView;
+    return _flowingOverlayView;
 }
 
 - (void)setActive:(BOOL)active
@@ -54,9 +54,9 @@
     _active = active;
     
     if (self.isActive) {
-        [self.coverView removeFromSuperview];
+        [self.flowingOverlayView removeFromSuperview];
     } else {
-        [self.view addSubview:self.coverView];
+        [self.view addSubview:self.flowingOverlayView];
     }
 }
 

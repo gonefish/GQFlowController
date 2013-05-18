@@ -7,7 +7,7 @@
 //
 
 #import "Demo2AViewController.h"
-#import "Demo2BViewController.h"
+
 
 @interface Demo2AViewController ()
 
@@ -20,6 +20,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.bViewController = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];;
     }
     return self;
 }
@@ -28,8 +29,7 @@
     [self.flowController flowOutViewControllerAnimated:YES];
 }
 - (IBAction)flowbAction:(id)sender {
-    Demo2BViewController *controller = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
-    [self.flowController flowInViewController:controller animated:YES];
+    [self.flowController flowInViewController:self.bViewController animated:YES];
 }
 
 - (void)viewDidLoad
@@ -42,6 +42,22 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - GQFlowControllerDelegate
+
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForViewController:(GQViewController *)viewController flowDirection:(GQFlowDirection)direction
+{
+    return self.view.frame;
+}
+
+- (GQViewController *)flowController:(GQFlowController *)flowController moveViewControllerForFlowDirection:(GQFlowDirection)direction
+{
+    if (direction == GQFlowDirectionLeft) {
+        return self.bViewController;
+    } else {
+        return self;
+    }
 }
 
 @end
