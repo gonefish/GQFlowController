@@ -136,6 +136,8 @@
     
     self.topViewController = viewController;
     
+    [self.innerViewControllers addObject:viewController];
+    
     [self addChildViewController:viewController];
     
     CGRect startFrame = CGRectZero;
@@ -192,12 +194,8 @@
                          viewController.view.frame = endFrame;
                      }
                      completion:^(BOOL finished){
-                         if (finished) {
-                             
-                             
-                             // 添加手势
-                             [self addPressGestureRecognizerForTopView];
-                         }
+                         // 添加手势
+                         [self addPressGestureRecognizerForTopView];
                      }];
 }
 
@@ -297,6 +295,11 @@
 
 - (void)removeTopViewPressGestureRecognizer
 {
+    // 判断是否实现GQFlowControllerDelegate
+    if (![self.topViewController conformsToProtocol:@protocol(GQFlowControllerDelegate)]) {
+        return;
+    }
+    
     if (self.pressGestureRecognizer) {
         [self.topViewController.view removeGestureRecognizer:self.pressGestureRecognizer];
     }
