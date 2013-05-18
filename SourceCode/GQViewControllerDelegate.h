@@ -10,13 +10,13 @@
 
 @class GQFlowController;
 
-typedef enum {
-    GQFlowDirectionUnknow,
-    GQFlowDirectionRight,
-    GQFlowDirectionLeft,
-    GQFlowDirectionUp,
-    GQFlowDirectionDown
-} GQFlowDirection;
+//typedef enum {
+//    GQFlowDirectionUnknow,
+//    GQFlowDirectionRight,
+//    GQFlowDirectionLeft,
+//    GQFlowDirectionUp,
+//    GQFlowDirectionDown
+//} GQFlowDirection;
 
 @protocol GQViewControllerDelegate <NSObject>
 

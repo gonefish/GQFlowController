@@ -97,6 +97,7 @@
 		E3CEF5721723BAB000A33CFE /* Demo1RightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1RightViewController.h; sourceTree = "<group>"; };
 		E3CEF5731723BAB000A33CFE /* Demo1RightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1RightViewController.m; sourceTree = "<group>"; };
 		E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1RightViewController.xib; sourceTree = "<group>"; };
+		E3D757B8174751EE00A56E83 /* GQFlowControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQFlowControllerDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,6 +214,7 @@
 				E34A643F16FF4D140053A496 /* GQViewController.h */,
 				E34A644016FF4D150053A496 /* GQViewController.m */,
 				E3665AED1716AB4D00BC2FD3 /* GQViewControllerDelegate.h */,
+				E3D757B8174751EE00A56E83 /* GQFlowControllerDelegate.h */,
 			);
 			path = SourceCode;
 			sourceTree = "<group>";

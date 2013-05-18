@@ -16,6 +16,30 @@
 
 @implementation GQViewController
 
+- (id)init
+{
+    self = [super init];
+    
+    if (self) {
+        self.inFlowDirection = GQFlowDirectionLeft;
+        self.outFlowDirection = GQFlowDirectionRight;
+    }
+    
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    
+    if (self) {
+        self.inFlowDirection = GQFlowDirectionLeft;
+        self.outFlowDirection = GQFlowDirectionRight;
+    }
+    
+    return self;
+}
+
 - (UIView *)coverView
 {
     if (_coverView == nil) {
@@ -35,15 +59,5 @@
         [self.view addSubview:self.coverView];
     }
 }
-
-#pragma mark - GQViewControllerDelegate
-
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view flowDirection:(GQFlowDirection)direction
-{
-    // 默认保持不动
-    return view.frame;
-}
-
-#pragma mark - Priveate Method
 
 @end

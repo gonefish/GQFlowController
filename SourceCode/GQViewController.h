@@ -7,11 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GQViewControllerDelegate.h"
 
-@interface GQViewController : UIViewController <GQViewControllerDelegate>
+typedef enum {
+    GQFlowDirectionUnknow,
+    GQFlowDirectionRight,
+    GQFlowDirectionLeft,
+    GQFlowDirectionUp,
+    GQFlowDirectionDown
+} GQFlowDirection;
+
+@interface GQViewController : UIViewController
 
 @property (nonatomic, getter=isActive) BOOL active;
+
+@property (nonatomic) GQFlowDirection inFlowDirection;
+
+@property (nonatomic) GQFlowDirection outFlowDirection;
 
 
 @end
