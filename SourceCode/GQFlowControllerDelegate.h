@@ -11,21 +11,28 @@
 @class GQFlowController;
 @class GQViewController;
 
+/**
+ 实现这个协议来激活压住滑动功能
+ */
 @protocol GQFlowControllerDelegate <NSObject>
-
-// 目标frame
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForViewController:(GQViewController *)viewController flowDirection:(GQFlowDirection)direction;
 
 @optional
 
+// 目标frame
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
+
+
 // 滑动的GQViewController
-- (GQViewController *)flowController:(GQFlowController *)flowController moveViewControllerForFlowDirection:(GQFlowDirection)direction;
+- (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction;
 
 
 // 是否移动UIView
-- (BOOL)flowController:(GQFlowController *)flowController shouldMoveViewController:(GQViewController *)viewController toFrame:(CGRect)frame;
+- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame;
 
 // 移动到终点结束
-- (void)flowController:(GQFlowController *)flowController didMoveViewController:(GQViewController *)viewController;
+- (void)didFlowToDestinationRect:(GQFlowController *)flowController;
+
+// .0 ~ 1.0
+- (CGFloat)boundaryFlowController:(GQFlowController *)flowController;
 
 @end

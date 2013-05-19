@@ -46,18 +46,18 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForViewController:(GQViewController *)viewController flowDirection:(GQFlowDirection)direction
-{
-    return self.view.frame;
-}
+//- (CGRect)flowController:(GQFlowController *)flowController destinationRectForViewController:(GQViewController *)viewController flowDirection:(GQFlowDirection)direction
+//{
+//    return self.view.frame;
+//}
 
-- (GQViewController *)flowController:(GQFlowController *)flowController moveViewControllerForFlowDirection:(GQFlowDirection)direction
-{
-    if (direction == GQFlowDirectionLeft) {
-        return self.bViewController;
-    } else {
-        return self;
-    }
-}
+//- (GQViewController *)flowController:(GQFlowController *)flowController moveViewControllerForFlowDirection:(GQFlowDirection)direction
+//{
+//    if (direction == GQFlowDirectionLeft) {
+//        return self.bViewController;
+//    } else {
+//        return self;
+//    }
+//}
 
 @end
