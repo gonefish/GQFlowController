@@ -8,10 +8,7 @@
 
 #import "GQFlowController.h"
 #import "GQFlowControllerDelegate.h"
-#import "Demo2BViewController.h"
 
 @interface Demo2AViewController : GQViewController <GQFlowControllerDelegate>
-
-@property (nonatomic, strong) Demo2BViewController *bViewController;
 
 @end

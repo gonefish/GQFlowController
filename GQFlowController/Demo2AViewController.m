@@ -7,7 +7,7 @@
 //
 
 #import "Demo2AViewController.h"
-
+#import "Demo2BViewController.h"
 
 @interface Demo2AViewController ()
 
@@ -20,7 +20,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.bViewController = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];;
     }
     return self;
 }
@@ -29,7 +28,8 @@
     [self.flowController flowOutViewControllerAnimated:YES];
 }
 - (IBAction)flowbAction:(id)sender {
-    [self.flowController flowInViewController:self.bViewController animated:YES];
+    [self.flowController flowInViewController:[[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil]
+                                     animated:YES];
 }
 
 - (void)viewDidLoad
@@ -46,18 +46,22 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-//- (CGRect)flowController:(GQFlowController *)flowController destinationRectForViewController:(GQViewController *)viewController flowDirection:(GQFlowDirection)direction
+//- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame
 //{
-//    return self.view.frame;
-//}
-
-//- (GQViewController *)flowController:(GQFlowController *)flowController moveViewControllerForFlowDirection:(GQFlowDirection)direction
-//{
-//    if (direction == GQFlowDirectionLeft) {
-//        return self.bViewController;
+//    if (frame.origin.x >= .0) {
+//        return YES;
 //    } else {
-//        return self;
+//        return NO;
 //    }
 //}
+
+- (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+{
+    if (direction == GQFlowDirectionLeft) {
+        return [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
+    } else {
+        return self;
+    }
+}
 
 @end
