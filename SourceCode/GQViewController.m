@@ -40,7 +40,7 @@
     return self;
 }
 
-- (UIView *)coverView
+- (UIView *)flowingOverlayView
 {
     if (_flowingOverlayView == nil) {
         _flowingOverlayView = [[UIView alloc] initWithFrame:self.view.frame];
