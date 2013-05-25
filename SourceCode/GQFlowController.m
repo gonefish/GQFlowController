@@ -100,6 +100,8 @@
                      }
                      completion:^(BOOL finished){
                          [self removeTopViewController];
+                         
+                         [self addPressGestureRecognizerForTopView];
                      }];
 }
 
@@ -135,8 +137,6 @@
     [self.innerViewControllers removeLastObject];
 
     self.topViewController = [self.innerViewControllers lastObject];
-    
-    [self addPressGestureRecognizerForTopView];
 }
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
@@ -516,7 +516,7 @@
                     }
                     
                     // 如果移动的距离没有超过边界值，则回退到原始位置
-                    if (length <= self.topViewController.view.frame.size.width * boundary) {
+                    if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
                         cancelFlowing = YES;
                     }
                 }
@@ -543,19 +543,25 @@
                              self.topViewController.view.frame = destinationFrame;
                          }
                          completion:^(BOOL finished){                                 
-                             self.topViewController.active = YES;
-                             
                              if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect:)]) {
                                  [(id<GQFlowControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
                              }
                              
-                             // 重置长按状态信息
-                             [self resetLongPressStatus];
-                             
                              // 怎样移除滑出的top view controller
                              if (!cancelFlowing) {
-                                 
+                                 if (self.flowingDirection == self.topViewController.outFlowDirection) {
+                                     [self removeTopViewController];
+                                 } else if (self.flowingDirection == self.topViewController.inFlowDirection) {
+                                     [self addPressGestureRecognizerForTopView];
+                                 }
                              }
+                             
+                             self.topViewController.active = YES;
+                             
+                             [self addPressGestureRecognizerForTopView];
+                             
+                             // 重置长按状态信息
+                             [self resetLongPressStatus];
                          }];
 
     }
