@@ -46,14 +46,10 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-//- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame
-//{
-//    if (frame.origin.x >= .0) {
-//        return YES;
-//    } else {
-//        return NO;
-//    }
-//}
+- (CGFloat)boundaryFlowController:(GQFlowController *)flowController
+{
+    return 0.2;
+}
 
 - (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
 {

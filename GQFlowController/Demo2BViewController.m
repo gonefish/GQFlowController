@@ -38,4 +38,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - GQFlowControllerDelegate
+
+- (CGFloat)boundaryFlowController:(GQFlowController *)flowController
+{
+    return 0.2;
+}
+
 @end
