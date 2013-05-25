@@ -317,8 +317,13 @@
         }
         
         // 能否移动
-        BOOL shouldMove = YES;
+        BOOL shouldMove = NO;
         
+        if (self.flowingDirection == self.topViewController.inFlowDirection
+            || self.flowingDirection == self.topViewController.outFlowDirection) {
+            shouldMove = YES;
+        }
+
         if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
             shouldMove = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
                                                                              shouldFlowToRect:newFrame];
@@ -341,7 +346,8 @@
             return;
         }
         
-        CGRect destinationRect = CGRectZero;
+        // 默认为原始位置
+        CGRect destinationRect = self.originalRect;
         
         if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
             destinationRect = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
@@ -372,10 +378,7 @@
                 }
             }
             
-            if (cancelFlowing) {
-                // 回退到事件开始的rect
-                destinationRect = self.originalRect;
-            } else {
+            if (!cancelFlowing) {
                 if (self.flowingDirection == self.topViewController.inFlowDirection) {                    
                     destinationRect = [self inDestinationRectForViewController:self.topViewController];
                 }
