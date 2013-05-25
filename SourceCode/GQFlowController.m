@@ -87,31 +87,9 @@
         return;
     }
     
-    CGRect endFrame = CGRectZero;
-    CGRect viewFrame = self.topViewController.view.frame;
-    
-    switch (self.topViewController.outFlowDirection) {
-        case GQFlowDirectionLeft:
-            endFrame = CGRectOffset(viewFrame, -viewFrame.size.width, .0);
-            break;
-        case GQFlowDirectionRight:
-            endFrame = CGRectOffset(viewFrame, viewFrame.size.width, .0);
-            
-            break;
-        case GQFlowDirectionUp:
-            endFrame = CGRectOffset(viewFrame, .0, -viewFrame.size.height);
-            break;
-        case GQFlowDirectionDown:
-            endFrame = CGRectOffset(viewFrame, .0, viewFrame.size.height);
-            break;
-        default:
-            endFrame = viewFrame;
-            break;
-    }
-    
     [UIView animateWithDuration:0.5
                      animations:^{
-                         self.topViewController.view.frame = endFrame;
+                         self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
                      }
                      completion:^(BOOL finished){
                          [self.topViewController willMoveToParentViewController:nil];
@@ -138,7 +116,7 @@
     
     [self addChildViewController:viewController];
     
-    viewController.view.frame = [self inRectForViewController:viewController];
+    viewController.view.frame = [self inOriginRectForViewController:viewController];
     
     [self.view addSubview:viewController.view];
     
@@ -155,31 +133,9 @@
     // 添加到容器中，并设置将要滑入的起始位置
     [self addViewController:viewController];
     
-    // 设置要滑入的结束位置
-    CGRect startFrame = viewController.view.frame;
-    CGRect endFrame = CGRectZero;
-    
-    switch (viewController.inFlowDirection) {
-        case GQFlowDirectionLeft:            
-            endFrame = CGRectOffset(startFrame, -startFrame.size.width, .0);
-            break;
-        case GQFlowDirectionRight:
-            endFrame = CGRectOffset(startFrame, startFrame.size.width, .0);
-            break;
-        case GQFlowDirectionUp:
-            endFrame = CGRectOffset(startFrame, .0, -startFrame.size.height);
-            break;
-        case GQFlowDirectionDown:            
-            endFrame = CGRectOffset(startFrame, .0, startFrame.size.height);
-            break;
-        default:
-            endFrame = startFrame;
-            break;
-    }
-    
     [UIView animateWithDuration:0.5
                      animations:^{
-                         viewController.view.frame = endFrame;
+                         viewController.view.frame = [self inDestinationRectForViewController:viewController];
                      }
                      completion:^(BOOL finished){
                          // 添加手势
@@ -420,61 +376,15 @@
                 // 回退到事件开始的rect
                 destinationRect = self.originalRect;
             } else {
-                // in的delegate不是这个top view controller
-                if (self.flowingDirection == self.topViewController.inFlowDirection) {
-                    CGRect endFrame = CGRectZero;
-                    CGRect viewFrame = self.topViewController.view.frame;
-                    
-                    switch (self.topViewController.inFlowDirection) {
-                        case GQFlowDirectionLeft:
-                            endFrame = CGRectOffset(viewFrame, -viewFrame.size.width, .0);
-                            break;
-                        case GQFlowDirectionRight:
-                            endFrame = CGRectOffset(viewFrame, viewFrame.size.width, .0);
-                            
-                            break;
-                        case GQFlowDirectionUp:
-                            endFrame = CGRectOffset(viewFrame, .0, -viewFrame.size.height);
-                            break;
-                        case GQFlowDirectionDown:
-                            endFrame = CGRectOffset(viewFrame, .0, viewFrame.size.height);
-                            break;
-                        default:
-                            endFrame = viewFrame;
-                            break;
-                    }
-                    
-                    destinationRect = endFrame;
+                if (self.flowingDirection == self.topViewController.inFlowDirection) {                    
+                    destinationRect = [self inDestinationRectForViewController:self.topViewController];
                 }
                 
                 // 如果in和out是同一方向，则以out为主
-                if (self.flowingDirection == self.topViewController.outFlowDirection) {
-                    CGRect endFrame = CGRectZero;
-                    CGRect viewFrame = self.topViewController.view.frame;
-                    
-                    switch (self.topViewController.outFlowDirection) {
-                        case GQFlowDirectionLeft:
-                            endFrame = CGRectOffset(viewFrame, -viewFrame.size.width, .0);
-                            break;
-                        case GQFlowDirectionRight:
-                            endFrame = CGRectOffset(viewFrame, viewFrame.size.width, .0);
-                            
-                            break;
-                        case GQFlowDirectionUp:
-                            endFrame = CGRectOffset(viewFrame, .0, -viewFrame.size.height);
-                            break;
-                        case GQFlowDirectionDown:
-                            endFrame = CGRectOffset(viewFrame, .0, viewFrame.size.height);
-                            break;
-                        default:
-                            endFrame = viewFrame;
-                            break;
-                    }
-                    
-                    destinationRect = endFrame;
+                if (self.flowingDirection == self.topViewController.outFlowDirection) {         
+                    destinationRect = [self outDestinationRectForViewController:self.topViewController];
                 }
             }
-            
         }
 
         [UIView animateWithDuration:0.5
@@ -499,55 +409,133 @@
     NSLog(@"%f", pressPoint.x);
 }
 
-//in 的起始
-- (CGRect)inRectForViewController:(GQViewController *)viewController
+// 滑入的起初位置
+- (CGRect)inOriginRectForViewController:(GQViewController *)viewController
 {
-    CGRect inRect = CGRectZero;
-    
     CGRect viewFrame = viewController.view.frame;
+    
+    CGRect originFrame = CGRectZero;
     
     switch (viewController.inFlowDirection) {
         case GQFlowDirectionLeft:
-            inRect = CGRectMake(self.view.frame.size.width,
-                                    viewFrame.origin.y,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
+            originFrame = CGRectMake(self.view.frame.size.width,
+                                     viewFrame.origin.y,
+                                     viewFrame.size.width,
+                                     viewFrame.size.height);
             break;
         case GQFlowDirectionRight:
-            inRect = CGRectMake(-viewFrame.size.width,
-                                    viewFrame.origin.y,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
+            originFrame = CGRectMake(-viewFrame.size.width,
+                                     viewFrame.origin.y,
+                                     viewFrame.size.width,
+                                     viewFrame.size.height);
             break;
         case GQFlowDirectionUp:
-            inRect = CGRectMake(viewFrame.origin.x,
-                                    self.view.frame.size.height,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
+            originFrame = CGRectMake(viewFrame.origin.x,
+                                     self.view.frame.size.height,
+                                     viewFrame.size.width,
+                                     viewFrame.size.height);
             break;
         case GQFlowDirectionDown:
-            inRect = CGRectMake(viewFrame.origin.x,
-                                    -viewFrame.size.height,
-                                    viewFrame.size.width,
-                                    viewFrame.size.height);
+            originFrame = CGRectMake(viewFrame.origin.x,
+                                     -viewFrame.size.height,
+                                     viewFrame.size.width,
+                                     viewFrame.size.height);
             break;
         default:
-            inRect = viewFrame;
+            originFrame = viewFrame;
             break;
     }
     
-    return inRect;
+    return originFrame;
 }
 
-// in 的结束
-
-// out 起始
-- (CGRect)outRectForViewController:(GQViewController *)viewController
+// 滑入的目标位置
+- (CGRect)inDestinationRectForViewController:(GQViewController *)viewController
 {
+    CGRect viewFrame = viewController.view.frame;
+    CGRect destinationFrame = CGRectZero;
     
+    switch (viewController.inFlowDirection) {
+        case GQFlowDirectionLeft:
+            destinationFrame = CGRectMake(self.view.frame.size.width - viewFrame.size.width,
+                                          viewFrame.origin.y,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        case GQFlowDirectionRight:
+            destinationFrame = CGRectMake(.0,
+                                          viewFrame.origin.y,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        case GQFlowDirectionUp:
+            destinationFrame = CGRectMake(viewFrame.origin.x,
+                                          self.view.frame.size.height - viewFrame.size.height,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        case GQFlowDirectionDown:
+            destinationFrame = CGRectMake(viewFrame.origin.x,
+                                          .0,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        default:
+            destinationFrame = viewFrame;
+            break;
+    }
+    
+    return destinationFrame;
 }
 
-// out 结束
+//// 滑出的默认初始位置
+//- (CGRect)outOriginRectForViewController:(GQViewController *)viewController
+//{
+//    CGRect viewFrame = viewController.view.frame;
+//    CGRect originFrame = CGRectZero;
+//    
+//    return originFrame;
+//}
+
+// 滑出的目标位置、任意位置都能滑出
+- (CGRect)outDestinationRectForViewController:(GQViewController *)viewController
+{
+    CGRect viewFrame = viewController.view.frame;
+    CGRect destinationFrame = CGRectZero;
+    
+    switch (viewController.outFlowDirection) {
+        case GQFlowDirectionLeft:
+            destinationFrame = CGRectMake(-viewFrame.size.width,
+                                          viewFrame.origin.y,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        case GQFlowDirectionRight:
+            destinationFrame = CGRectMake(self.view.frame.size.width,
+                                          viewFrame.origin.y,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            
+            break;
+        case GQFlowDirectionUp:
+            destinationFrame = CGRectMake(viewFrame.origin.x,
+                                          -viewFrame.size.height,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        case GQFlowDirectionDown:
+            destinationFrame = CGRectMake(viewFrame.origin.x,
+                                          self.view.frame.size.height,
+                                          viewFrame.size.width,
+                                          viewFrame.size.height);
+            break;
+        default:
+            destinationFrame = viewFrame;
+            break;
+    }
+    
+    return destinationFrame;
+}
 
 #pragma mark - UIGestureRecognizerDelegate Protocol
 
