@@ -46,9 +46,9 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (CGFloat)boundaryFlowController:(GQFlowController *)flowController
+- (CGFloat)flowingBoundary:(GQFlowController *)flowController
 {
-    return 0.2;
+    return 0.15;
 }
 
 - (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction

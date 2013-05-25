@@ -33,6 +33,6 @@
 - (void)didFlowToDestinationRect:(GQFlowController *)flowController;
 
 // .0 ~ 1.0
-- (CGFloat)boundaryFlowController:(GQFlowController *)flowController;
+- (CGFloat)flowingBoundary:(GQFlowController *)flowController;
 
 @end

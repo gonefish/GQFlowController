@@ -40,7 +40,7 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (CGFloat)boundaryFlowController:(GQFlowController *)flowController
+- (CGFloat)flowingBoundary:(GQFlowController *)flowController
 {
     return 0.2;
 }
