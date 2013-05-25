@@ -26,6 +26,9 @@
 - (CGRect)inDestinationRectForViewController:(GQViewController *)viewController;
 - (CGRect)outDestinationRectForViewController:(GQViewController *)viewController;
 
+- (void)addTopViewController:(GQViewController *)viewController;
+- (void)removeTopViewController;
+
 @property (nonatomic, strong) GQViewController *topViewController;
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
 
@@ -90,9 +93,13 @@
     
     CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
     
-    CGFloat duration = [self durationForOriginalRect:self.topViewController.view.frame
-                                     destinationRect:destinationFrame
-                                    flowingDirection:self.topViewController.outFlowDirection];
+    CGFloat duration = .0;
+    
+    if (animated) {
+        duration = [self durationForOriginalRect:self.topViewController.view.frame
+                                 destinationRect:destinationFrame
+                                flowingDirection:self.topViewController.outFlowDirection];
+    }
     
     [UIView animateWithDuration:duration
                      animations:^{
@@ -105,39 +112,7 @@
                      }];
 }
 
-- (void)addTopViewController:(GQViewController *)viewController
-{
-    // 设置GQViewControllerItem
-    [viewController performSelector:@selector(setFlowController:)
-                         withObject:self];
-    
-    self.topViewController = viewController;
 
-    [self.innerViewControllers addObject:viewController];
-    
-    [self addChildViewController:viewController];
-    
-    viewController.view.frame = [self inOriginRectForViewController:viewController];
-    
-    [self.view addSubview:viewController.view];
-    
-    [viewController didMoveToParentViewController:self];
-}
-
-- (void)removeTopViewController
-{
-    [self removeTopViewPressGestureRecognizer];
-    
-    [self.topViewController willMoveToParentViewController:nil];
-    
-    [self.topViewController.view removeFromSuperview];
-    
-    [self.topViewController removeFromParentViewController];
-    
-    [self.innerViewControllers removeLastObject];
-
-    self.topViewController = [self.innerViewControllers lastObject];
-}
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
@@ -151,9 +126,13 @@
     
     CGRect destinationFrame = [self inDestinationRectForViewController:viewController];
     
-    CGFloat duration = [self durationForOriginalRect:viewController.view.frame
-                                     destinationRect:destinationFrame
-                                    flowingDirection:self.topViewController.inFlowDirection];
+    CGFloat duration = .0;
+    
+    if (animated) {
+        duration = [self durationForOriginalRect:viewController.view.frame
+                                 destinationRect:destinationFrame
+                                flowingDirection:self.topViewController.inFlowDirection];
+    }
     
     [UIView animateWithDuration:duration
                      animations:^{
@@ -210,6 +189,40 @@
 }
 
 #pragma mark - Private Method
+
+- (void)addTopViewController:(GQViewController *)viewController
+{
+    // 设置GQViewControllerItem
+    [viewController performSelector:@selector(setFlowController:)
+                         withObject:self];
+    
+    self.topViewController = viewController;
+    
+    [self.innerViewControllers addObject:viewController];
+    
+    [self addChildViewController:viewController];
+    
+    viewController.view.frame = [self inOriginRectForViewController:viewController];
+    
+    [self.view addSubview:viewController.view];
+    
+    [viewController didMoveToParentViewController:self];
+}
+
+- (void)removeTopViewController
+{
+    [self removeTopViewPressGestureRecognizer];
+    
+    [self.topViewController willMoveToParentViewController:nil];
+    
+    [self.topViewController.view removeFromSuperview];
+    
+    [self.topViewController removeFromParentViewController];
+    
+    [self.innerViewControllers removeLastObject];
+    
+    self.topViewController = [self.innerViewControllers lastObject];
+}
 
 // 滑入的起初位置
 - (CGRect)inOriginRectForViewController:(GQViewController *)viewController
