@@ -73,7 +73,6 @@
 		E34A643516FEB9E80053A496 /* GQFlowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQFlowController.m; sourceTree = "<group>"; };
 		E34A643F16FF4D140053A496 /* GQViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewController.h; sourceTree = "<group>"; };
 		E34A644016FF4D150053A496 /* GQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewController.m; sourceTree = "<group>"; };
-		E3665AED1716AB4D00BC2FD3 /* GQViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerDelegate.h; sourceTree = "<group>"; };
 		E3722299173FF701001907BE /* GQViewControllerTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerTests.h; sourceTree = "<group>"; };
 		E372229A173FF701001907BE /* GQViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewControllerTests.m; sourceTree = "<group>"; };
 		E372229C173FFEAA001907BE /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
@@ -218,7 +217,6 @@
 				E34A643516FEB9E80053A496 /* GQFlowController.m */,
 				E34A643F16FF4D140053A496 /* GQViewController.h */,
 				E34A644016FF4D150053A496 /* GQViewController.m */,
-				E3665AED1716AB4D00BC2FD3 /* GQViewControllerDelegate.h */,
 				E3D757B8174751EE00A56E83 /* GQFlowControllerDelegate.h */,
 			);
 			path = SourceCode;

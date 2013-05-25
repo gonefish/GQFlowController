@@ -6,8 +6,9 @@
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "GQViewController.h"
+#import "GQFlowController.h"
+#import "GQFlowControllerDelegate.h"
 
-@interface Demo1TopViewController : GQViewController
+@interface Demo1TopViewController : GQViewController <GQFlowControllerDelegate>
 
 @end

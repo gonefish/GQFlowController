@@ -502,6 +502,7 @@
         
         // 默认为原始位置
         CGRect destinationFrame = self.originalFrame;
+        
         BOOL cancelFlowing = NO; // 是否需要取消回退滑动
         
         if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
@@ -559,24 +560,27 @@
                              if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect:)]) {
                                  [(id<GQFlowControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
                              }
-                             
-                             // 怎样移除滑出的top view controller
+
+                             // 没有取消回滑
                              if (!cancelFlowing) {
                                  if (self.flowingDirection == self.topViewController.outFlowDirection) {
-                                     [self removeTopViewController];
+                                     if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
+                                         [self removeTopViewController];
+                                         
+                                         [self addPressGestureRecognizerForTopView];
+                                     }
                                  } else if (self.flowingDirection == self.topViewController.inFlowDirection) {
-                                     [self addPressGestureRecognizerForTopView];
+                                     if (CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
+                                         [self addPressGestureRecognizerForTopView];
+                                     }
                                  }
                              }
-                             
+
                              self.topViewController.active = YES;
-                             
-                             [self addPressGestureRecognizerForTopView];
                              
                              // 重置长按状态信息
                              [self resetLongPressStatus];
                          }];
-
     }
     
     NSLog(@"%f", pressPoint.x);

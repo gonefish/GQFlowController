@@ -17,11 +17,10 @@
 
 @implementation Demo1TopViewController
 
-#pragma mark - GQViewControllerDelegate
+#pragma mark - GQFlowControllerDelegate
 
-- (UIView *)flowController:(GQFlowController *)flowController viewForFlowDirection:(GQFlowDirection)direction
+- (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
 {
-    // 从起始位置向左滑动
     if (direction == GQFlowDirectionLeft
         && self.view.frame.origin.x == 0) {
         [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:NO];
@@ -32,90 +31,80 @@
         [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:YES];
     }
     
-    return self.view;
+    return self;
 }
 
-- (BOOL)flowController:(GQFlowController *)flowController shouldMoveView:(UIView *)view toFrame:(CGRect)frame
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction
 {
-    // 不允许上下移动
-    if (frame.origin.y != .0) {
-        return NO;
+    CGRect destinationFrect = CGRectZero;
+    
+    if (direction == GQFlowDirectionLeft) {
+        // 右滑后，左滑回
+        if (self.view.frame.origin.x <= flowController.view.frame.size.width - OFFSET
+            && self.view.frame.origin.x > flowController.view.frame.size.width - OFFSET - OFFSET) {
+            destinationFrect = CGRectMake(flowController.view.frame.size.width - OFFSET,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        } else if (self.view.frame.origin.x <= flowController.view.frame.size.width - OFFSET - OFFSET
+                   && self.view.frame.origin.x > 0) {
+            destinationFrect = CGRectMake(0,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        } else if (self.view.frame.origin.x < 0
+                   && self.view.frame.origin.x > -OFFSET) {
+            // 向左滑动
+            destinationFrect = CGRectMake(0,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        } else if (self.view.frame.origin.x <= -OFFSET
+                   && self.view.frame.origin.x >= -flowController.view.frame.size.width) {
+            destinationFrect = CGRectMake(-flowController.view.frame.size.width + OFFSET,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        }
+    } else if (direction == GQFlowDirectionRight) {
+        // 向右滑动
+        if (self.view.frame.origin.x > 0
+            && self.view.frame.origin.x < OFFSET) {
+            destinationFrect = CGRectMake(0,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        } else if (self.view.frame.origin.x >= OFFSET
+               && self.view.frame.origin.x < flowController.view.frame.size.width) {
+            destinationFrect = CGRectMake(flowController.view.frame.size.width - OFFSET,
+                                      0,
+                                      self.view.frame.size.width,
+                                      self.view.frame.size.height);
+        } else if (self.view.frame.origin.x > -flowController.view.frame.size.width + OFFSET
+                   && self.view.frame.origin.x < -flowController.view.frame.size.width + OFFSET + OFFSET) {
+            // 左滑后，右滑回
+            destinationFrect = CGRectMake(-flowController.view.frame.size.width + OFFSET,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        } else if (self.view.frame.origin.x > -flowController.view.frame.size.width + OFFSET + OFFSET
+                   && self.view.frame.origin.x < 0) {
+            destinationFrect = CGRectMake(0,
+                                          0,
+                                          self.view.frame.size.width,
+                                          self.view.frame.size.height);
+        }
     }
-
-    return YES;
+    
+    return destinationFrect;
 }
 
-//- (CGRect)flowController:(GQFlowController *)flowController destinationRectForView:(UIView *)view flowDirection:(GQFlowDirection)direction
-//{
-//    CGRect destinationFrect = [super flowController:flowController destinationRectForView:view flowDirection:direction];
-//    
-//    if (direction == GQFlowDirectionLeft) {
-//        // 右滑后，左滑回
-//        if (view.frame.origin.x <= flowController.view.frame.size.width - OFFSET
-//            && view.frame.origin.x > flowController.view.frame.size.width - OFFSET - OFFSET) {
-//            destinationFrect = CGRectMake(flowController.view.frame.size.width - OFFSET,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        } else if (view.frame.origin.x <= flowController.view.frame.size.width - OFFSET - OFFSET
-//                   && view.frame.origin.x > 0) {
-//            destinationFrect = CGRectMake(0,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        } else if (view.frame.origin.x < 0
-//                   && view.frame.origin.x > -OFFSET) {
-//            // 向左滑动
-//            destinationFrect = CGRectMake(0,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        } else if (view.frame.origin.x <= -OFFSET
-//                   && view.frame.origin.x >= -flowController.view.frame.size.width) {
-//            destinationFrect = CGRectMake(-flowController.view.frame.size.width + OFFSET,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        }
-//    } else if (direction == GQFlowDirectionRight) {
-//        // 向右滑动
-//        if (view.frame.origin.x > 0
-//            && view.frame.origin.x < OFFSET) {
-//            destinationFrect = CGRectMake(0,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        } else if (view.frame.origin.x >= OFFSET
-//               && view.frame.origin.x < flowController.view.frame.size.width) {
-//            destinationFrect = CGRectMake(flowController.view.frame.size.width - OFFSET,
-//                                      0,
-//                                      view.frame.size.width,
-//                                      view.frame.size.height);
-//        } else if (view.frame.origin.x > -flowController.view.frame.size.width + OFFSET
-//                   && view.frame.origin.x < -flowController.view.frame.size.width + OFFSET + OFFSET) {
-//            // 左滑后，右滑回
-//            destinationFrect = CGRectMake(-flowController.view.frame.size.width + OFFSET,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        } else if (view.frame.origin.x > -flowController.view.frame.size.width + OFFSET + OFFSET
-//                   && view.frame.origin.x < 0) {
-//            destinationFrect = CGRectMake(0,
-//                                          0,
-//                                          view.frame.size.width,
-//                                          view.frame.size.height);
-//        }
-//    }
-//    
-//    return destinationFrect;
-//}
-
-- (void)flowController:(GQFlowController *)flowController didMoveViewToDestination:(UIView *)view
+- (void)didFlowToDestinationRect:(GQFlowController *)flowController
 {
-    if (view.frame.origin.x > 0) {
+    if (self.view.frame.origin.x > 0) {
         [[[flowController viewControllers] objectAtIndex:1] setActive:YES];
         [[[flowController viewControllers] objectAtIndex:2] setActive:NO];
-    } else if (view.frame.origin.x < 0) {
+    } else if (self.view.frame.origin.x < 0) {
         [[[flowController viewControllers] objectAtIndex:0] setActive:YES];
         [[[flowController viewControllers] objectAtIndex:2] setActive:NO];
     } else {
