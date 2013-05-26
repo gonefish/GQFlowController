@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:GQFlowController/GQFlowController.xcodeproj">
+   </FileRef>
+   <Group
+      location = "group:SourceCode"
+      name = "SourceCode">
+      <FileRef
+         location = "group:GQFlowController.h">
+      </FileRef>
+      <FileRef
+         location = "group:GQFlowController.m">
+      </FileRef>
+      <FileRef
+         location = "group:GQFlowControllerDelegate.h">
+      </FileRef>
+      <FileRef
+         location = "group:GQViewController.h">
+      </FileRef>
+      <FileRef
+         location = "group:GQViewController.m">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:README.md">
+   </FileRef>
+</Workspace>
