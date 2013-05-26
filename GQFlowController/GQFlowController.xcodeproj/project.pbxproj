@@ -1,0 +1,602 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E34A63FE16FEB8DD0053A496 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FD16FEB8DD0053A496 /* UIKit.framework */; };
+		E34A640016FEB8DD0053A496 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FF16FEB8DD0053A496 /* Foundation.framework */; };
+		E34A640216FEB8DD0053A496 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A640116FEB8DD0053A496 /* CoreGraphics.framework */; };
+		E34A640816FEB8DD0053A496 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E34A640616FEB8DD0053A496 /* InfoPlist.strings */; };
+		E34A640A16FEB8DD0053A496 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A640916FEB8DD0053A496 /* main.m */; };
+		E34A640E16FEB8DD0053A496 /* GQAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A640D16FEB8DD0053A496 /* GQAppDelegate.m */; };
+		E34A641016FEB8DD0053A496 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = E34A640F16FEB8DD0053A496 /* Default.png */; };
+		E34A641216FEB8DD0053A496 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E34A641116FEB8DD0053A496 /* Default@2x.png */; };
+		E34A641416FEB8DD0053A496 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E34A641316FEB8DD0053A496 /* Default-568h@2x.png */; };
+		E34A641C16FEB8DD0053A496 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A641B16FEB8DD0053A496 /* SenTestingKit.framework */; };
+		E34A641D16FEB8DD0053A496 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FD16FEB8DD0053A496 /* UIKit.framework */; };
+		E34A641E16FEB8DD0053A496 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FF16FEB8DD0053A496 /* Foundation.framework */; };
+		E34A642616FEB8DD0053A496 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E34A642416FEB8DD0053A496 /* InfoPlist.strings */; };
+		E34A642916FEB8DD0053A496 /* GQFlowControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */; };
+		E35D6078175280CA00398CCD /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35D6074175280CA00398CCD /* GQFlowController.m */; };
+		E35D6079175280CA00398CCD /* GQViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35D6077175280CA00398CCD /* GQViewController.m */; };
+		E372229B173FF701001907BE /* GQViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E372229A173FF701001907BE /* GQViewControllerTests.m */; };
+		E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E372229C173FFEAA001907BE /* libOCMock.a */; };
+		E37222A81741493D001907BE /* Demo2AViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37222A61741493D001907BE /* Demo2AViewController.m */; };
+		E37222A91741493D001907BE /* Demo2AViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E37222A71741493D001907BE /* Demo2AViewController.xib */; };
+		E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3B7D4E5173E319100B82719 /* Demo2ViewController.m */; };
+		E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */; };
+		E3CEF5661723B7C400A33CFE /* Demo1TopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */; };
+		E3CEF5671723B7C400A33CFE /* Demo1TopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF5651723B7C400A33CFE /* Demo1TopViewController.xib */; };
+		E3CEF56B1723B7E400A33CFE /* Demo1LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5691723B7E400A33CFE /* Demo1LeftViewController.m */; };
+		E3CEF56C1723B7E400A33CFE /* Demo1LeftViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF56A1723B7E400A33CFE /* Demo1LeftViewController.xib */; };
+		E3CEF5751723BAB100A33CFE /* Demo1RightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5731723BAB000A33CFE /* Demo1RightViewController.m */; };
+		E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */; };
+		E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3D757BA1747566100A56E83 /* Demo2BViewController.m */; };
+		E3D757BD1747566100A56E83 /* Demo2BViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3D757BB1747566100A56E83 /* Demo2BViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E34A641F16FEB8DD0053A496 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E34A63F216FEB8DD0053A496 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E34A63F916FEB8DD0053A496;
+			remoteInfo = GQFlowController;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E34A63FA16FEB8DD0053A496 /* GQFlowController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GQFlowController.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E34A63FD16FEB8DD0053A496 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		E34A63FF16FEB8DD0053A496 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E34A640116FEB8DD0053A496 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		E34A640516FEB8DD0053A496 /* GQFlowController-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GQFlowController-Info.plist"; sourceTree = "<group>"; };
+		E34A640716FEB8DD0053A496 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E34A640916FEB8DD0053A496 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E34A640B16FEB8DD0053A496 /* GQFlowController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GQFlowController-Prefix.pch"; sourceTree = "<group>"; };
+		E34A640C16FEB8DD0053A496 /* GQAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GQAppDelegate.h; sourceTree = "<group>"; };
+		E34A640D16FEB8DD0053A496 /* GQAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GQAppDelegate.m; sourceTree = "<group>"; };
+		E34A640F16FEB8DD0053A496 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		E34A641116FEB8DD0053A496 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		E34A641316FEB8DD0053A496 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GQFlowControllerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E34A641B16FEB8DD0053A496 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		E34A642316FEB8DD0053A496 /* GQFlowControllerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GQFlowControllerTests-Info.plist"; sourceTree = "<group>"; };
+		E34A642516FEB8DD0053A496 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E34A642716FEB8DD0053A496 /* GQFlowControllerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GQFlowControllerTests.h; sourceTree = "<group>"; };
+		E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GQFlowControllerTests.m; sourceTree = "<group>"; };
+		E35D6073175280CA00398CCD /* GQFlowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQFlowController.h; sourceTree = "<group>"; };
+		E35D6074175280CA00398CCD /* GQFlowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQFlowController.m; sourceTree = "<group>"; };
+		E35D6075175280CA00398CCD /* GQFlowControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQFlowControllerDelegate.h; sourceTree = "<group>"; };
+		E35D6076175280CA00398CCD /* GQViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewController.h; sourceTree = "<group>"; };
+		E35D6077175280CA00398CCD /* GQViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewController.m; sourceTree = "<group>"; };
+		E3722299173FF701001907BE /* GQViewControllerTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQViewControllerTests.h; sourceTree = "<group>"; };
+		E372229A173FF701001907BE /* GQViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQViewControllerTests.m; sourceTree = "<group>"; };
+		E372229C173FFEAA001907BE /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
+		E372229E173FFEAA001907BE /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		E372229F173FFEAA001907BE /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		E37222A0173FFEAA001907BE /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		E37222A1173FFEAA001907BE /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		E37222A2173FFEAA001907BE /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		E37222A3173FFEAA001907BE /* OCMockRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockRecorder.h; sourceTree = "<group>"; };
+		E37222A51741493D001907BE /* Demo2AViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2AViewController.h; sourceTree = "<group>"; };
+		E37222A61741493D001907BE /* Demo2AViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2AViewController.m; sourceTree = "<group>"; };
+		E37222A71741493D001907BE /* Demo2AViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2AViewController.xib; sourceTree = "<group>"; };
+		E3B7D4E4173E319100B82719 /* Demo2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2ViewController.h; sourceTree = "<group>"; };
+		E3B7D4E5173E319100B82719 /* Demo2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2ViewController.m; sourceTree = "<group>"; };
+		E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2ViewController.xib; sourceTree = "<group>"; };
+		E3CEF5631723B7C400A33CFE /* Demo1TopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1TopViewController.h; sourceTree = "<group>"; };
+		E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1TopViewController.m; sourceTree = "<group>"; };
+		E3CEF5651723B7C400A33CFE /* Demo1TopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1TopViewController.xib; sourceTree = "<group>"; };
+		E3CEF5681723B7E400A33CFE /* Demo1LeftViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1LeftViewController.h; sourceTree = "<group>"; };
+		E3CEF5691723B7E400A33CFE /* Demo1LeftViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1LeftViewController.m; sourceTree = "<group>"; };
+		E3CEF56A1723B7E400A33CFE /* Demo1LeftViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1LeftViewController.xib; sourceTree = "<group>"; };
+		E3CEF5721723BAB000A33CFE /* Demo1RightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1RightViewController.h; sourceTree = "<group>"; };
+		E3CEF5731723BAB000A33CFE /* Demo1RightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1RightViewController.m; sourceTree = "<group>"; };
+		E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1RightViewController.xib; sourceTree = "<group>"; };
+		E3D757B91747566100A56E83 /* Demo2BViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2BViewController.h; sourceTree = "<group>"; };
+		E3D757BA1747566100A56E83 /* Demo2BViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2BViewController.m; sourceTree = "<group>"; };
+		E3D757BB1747566100A56E83 /* Demo2BViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2BViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E34A63F716FEB8DD0053A496 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34A63FE16FEB8DD0053A496 /* UIKit.framework in Frameworks */,
+				E34A640016FEB8DD0053A496 /* Foundation.framework in Frameworks */,
+				E34A640216FEB8DD0053A496 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E34A641616FEB8DD0053A496 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34A641C16FEB8DD0053A496 /* SenTestingKit.framework in Frameworks */,
+				E34A641D16FEB8DD0053A496 /* UIKit.framework in Frameworks */,
+				E34A641E16FEB8DD0053A496 /* Foundation.framework in Frameworks */,
+				E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E34A63F116FEB8DD0053A496 = {
+			isa = PBXGroup;
+			children = (
+				E35D6072175280C900398CCD /* SourceCode */,
+				E34A640316FEB8DD0053A496 /* GQFlowController */,
+				E34A642116FEB8DD0053A496 /* GQFlowControllerTests */,
+				E34A63FC16FEB8DD0053A496 /* Frameworks */,
+				E34A63FB16FEB8DD0053A496 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E34A63FB16FEB8DD0053A496 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E34A63FA16FEB8DD0053A496 /* GQFlowController.app */,
+				E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E34A63FC16FEB8DD0053A496 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E34A63FD16FEB8DD0053A496 /* UIKit.framework */,
+				E34A63FF16FEB8DD0053A496 /* Foundation.framework */,
+				E34A640116FEB8DD0053A496 /* CoreGraphics.framework */,
+				E34A641B16FEB8DD0053A496 /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E34A640316FEB8DD0053A496 /* GQFlowController */ = {
+			isa = PBXGroup;
+			children = (
+				E34A640416FEB8DD0053A496 /* Supporting Files */,
+				E34A640C16FEB8DD0053A496 /* GQAppDelegate.h */,
+				E34A640D16FEB8DD0053A496 /* GQAppDelegate.m */,
+				E3B7D4E3173E185700B82719 /* Demo1 */,
+				E3B7D4EA173E319F00B82719 /* Demo2 */,
+			);
+			path = GQFlowController;
+			sourceTree = "<group>";
+		};
+		E34A640416FEB8DD0053A496 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E34A640516FEB8DD0053A496 /* GQFlowController-Info.plist */,
+				E34A640616FEB8DD0053A496 /* InfoPlist.strings */,
+				E34A640916FEB8DD0053A496 /* main.m */,
+				E34A640B16FEB8DD0053A496 /* GQFlowController-Prefix.pch */,
+				E34A640F16FEB8DD0053A496 /* Default.png */,
+				E34A641116FEB8DD0053A496 /* Default@2x.png */,
+				E34A641316FEB8DD0053A496 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E34A642116FEB8DD0053A496 /* GQFlowControllerTests */ = {
+			isa = PBXGroup;
+			children = (
+				E372229C173FFEAA001907BE /* libOCMock.a */,
+				E372229D173FFEAA001907BE /* OCMock */,
+				E34A642716FEB8DD0053A496 /* GQFlowControllerTests.h */,
+				E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */,
+				E3722299173FF701001907BE /* GQViewControllerTests.h */,
+				E372229A173FF701001907BE /* GQViewControllerTests.m */,
+				E34A642216FEB8DD0053A496 /* Supporting Files */,
+			);
+			path = GQFlowControllerTests;
+			sourceTree = "<group>";
+		};
+		E34A642216FEB8DD0053A496 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E34A642316FEB8DD0053A496 /* GQFlowControllerTests-Info.plist */,
+				E34A642416FEB8DD0053A496 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E35D6072175280C900398CCD /* SourceCode */ = {
+			isa = PBXGroup;
+			children = (
+				E35D6073175280CA00398CCD /* GQFlowController.h */,
+				E35D6074175280CA00398CCD /* GQFlowController.m */,
+				E35D6075175280CA00398CCD /* GQFlowControllerDelegate.h */,
+				E35D6076175280CA00398CCD /* GQViewController.h */,
+				E35D6077175280CA00398CCD /* GQViewController.m */,
+			);
+			name = SourceCode;
+			path = ../SourceCode;
+			sourceTree = "<group>";
+		};
+		E372229D173FFEAA001907BE /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				E372229E173FFEAA001907BE /* NSNotificationCenter+OCMAdditions.h */,
+				E372229F173FFEAA001907BE /* OCMArg.h */,
+				E37222A0173FFEAA001907BE /* OCMConstraint.h */,
+				E37222A1173FFEAA001907BE /* OCMock.h */,
+				E37222A2173FFEAA001907BE /* OCMockObject.h */,
+				E37222A3173FFEAA001907BE /* OCMockRecorder.h */,
+			);
+			path = OCMock;
+			sourceTree = "<group>";
+		};
+		E3B7D4E3173E185700B82719 /* Demo1 */ = {
+			isa = PBXGroup;
+			children = (
+				E3CEF5631723B7C400A33CFE /* Demo1TopViewController.h */,
+				E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */,
+				E3CEF5651723B7C400A33CFE /* Demo1TopViewController.xib */,
+				E3CEF5681723B7E400A33CFE /* Demo1LeftViewController.h */,
+				E3CEF5691723B7E400A33CFE /* Demo1LeftViewController.m */,
+				E3CEF56A1723B7E400A33CFE /* Demo1LeftViewController.xib */,
+				E3CEF5721723BAB000A33CFE /* Demo1RightViewController.h */,
+				E3CEF5731723BAB000A33CFE /* Demo1RightViewController.m */,
+				E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */,
+			);
+			name = Demo1;
+			sourceTree = "<group>";
+		};
+		E3B7D4EA173E319F00B82719 /* Demo2 */ = {
+			isa = PBXGroup;
+			children = (
+				E3B7D4E4173E319100B82719 /* Demo2ViewController.h */,
+				E3B7D4E5173E319100B82719 /* Demo2ViewController.m */,
+				E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */,
+				E37222A51741493D001907BE /* Demo2AViewController.h */,
+				E37222A61741493D001907BE /* Demo2AViewController.m */,
+				E37222A71741493D001907BE /* Demo2AViewController.xib */,
+				E3D757B91747566100A56E83 /* Demo2BViewController.h */,
+				E3D757BA1747566100A56E83 /* Demo2BViewController.m */,
+				E3D757BB1747566100A56E83 /* Demo2BViewController.xib */,
+			);
+			name = Demo2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E34A63F916FEB8DD0053A496 /* GQFlowController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E34A642C16FEB8DD0053A496 /* Build configuration list for PBXNativeTarget "GQFlowController" */;
+			buildPhases = (
+				E34A63F616FEB8DD0053A496 /* Sources */,
+				E34A63F716FEB8DD0053A496 /* Frameworks */,
+				E34A63F816FEB8DD0053A496 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GQFlowController;
+			productName = GQFlowController;
+			productReference = E34A63FA16FEB8DD0053A496 /* GQFlowController.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E34A641916FEB8DD0053A496 /* GQFlowControllerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E34A642F16FEB8DD0053A496 /* Build configuration list for PBXNativeTarget "GQFlowControllerTests" */;
+			buildPhases = (
+				E34A641516FEB8DD0053A496 /* Sources */,
+				E34A641616FEB8DD0053A496 /* Frameworks */,
+				E34A641716FEB8DD0053A496 /* Resources */,
+				E34A641816FEB8DD0053A496 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E34A642016FEB8DD0053A496 /* PBXTargetDependency */,
+			);
+			name = GQFlowControllerTests;
+			productName = GQFlowControllerTests;
+			productReference = E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E34A63F216FEB8DD0053A496 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = GQ;
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "gonefish@gmail.com";
+			};
+			buildConfigurationList = E34A63F516FEB8DD0053A496 /* Build configuration list for PBXProject "GQFlowController" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E34A63F116FEB8DD0053A496;
+			productRefGroup = E34A63FB16FEB8DD0053A496 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E34A63F916FEB8DD0053A496 /* GQFlowController */,
+				E34A641916FEB8DD0053A496 /* GQFlowControllerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E34A63F816FEB8DD0053A496 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34A640816FEB8DD0053A496 /* InfoPlist.strings in Resources */,
+				E34A641016FEB8DD0053A496 /* Default.png in Resources */,
+				E34A641216FEB8DD0053A496 /* Default@2x.png in Resources */,
+				E34A641416FEB8DD0053A496 /* Default-568h@2x.png in Resources */,
+				E3CEF5671723B7C400A33CFE /* Demo1TopViewController.xib in Resources */,
+				E3CEF56C1723B7E400A33CFE /* Demo1LeftViewController.xib in Resources */,
+				E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */,
+				E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */,
+				E37222A91741493D001907BE /* Demo2AViewController.xib in Resources */,
+				E3D757BD1747566100A56E83 /* Demo2BViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E34A641716FEB8DD0053A496 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34A642616FEB8DD0053A496 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E34A641816FEB8DD0053A496 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E34A63F616FEB8DD0053A496 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34A640A16FEB8DD0053A496 /* main.m in Sources */,
+				E34A640E16FEB8DD0053A496 /* GQAppDelegate.m in Sources */,
+				E3CEF5661723B7C400A33CFE /* Demo1TopViewController.m in Sources */,
+				E3CEF56B1723B7E400A33CFE /* Demo1LeftViewController.m in Sources */,
+				E3CEF5751723BAB100A33CFE /* Demo1RightViewController.m in Sources */,
+				E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */,
+				E37222A81741493D001907BE /* Demo2AViewController.m in Sources */,
+				E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */,
+				E35D6078175280CA00398CCD /* GQFlowController.m in Sources */,
+				E35D6079175280CA00398CCD /* GQViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E34A641516FEB8DD0053A496 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34A642916FEB8DD0053A496 /* GQFlowControllerTests.m in Sources */,
+				E372229B173FF701001907BE /* GQViewControllerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E34A642016FEB8DD0053A496 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E34A63F916FEB8DD0053A496 /* GQFlowController */;
+			targetProxy = E34A641F16FEB8DD0053A496 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		E34A640616FEB8DD0053A496 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E34A640716FEB8DD0053A496 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E34A642416FEB8DD0053A496 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E34A642516FEB8DD0053A496 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E34A642A16FEB8DD0053A496 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E34A642B16FEB8DD0053A496 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E34A642D16FEB8DD0053A496 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
+				INFOPLIST_FILE = "GQFlowController/GQFlowController-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E34A642E16FEB8DD0053A496 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
+				INFOPLIST_FILE = "GQFlowController/GQFlowController-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		E34A643016FEB8DD0053A496 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GQFlowController.app/GQFlowController";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/GQFlowControllerTests\"";
+				INFOPLIST_FILE = "GQFlowControllerTests/GQFlowControllerTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/GQFlowControllerTests\"",
+				);
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(SRCROOT)/GQFlowControllerTests/libOCMock.a",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		E34A643116FEB8DD0053A496 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GQFlowController.app/GQFlowController";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/GQFlowControllerTests\"";
+				INFOPLIST_FILE = "GQFlowControllerTests/GQFlowControllerTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/GQFlowControllerTests\"",
+				);
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(SRCROOT)/GQFlowControllerTests/libOCMock.a",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E34A63F516FEB8DD0053A496 /* Build configuration list for PBXProject "GQFlowController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E34A642A16FEB8DD0053A496 /* Debug */,
+				E34A642B16FEB8DD0053A496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E34A642C16FEB8DD0053A496 /* Build configuration list for PBXNativeTarget "GQFlowController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E34A642D16FEB8DD0053A496 /* Debug */,
+				E34A642E16FEB8DD0053A496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E34A642F16FEB8DD0053A496 /* Build configuration list for PBXNativeTarget "GQFlowControllerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E34A643016FEB8DD0053A496 /* Debug */,
+				E34A643116FEB8DD0053A496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E34A63F216FEB8DD0053A496 /* Project object */;
+}
