@@ -44,6 +44,14 @@
 @implementation GQFlowController
 @dynamic viewControllers;
 
+- (void)loadView
+{
+    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
+}
+
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
     self = [super init];
