@@ -88,7 +88,9 @@
     
     self.innerViewControllers = newArray;
     
-    [self layoutFlowViews];
+    if ([self isViewLoaded]) {
+        [self layoutFlowViews];
+    }
 }
 
 
