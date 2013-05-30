@@ -9,6 +9,16 @@
 #import "GQFlowController.h"
 #import <objc/runtime.h>
 
+BOOL checkIsMainThread() {
+    BOOL rel = [NSThread isMainThread];
+
+    if (!rel) {
+        NSLog(@"This method must in main thread");
+    }
+    
+    return rel;
+}
+
 @interface GQFlowController ()
 
 - (void)addPressGestureRecognizerForTopView;
@@ -103,10 +113,7 @@
 
 - (void)flowOutViewControllerAnimated:(BOOL)animated
 {
-    if (![NSThread isMainThread]) {
-        NSLog(@"This method must in main thread");
-        return;
-    }
+    if (!checkIsMainThread()) return;
     
     CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
     
@@ -133,10 +140,7 @@
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
-    if (![NSThread isMainThread]) {
-        NSLog(@"This method must in main thread");
-        return;
-    }
+    if (!checkIsMainThread()) return;
     
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
@@ -163,6 +167,8 @@
 
 - (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated
 {
+    if (!checkIsMainThread()) return nil;
+    
     if ([self.innerViewControllers count] > 0) {
         return [self flowOutToViewController:[self.innerViewControllers objectAtIndex:0]
                                     animated:animated];
@@ -172,7 +178,9 @@
 }
 
 - (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated
-{    
+{
+    if (!checkIsMainThread()) return nil;
+    
     __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
     [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
