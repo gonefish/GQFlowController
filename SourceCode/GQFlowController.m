@@ -63,6 +63,11 @@
     return self;
 }
 
+- (id)initWithRootViewController:(GQViewController *)rootViewController
+{
+    return [self initWithViewControllers:@[rootViewController]];
+}
+
 - (NSArray *)viewControllers
 {
     return [self.innerViewControllers copy];
@@ -87,6 +92,8 @@
     [newArray removeObjectsAtIndexes:indexSet];
     
     self.innerViewControllers = newArray;
+    
+    self.topViewController = [self.innerViewControllers lastObject];
     
     if ([self isViewLoaded]) {
         [self layoutFlowViews];
@@ -154,6 +161,43 @@
                      }];
 }
 
+- (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated
+{
+    if ([self.innerViewControllers count] > 0) {
+        return [self flowOutToViewController:[self.innerViewControllers objectAtIndex:0]
+                                    animated:animated];
+    } else {
+        return nil;
+    }
+}
+
+- (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated
+{    
+    __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    
+    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        if (idx < [self.innerViewControllers count] - 2) {
+            if (obj == viewController) {
+                *stop = YES;
+            } else {
+                [indexSet addIndex:idx];
+            }
+        }
+    }];
+    
+    NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
+    
+    [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [[(GQViewController *)obj view] removeFromSuperview];
+    }];
+    
+    [self.innerViewControllers removeObjectsAtIndexes:indexSet];
+    
+    [self flowOutViewControllerAnimated:animated];
+    
+    return popViewControllers;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -180,8 +224,7 @@
         // 默认为非激活状态
         controller.active = NO;
     }
-    
-    self.topViewController = [self.innerViewControllers lastObject];
+
     self.topViewController.active = YES;
     
     // 只有一层是不添加按住手势

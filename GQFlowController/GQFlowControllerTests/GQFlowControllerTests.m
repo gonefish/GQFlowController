@@ -58,4 +58,12 @@
     STAssertEqualObjects(flowController.topViewController, [aViewControllers objectAtIndex:1], @"");
 }
 
+- (void)testInitWithRootViewController
+{
+    GQViewController *testController = [GQViewController new];
+    GQFlowController *flowController =[[GQFlowController alloc] initWithRootViewController:testController];
+    
+    STAssertEqualObjects(flowController.topViewController, testController, @"");
+}
+
 @end

@@ -14,7 +14,7 @@
 
 @implementation Demo2BViewController
 - (IBAction)backAction:(id)sender {
-    [self.flowController flowOutViewControllerAnimated:YES];
+    [self.flowController flowOutToRootViewControllerAnimated:YES];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

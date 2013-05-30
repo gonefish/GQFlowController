@@ -12,10 +12,13 @@
 
 @interface GQFlowController : UIViewController <UIGestureRecognizerDelegate>
 
+- (id)initWithRootViewController:(GQViewController *)rootViewController;
 - (id)initWithViewControllers:(NSArray *)viewControllers;
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated;
 - (void)flowOutViewControllerAnimated:(BOOL)animated;
+- (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated;
+- (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated;
 
 @property (nonatomic, copy) NSArray *viewControllers;
 
