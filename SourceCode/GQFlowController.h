@@ -20,8 +20,8 @@
 - (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated;
 - (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated;
 
-@property (nonatomic, copy) NSArray *viewControllers;
 
+@property (nonatomic, copy) NSArray *viewControllers;
 @property (nonatomic, strong, readonly) GQViewController *topViewController;
 
 @end

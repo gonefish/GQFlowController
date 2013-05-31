@@ -78,8 +78,17 @@ BOOL checkIsMainThread() {
     return [self initWithViewControllers:@[rootViewController]];
 }
 
-- (NSArray *)viewControllers
+- (NSMutableArray *)innerViewControllers
 {
+    if (_innerViewControllers == nil) {
+        _innerViewControllers = [NSMutableArray array];
+    }
+    
+    return _innerViewControllers;
+}
+
+- (NSArray *)viewControllers
+{    
     return [self.innerViewControllers copy];
 }
 
