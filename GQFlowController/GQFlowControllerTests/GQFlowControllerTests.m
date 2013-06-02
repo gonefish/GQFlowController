@@ -66,4 +66,46 @@
     STAssertEqualObjects(flowController.topViewController, testController, @"");
 }
 
+- (void)testFlowInViewControllerAnimated
+{
+    GQViewController *testController = [GQViewController new];
+    
+    [self.flowController flowInViewController:testController animated:NO];
+    
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
+}
+
+- (void)testFlowOutViewControllerAnimated
+{
+    GQViewController *a = [GQViewController new];
+    GQViewController *b = [GQViewController new];
+    
+    self.flowController.viewControllers = @[a, b];
+    
+    GQViewController *pop = [self.flowController flowOutViewControllerAnimated:NO];
+    
+    STAssertEqualObjects(pop, b, @"");
+    
+    STAssertNil(pop.flowController, @"");
+}
+
+- (void)testFlowOutToRootViewControllerAnimated
+{
+    NSArray *aViewControllers = @[[GQViewController new], [GQViewController new], [GQViewController new], [GQViewController new]];
+    
+    self.flowController.viewControllers = aViewControllers;
+    
+    STAssertEquals([[self.flowController flowOutToRootViewControllerAnimated:NO] count], (NSUInteger)3, @"");
+}
+
+- (void)testFlowOutToViewControllerAnimated
+{
+    GQViewController *toViewController = [GQViewController new];
+    NSArray *aViewControllers = @[[GQViewController new], [GQViewController new], toViewController, [GQViewController new]];
+    
+    self.flowController.viewControllers = aViewControllers;
+    
+    STAssertEquals([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
+}
+
 @end

@@ -120,32 +120,6 @@ BOOL checkIsMainThread() {
 }
 
 
-- (void)flowOutViewControllerAnimated:(BOOL)animated
-{
-    if (!checkIsMainThread()) return;
-    
-    CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
-    
-    CGFloat duration = .0;
-    
-    if (animated) {
-        duration = [self durationForOriginalRect:self.topViewController.view.frame
-                                 destinationRect:destinationFrame
-                                flowingDirection:self.topViewController.outFlowDirection];
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
-                     }
-                     completion:^(BOOL finished){
-                         [self removeTopViewController];
-                         
-                         [self addPressGestureRecognizerForTopView];
-                     }];
-}
-
-
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
@@ -174,13 +148,28 @@ BOOL checkIsMainThread() {
                      }];
 }
 
+- (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated
+{
+    if ([self.innerViewControllers count] > 0) {
+        NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
+                                  animated:animated];
+        if ([popViewControllers count] == 1) {
+            return [popViewControllers objectAtIndex:0];
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
 - (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated
 {
-    if (!checkIsMainThread()) return nil;
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [self.innerViewControllers count] - 1)];
     
     if ([self.innerViewControllers count] > 0) {
-        return [self flowOutToViewController:[self.innerViewControllers objectAtIndex:0]
-                                    animated:animated];
+        return [self flowOutIndexSet:indexSet
+                            animated:animated];
     } else {
         return nil;
     }
@@ -188,29 +177,69 @@ BOOL checkIsMainThread() {
 
 - (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
-    if (!checkIsMainThread()) return nil;
-    
     __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
-    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-        if (idx < [self.innerViewControllers count] - 2) {
-            if (obj == viewController) {
-                *stop = YES;
-            } else {
-                [indexSet addIndex:idx];
-            }
-        }
-    }];
+    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
+                                                usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+                                                    if (obj == viewController) {
+                                                        *stop = YES;
+                                                    } else {
+                                                        [indexSet addIndex:idx];
+                                                    }
+                                                }];
+    
+    if ([self.innerViewControllers count] > 0) {
+        return [self flowOutIndexSet:indexSet
+                            animated:animated];
+    } else {
+        return nil;
+    }
+}
+
+- (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
+{
+    if (!checkIsMainThread()) return nil;
     
     NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
     
-    [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [[(GQViewController *)obj view] removeFromSuperview];
+    [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {        
+        // 设置GQViewController的flowController属性为nil
+        [obj performSelector:@selector(setFlowController:)
+                  withObject:nil];
     }];
     
-    [self.innerViewControllers removeObjectsAtIndexes:indexSet];
+    // 预先移除除最上面GQViewController的视图
+    NSArray *removeViewControllers = [popViewControllers subarrayWithRange:NSMakeRange(0, [popViewControllers count] - 1)];
     
-    [self flowOutViewControllerAnimated:animated];
+    [removeViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([(GQViewController *)obj isViewLoaded]) {
+            [[(GQViewController *)obj view] removeFromSuperview];
+        }
+    }];
+    
+    [self.innerViewControllers removeObjectsInArray:removeViewControllers];
+    
+    if ([self.topViewController isViewLoaded]) {
+        CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
+        
+        CGFloat duration = .0;
+        
+        if (animated) {
+            duration = [self durationForOriginalRect:self.topViewController.view.frame
+                                     destinationRect:destinationFrame
+                                    flowingDirection:self.topViewController.outFlowDirection];
+        }
+        
+        [UIView animateWithDuration:duration
+                         animations:^{
+                             self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
+                         }
+                         completion:^(BOOL finished){
+                             [self removeTopViewController];
+                             
+                             [self addPressGestureRecognizerForTopView];
+                         }];
+    }
     
     return popViewControllers;
 }
