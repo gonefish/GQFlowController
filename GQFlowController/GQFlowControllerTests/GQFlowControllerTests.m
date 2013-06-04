@@ -80,13 +80,21 @@
     GQViewController *a = [GQViewController new];
     GQViewController *b = [GQViewController new];
     
+    STAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"没有viewControllers时，应该nil");
+    
     self.flowController.viewControllers = @[a, b];
+    
+    STAssertEqualObjects(b.flowController, self.flowController, @"flowController属性没有被设置");
     
     GQViewController *pop = [self.flowController flowOutViewControllerAnimated:NO];
     
-    STAssertEqualObjects(pop, b, @"");
+    STAssertEqualObjects(pop, b, @"滑出的对象不正确");
     
-    STAssertNil(pop.flowController, @"");
+    STAssertNil(pop.flowController, @"滑出对象的flowController应该为空");
+    
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
+    
+    STAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
 }
 
 - (void)testFlowOutToRootViewControllerAnimated

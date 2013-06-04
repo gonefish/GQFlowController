@@ -150,7 +150,7 @@ BOOL checkIsMainThread() {
 
 - (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated
 {
-    if ([self.innerViewControllers count] > 0) {
+    if ([self.innerViewControllers count] > 1) {
         NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
                                   animated:animated];
         if ([popViewControllers count] == 1) {
@@ -206,18 +206,16 @@ BOOL checkIsMainThread() {
         // 设置GQViewController的flowController属性为nil
         [obj performSelector:@selector(setFlowController:)
                   withObject:nil];
-    }];
-    
-    // 预先移除除最上面GQViewController的视图
-    NSArray *removeViewControllers = [popViewControllers subarrayWithRange:NSMakeRange(0, [popViewControllers count] - 1)];
-    
-    [removeViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ([(GQViewController *)obj isViewLoaded]) {
-            [[(GQViewController *)obj view] removeFromSuperview];
+        
+        // 如果不是topViewController则移除视图
+        if (obj != self.topViewController) {
+            if ([(GQViewController *)obj isViewLoaded]) {
+                [[(GQViewController *)obj view] removeFromSuperview];
+            }
         }
     }];
     
-    [self.innerViewControllers removeObjectsInArray:removeViewControllers];
+    [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
     if ([self.topViewController isViewLoaded]) {
         CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
@@ -229,7 +227,7 @@ BOOL checkIsMainThread() {
                                      destinationRect:destinationFrame
                                     flowingDirection:self.topViewController.outFlowDirection];
         }
-        
+
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
@@ -317,8 +315,6 @@ BOOL checkIsMainThread() {
     [self.topViewController.view removeFromSuperview];
     
     [self.topViewController removeFromParentViewController];
-    
-    [self.innerViewControllers removeLastObject];
     
     self.topViewController = [self.innerViewControllers lastObject];
 }
