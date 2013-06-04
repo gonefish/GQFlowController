@@ -92,7 +92,7 @@
     
     STAssertNil(pop.flowController, @"滑出对象的flowController应该为空");
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
     
     STAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
 }
@@ -104,6 +104,8 @@
     self.flowController.viewControllers = aViewControllers;
     
     STAssertEquals([[self.flowController flowOutToRootViewControllerAnimated:NO] count], (NSUInteger)3, @"");
+    
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
 }
 
 - (void)testFlowOutToViewControllerAnimated
@@ -114,6 +116,8 @@
     self.flowController.viewControllers = aViewControllers;
     
     STAssertEquals([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
+    
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
 }
 
 @end
