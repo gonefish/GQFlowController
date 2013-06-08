@@ -144,8 +144,10 @@ BOOL checkIsMainThread() {
     if ([self.innerViewControllers containsObject:topmostViewController]) {
         if (topmostViewController == [self.innerViewControllers lastObject]) {
             // No change
-            for (UIViewController *c in self.innerViewControllers) {
-                [c.view removeFromSuperview];
+            for (GQViewController *vc in self.innerViewControllers) {
+                if (vc != topmostViewController) {
+                    [vc.view removeFromSuperview];
+                }
             }
 
             self.innerViewControllers = newArray;
@@ -154,16 +156,20 @@ BOOL checkIsMainThread() {
             
             [self layoutViewControllers];
         } else {
-//            // Flow Out
-//            [newArray addObject:[self.innerViewControllers lastObject]];
-//            
-//            self.innerViewControllers = newArray;
-//            
-//            if ([self isViewLoaded]) {
-//                [self layoutFlowViews];
-//            }
-//            
-//            [self flowOutViewControllerAnimated:YES];
+            // Flow Out
+            for (GQViewController *vc in self.innerViewControllers) {
+                if (vc != [self.innerViewControllers lastObject]) {
+                    [vc.view removeFromSuperview];
+                }
+            }
+            
+            [newArray addObject:[self.innerViewControllers lastObject]];
+            
+            self.innerViewControllers = newArray;
+            
+            [self layoutViewControllers];
+
+            [self flowOutViewControllerAnimated:YES];
         }
     } else {
 //        // Flow In
