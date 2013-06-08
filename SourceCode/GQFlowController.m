@@ -67,7 +67,9 @@ BOOL checkIsMainThread() {
     self = [super init];
     
     if (self) {
-        self.viewControllers = viewControllers;
+        self.innerViewControllers = [NSMutableArray arrayWithArray:viewControllers];
+        
+        self.topViewController = [self.innerViewControllers lastObject];
     }
     
     return self;
@@ -152,9 +154,6 @@ BOOL checkIsMainThread() {
             }
         } else {
             // Flow In
-            
-            //        将新设置的最后一个控制器滑入，然后移除最上面的视图，将新设置的其它添加到视图中
-            // 添加到容器中，并设置将要滑入的起始位置
             [self addTopViewController:topmostViewController];
             
             CGRect destinationFrame = [self inDestinationRectForViewController:topmostViewController];

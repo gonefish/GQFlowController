@@ -27,7 +27,7 @@
     self.flowController = nil;
 }
 
-- (void)testViewControllersSetter
+- (void)testSetViewControllersAnimated
 {    
     NSArray *aViewControllers = @[[UIViewController new], [GQViewController new]];
     
@@ -55,6 +55,8 @@
     
     GQFlowController *flowController =[[GQFlowController alloc] initWithViewControllers:aViewControllers];
     
+    STAssertEquals([flowController.viewControllers count], (NSUInteger)2, @"");
+    
     STAssertEqualObjects(flowController.topViewController, [aViewControllers objectAtIndex:1], @"");
 }
 
@@ -62,6 +64,8 @@
 {
     GQViewController *testController = [GQViewController new];
     GQFlowController *flowController =[[GQFlowController alloc] initWithRootViewController:testController];
+    
+    STAssertEquals([flowController.viewControllers count], (NSUInteger)1, @"");
     
     STAssertEqualObjects(flowController.topViewController, testController, @"");
 }
