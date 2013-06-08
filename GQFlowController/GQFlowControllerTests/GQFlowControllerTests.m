@@ -51,13 +51,19 @@
 
 - (void)testInitWithViewControllers
 {
-    NSArray *aViewControllers = @[[GQViewController new], [GQViewController new]];
+    GQViewController *v1 = [GQViewController new];
+    GQViewController *v2 = [GQViewController new];
+    
+    NSArray *aViewControllers = @[v1, v2];
     
     GQFlowController *flowController =[[GQFlowController alloc] initWithViewControllers:aViewControllers];
     
     STAssertEquals([flowController.viewControllers count], (NSUInteger)2, @"");
     
-    STAssertEqualObjects(flowController.topViewController, [aViewControllers objectAtIndex:1], @"");
+    STAssertEqualObjects(flowController.topViewController, v2, @"");
+    
+    STAssertEqualObjects(flowController, v1.flowController, @"");
+    STAssertEqualObjects(flowController, v2.flowController, @"");
 }
 
 - (void)testInitWithRootViewController
@@ -68,6 +74,8 @@
     STAssertEquals([flowController.viewControllers count], (NSUInteger)1, @"");
     
     STAssertEqualObjects(flowController.topViewController, testController, @"");
+    
+    STAssertEqualObjects(flowController, testController.flowController, @"");
 }
 
 - (void)testFlowInViewControllerAnimated

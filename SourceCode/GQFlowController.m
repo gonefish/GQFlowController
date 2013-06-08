@@ -65,9 +65,7 @@ BOOL checkIsMainThread() {
     self = [super init];
     
     if (self) {
-        self.innerViewControllers = [NSMutableArray arrayWithArray:viewControllers];
-        
-        self.topViewController = [self.innerViewControllers lastObject];
+        self.viewControllers = viewControllers;
     }
     
     return self;
@@ -80,29 +78,12 @@ BOOL checkIsMainThread() {
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
-    if (!checkIsMainThread()) return;
-    
-    // 添加到容器中，并设置将要滑入的起始位置
-    [self addTopViewController:viewController];
-    
-    CGRect destinationFrame = [self inDestinationRectForViewController:viewController];
-    
-    CGFloat duration = .0;
-    
-    if (animated) {
-        duration = [self durationForOriginalRect:viewController.view.frame
-                                 destinationRect:destinationFrame
-                                flowingDirection:self.topViewController.inFlowDirection];
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         viewController.view.frame = destinationFrame;
-                     }
-                     completion:^(BOOL finished){
-                         // 添加手势
-                         [self addPressGestureRecognizerForTopView];
-                     }];
+    [self flowInViewController:viewController
+                      animated:animated
+               completionBlock:^{
+        // 添加手势
+        [self addPressGestureRecognizerForTopView];
+    }];
 }
 
 - (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated
@@ -218,33 +199,23 @@ BOOL checkIsMainThread() {
             }
         } else {
             // Flow In
-            [self addTopViewController:topmostViewController];
-            
-            CGRect destinationFrame = [self inDestinationRectForViewController:topmostViewController];
-            
-            CGFloat duration = [self durationForOriginalRect:topmostViewController.view.frame
-                                             destinationRect:destinationFrame
-                                            flowingDirection:self.topViewController.inFlowDirection];
-            
-            [UIView animateWithDuration:duration
-                             animations:^{
-                                 topmostViewController.view.frame = destinationFrame;
-                             }
-                             completion:^(BOOL finished){
-                                 // 添加手势
-                                 [self addPressGestureRecognizerForTopView];
-                                 
-                                 // 处理控制器
-                                 for (GQViewController *vc in self.innerViewControllers) {
-                                     if (vc != [self.innerViewControllers lastObject]) {
-                                         [vc.view removeFromSuperview];
-                                     }
-                                 }
-                                 
-                                 self.innerViewControllers = newArray;
-                                 
-                                 [self layoutViewControllers];
-                             }];
+            [self flowInViewController:topmostViewController
+                              animated:animated
+                       completionBlock:^(){
+                // 添加手势
+                [self addPressGestureRecognizerForTopView];
+
+                // 处理控制器
+                for (GQViewController *vc in self.innerViewControllers) {
+                   if (vc != [self.innerViewControllers lastObject]) {
+                       [vc.view removeFromSuperview];
+                   }
+                }
+
+                self.innerViewControllers = newArray;
+
+                [self layoutViewControllers];
+            }];
         }
     } else {
         for (GQViewController *vc in self.innerViewControllers) {
@@ -281,6 +252,32 @@ BOOL checkIsMainThread() {
     return _innerViewControllers;
 }
 
+- (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
+{
+    if (!checkIsMainThread()) return;
+    
+    // 添加到容器中，并设置将要滑入的起始位置
+    [self addTopViewController:viewController];
+    
+    CGRect destinationFrame = [self inDestinationRectForViewController:viewController];
+    
+    CGFloat duration = .0;
+    
+    if (animated) {
+        duration = [self durationForOriginalRect:viewController.view.frame
+                                 destinationRect:destinationFrame
+                                flowingDirection:self.topViewController.inFlowDirection];
+    }
+    
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         viewController.view.frame = destinationFrame;
+                     }
+                     completion:^(BOOL finished){
+                         // 添加手势
+                         [self addPressGestureRecognizerForTopView];
+                     }];
+}
 
 
 - (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
