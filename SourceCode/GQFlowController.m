@@ -144,6 +144,7 @@ BOOL checkIsMainThread() {
     [self setViewControllers:aViewControllers animated:NO];
 }
 
+
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
 {
     if (!checkIsMainThread()) return;
@@ -164,23 +165,10 @@ BOOL checkIsMainThread() {
     
     [newArray removeObjectsAtIndexes:indexSet];
     
-    GQViewController *topmostViewController = [newArray lastObject];
-    
     if (animated) {
-        if ([self.innerViewControllers containsObject:topmostViewController]) {
-            if (topmostViewController == [self.innerViewControllers lastObject]) {
-                // No change
-                for (GQViewController *vc in self.innerViewControllers) {
-                    if (vc != topmostViewController) {
-                        [vc.view removeFromSuperview];
-                    }
-                }
-                
-                self.innerViewControllers = newArray;
-                
-                self.topViewController = topmostViewController;
-                
-                [self layoutViewControllers];
+        if ([self.innerViewControllers containsObject:[newArray lastObject]]) {
+            if ([newArray lastObject] == [self.innerViewControllers lastObject]) {
+                [self noChangeSetViewControllers:newArray];
             } else {
                 // Flow Out
                 for (GQViewController *vc in self.innerViewControllers) {
@@ -199,22 +187,14 @@ BOOL checkIsMainThread() {
             }
         } else {
             // Flow In
-            [self flowInViewController:topmostViewController
+            [self flowInViewController:[newArray lastObject]
                               animated:animated
                        completionBlock:^(){
                 // 添加手势
                 [self addPressGestureRecognizerForTopView];
-
-                // 处理控制器
-                for (GQViewController *vc in self.innerViewControllers) {
-                   if (vc != [self.innerViewControllers lastObject]) {
-                       [vc.view removeFromSuperview];
-                   }
-                }
-
-                self.innerViewControllers = newArray;
-
-                [self layoutViewControllers];
+                
+                // 同No Change一样的流程
+                [self noChangeSetViewControllers:newArray];
             }];
         }
     } else {
@@ -224,7 +204,7 @@ BOOL checkIsMainThread() {
         
         self.innerViewControllers = newArray;
         
-        self.topViewController = topmostViewController;
+        self.topViewController = [newArray lastObject];
         
         [self layoutViewControllers];
     }
@@ -242,6 +222,23 @@ BOOL checkIsMainThread() {
 }
 
 #pragma mark - Private Method
+
+
+- (void)noChangeSetViewControllers:(NSMutableArray *)viewControllers
+{
+    // No Change
+    for (GQViewController *vc in self.innerViewControllers) {
+        if (vc != [viewControllers lastObject]) {
+            [vc.view removeFromSuperview];
+        }
+    }
+    
+    self.innerViewControllers = viewControllers;
+    
+    self.topViewController = [viewControllers lastObject];
+    
+    [self layoutViewControllers];
+}
 
 - (NSMutableArray *)innerViewControllers
 {
@@ -274,8 +271,7 @@ BOOL checkIsMainThread() {
                          viewController.view.frame = destinationFrame;
                      }
                      completion:^(BOOL finished){
-                         // 添加手势
-                         [self addPressGestureRecognizerForTopView];
+                         block();
                      }];
 }
 
