@@ -8,6 +8,7 @@
 
 #import "Demo2ViewController.h"
 #import "Demo2AViewController.h"
+#import "Demo2BViewController.h"
 
 @interface Demo2ViewController ()
 
@@ -27,7 +28,10 @@
 
 - (IBAction)flowAction:(id)sender {
     Demo2AViewController *controller = [[Demo2AViewController alloc] initWithNibName:@"Demo2AViewController" bundle:nil];
-    [self.flowController flowInViewController:controller animated:YES];
+    Demo2BViewController *controller2 = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
+//    [self.flowController flowInViewController:controller animated:YES];
+    
+    [self.flowController setViewControllers:@[controller, controller2] animated:YES];
 }
 
 - (void)viewDidLoad
@@ -40,6 +44,11 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
 @end

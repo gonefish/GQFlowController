@@ -29,10 +29,12 @@
 }
 - (IBAction)flowbAction:(id)sender {
     Demo2BViewController *b = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
-//    [self.flowController flowInViewController:b
-//                                     animated:YES];
+    [self.flowController flowInViewController:b
+                                     animated:YES];
     
-    [self.flowController setViewControllers:@[b, self] animated:YES];
+//    GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+//    
+//    [self.flowController setViewControllers:@[a] animated:YES];
 }
 
 - (void)viewDidLoad

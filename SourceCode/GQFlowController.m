@@ -21,24 +21,6 @@ BOOL checkIsMainThread() {
 
 @interface GQFlowController ()
 
-- (void)addPressGestureRecognizerForTopView;
-- (void)removeTopViewPressGestureRecognizer;
-
-- (void)layoutFlowViews;
-
-
-- (void)resetLongPressStatus;
-
-
-- (NSTimeInterval)durationForOriginalRect:(CGRect)originalFrame destinationRect:(CGRect)destinationFrame flowingDirection:(GQFlowDirection)flowingDirection;
-
-- (CGRect)inOriginRectForViewController:(GQViewController *)viewController;
-- (CGRect)inDestinationRectForViewController:(GQViewController *)viewController;
-- (CGRect)outDestinationRectForViewController:(GQViewController *)viewController;
-
-- (void)addTopViewController:(GQViewController *)viewController;
-- (void)removeTopViewController;
-
 @property (nonatomic, strong) GQViewController *topViewController;
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
 
@@ -62,6 +44,22 @@ BOOL checkIsMainThread() {
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+    
+    [self layoutFlowViews];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Public Method
+
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
     self = [super init];
@@ -80,17 +78,83 @@ BOOL checkIsMainThread() {
     return [self initWithViewControllers:@[rootViewController]];
 }
 
-- (NSMutableArray *)innerViewControllers
+- (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
-    if (_innerViewControllers == nil) {
-        _innerViewControllers = [NSMutableArray array];
+    if (!checkIsMainThread()) return;
+    
+    // 添加到容器中，并设置将要滑入的起始位置
+    [self addTopViewController:viewController];
+    
+    CGRect destinationFrame = [self inDestinationRectForViewController:viewController];
+    
+    CGFloat duration = .0;
+    
+    if (animated) {
+        duration = [self durationForOriginalRect:viewController.view.frame
+                                 destinationRect:destinationFrame
+                                flowingDirection:self.topViewController.inFlowDirection];
     }
     
-    return _innerViewControllers;
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         viewController.view.frame = destinationFrame;
+                     }
+                     completion:^(BOOL finished){
+                         // 添加手势
+                         [self addPressGestureRecognizerForTopView];
+                     }];
+}
+
+- (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated
+{
+    if ([self.innerViewControllers count] > 1) {
+        NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
+                                                   animated:animated];
+        if ([popViewControllers count] == 1) {
+            return [popViewControllers objectAtIndex:0];
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated
+{
+    if ([self.innerViewControllers count] > 1) {
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [self.innerViewControllers count] - 1)];
+        
+        return [self flowOutIndexSet:indexSet
+                            animated:animated];
+    } else {
+        return nil;
+    }
+}
+
+- (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated
+{
+    __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    
+    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
+                                                usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+                                                    if (obj == viewController) {
+                                                        *stop = YES;
+                                                    } else {
+                                                        [indexSet addIndex:idx];
+                                                    }
+                                                }];
+    
+    if ([self.innerViewControllers count] > 0) {
+        return [self flowOutIndexSet:indexSet
+                            animated:animated];
+    } else {
+        return nil;
+    }
 }
 
 - (NSArray *)viewControllers
-{    
+{
     return [self.innerViewControllers copy];
 }
 
@@ -114,7 +178,7 @@ BOOL checkIsMainThread() {
                       withObject:self];
         }
     }];
-
+    
     NSMutableArray *newArray = [NSMutableArray arrayWithArray:viewControllers];
     
     [newArray removeObjectsAtIndexes:indexSet];
@@ -195,80 +259,29 @@ BOOL checkIsMainThread() {
     }
 }
 
-- (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
-{
-    if (!checkIsMainThread()) return;
-    
-    // 添加到容器中，并设置将要滑入的起始位置
-    [self addTopViewController:viewController];
-    
-    CGRect destinationFrame = [self inDestinationRectForViewController:viewController];
-    
-    CGFloat duration = .0;
-    
-    if (animated) {
-        duration = [self durationForOriginalRect:viewController.view.frame
-                                 destinationRect:destinationFrame
-                                flowingDirection:self.topViewController.inFlowDirection];
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         viewController.view.frame = destinationFrame;
-                     }
-                     completion:^(BOOL finished){
-                         // 添加手势
-                         [self addPressGestureRecognizerForTopView];
-                     }];
-}
+#pragma mark - UIGestureRecognizerDelegate Protocol
 
-- (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-    if ([self.innerViewControllers count] > 1) {
-        NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
-                                  animated:animated];
-        if ([popViewControllers count] == 1) {
-            return [popViewControllers objectAtIndex:0];
-        } else {
-            return nil;
-        }
+    if (self.topViewController.view == touch.view) {
+        return YES;
     } else {
-        return nil;
+        return NO;
     }
 }
 
-- (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated
+#pragma mark - Private Method
+
+- (NSMutableArray *)innerViewControllers
 {
-    if ([self.innerViewControllers count] > 1) {
-        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [self.innerViewControllers count] - 1)];
-        
-        return [self flowOutIndexSet:indexSet
-                            animated:animated];
-    } else {
-        return nil;
+    if (_innerViewControllers == nil) {
+        _innerViewControllers = [NSMutableArray array];
     }
+    
+    return _innerViewControllers;
 }
 
-- (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated
-{
-    __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
-    
-    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
-                                                usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-                                                    if (obj == viewController) {
-                                                        *stop = YES;
-                                                    } else {
-                                                        [indexSet addIndex:idx];
-                                                    }
-                                                }];
-    
-    if ([self.innerViewControllers count] > 0) {
-        return [self flowOutIndexSet:indexSet
-                            animated:animated];
-    } else {
-        return nil;
-    }
-}
+
 
 - (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
 {
@@ -276,7 +289,7 @@ BOOL checkIsMainThread() {
     
     NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
     
-    [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {        
+    [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         // 设置GQViewController的flowController属性为nil
         [obj performSelector:@selector(setFlowController:)
                   withObject:nil];
@@ -301,7 +314,7 @@ BOOL checkIsMainThread() {
                                      destinationRect:destinationFrame
                                     flowingDirection:self.topViewController.outFlowDirection];
         }
-
+        
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
@@ -316,13 +329,7 @@ BOOL checkIsMainThread() {
     return popViewControllers;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    
-    [self layoutFlowViews];
-}
+
 
 - (void)layoutViewControllers
 {
@@ -349,7 +356,7 @@ BOOL checkIsMainThread() {
         // 默认为非激活状态
         controller.active = NO;
     }
-
+    
     self.topViewController.active = YES;
     
     // 只有一层是不添加按住手势
@@ -359,14 +366,6 @@ BOOL checkIsMainThread() {
         [self addPressGestureRecognizerForTopView];
     }
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-#pragma mark - Private Method
 
 - (void)addTopViewController:(GQViewController *)viewController
 {
@@ -764,16 +763,7 @@ BOOL checkIsMainThread() {
 
 
 
-#pragma mark - UIGestureRecognizerDelegate Protocol
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if (self.topViewController.view == touch.view) {
-        return YES;
-    } else {
-        return NO;
-    }
-}
 
 @end
 

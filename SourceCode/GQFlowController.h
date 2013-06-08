@@ -19,7 +19,6 @@
 - (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated;
 - (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated;
 - (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated;
-
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;
 
 @property (nonatomic, copy) NSArray *viewControllers;

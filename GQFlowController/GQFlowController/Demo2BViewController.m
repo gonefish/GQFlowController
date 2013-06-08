@@ -15,6 +15,11 @@
 @implementation Demo2BViewController
 - (IBAction)backAction:(id)sender {
     [self.flowController flowOutToRootViewControllerAnimated:YES];
+    
+//    GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+//    
+//    [self.flowController setViewControllers:@[a] animated:NO];
+
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
