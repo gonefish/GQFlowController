@@ -28,8 +28,11 @@
     [self.flowController flowOutViewControllerAnimated:YES];
 }
 - (IBAction)flowbAction:(id)sender {
-    [self.flowController flowInViewController:[[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil]
-                                     animated:YES];
+    Demo2BViewController *b = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
+//    [self.flowController flowInViewController:b
+//                                     animated:YES];
+    
+    [self.flowController setViewControllers:@[b, self] animated:YES];
 }
 
 - (void)viewDidLoad
