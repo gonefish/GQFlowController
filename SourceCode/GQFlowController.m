@@ -94,29 +94,7 @@ BOOL checkIsMainThread() {
 
 - (void)setViewControllers:(NSArray *)aViewControllers
 {
-    // 判断是否为GQViewController的子类，如不是丢弃
-    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
-    
-    [aViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-        if (![obj isKindOfClass:[GQViewController class]]) {
-            [indexSet addIndex:idx];
-        } else {
-            [obj performSelector:@selector(setFlowController:)
-                      withObject:self];
-        }
-    }];
-    
-    NSMutableArray *newArray = [NSMutableArray arrayWithArray:aViewControllers];
-    
-    [newArray removeObjectsAtIndexes:indexSet];
-    
-    self.innerViewControllers = newArray;
-    
-    self.topViewController = [self.innerViewControllers lastObject];
-    
-    if ([self isViewLoaded]) {
-        [self layoutFlowViews];
-    }
+    [self setViewControllers:aViewControllers animated:NO];
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
@@ -138,70 +116,84 @@ BOOL checkIsMainThread() {
     NSMutableArray *newArray = [NSMutableArray arrayWithArray:viewControllers];
     
     [newArray removeObjectsAtIndexes:indexSet];
-
+    
     GQViewController *topmostViewController = [newArray lastObject];
-
-    if ([self.innerViewControllers containsObject:topmostViewController]) {
-        if (topmostViewController == [self.innerViewControllers lastObject]) {
-            // No change
-            for (GQViewController *vc in self.innerViewControllers) {
-                if (vc != topmostViewController) {
-                    [vc.view removeFromSuperview];
+    
+    if (animated) {
+        if ([self.innerViewControllers containsObject:topmostViewController]) {
+            if (topmostViewController == [self.innerViewControllers lastObject]) {
+                // No change
+                for (GQViewController *vc in self.innerViewControllers) {
+                    if (vc != topmostViewController) {
+                        [vc.view removeFromSuperview];
+                    }
                 }
+                
+                self.innerViewControllers = newArray;
+                
+                self.topViewController = topmostViewController;
+                
+                [self layoutViewControllers];
+            } else {
+                // Flow Out
+                for (GQViewController *vc in self.innerViewControllers) {
+                    if (vc != [self.innerViewControllers lastObject]) {
+                        [vc.view removeFromSuperview];
+                    }
+                }
+                
+                [newArray addObject:[self.innerViewControllers lastObject]];
+                
+                self.innerViewControllers = newArray;
+                
+                [self layoutViewControllers];
+                
+                [self flowOutViewControllerAnimated:YES];
             }
-
-            self.innerViewControllers = newArray;
-            
-            self.topViewController = topmostViewController;
-            
-            [self layoutViewControllers];
         } else {
-            // Flow Out
-            for (GQViewController *vc in self.innerViewControllers) {
-                if (vc != [self.innerViewControllers lastObject]) {
-                    [vc.view removeFromSuperview];
-                }
-            }
+            // Flow In
             
-            [newArray addObject:[self.innerViewControllers lastObject]];
+            //        将新设置的最后一个控制器滑入，然后移除最上面的视图，将新设置的其它添加到视图中
+            // 添加到容器中，并设置将要滑入的起始位置
+            [self addTopViewController:topmostViewController];
             
-            self.innerViewControllers = newArray;
+            CGRect destinationFrame = [self inDestinationRectForViewController:topmostViewController];
             
-            [self layoutViewControllers];
-
-            [self flowOutViewControllerAnimated:YES];
+            CGFloat duration = [self durationForOriginalRect:topmostViewController.view.frame
+                                             destinationRect:destinationFrame
+                                            flowingDirection:self.topViewController.inFlowDirection];
+            
+            [UIView animateWithDuration:duration
+                             animations:^{
+                                 topmostViewController.view.frame = destinationFrame;
+                             }
+                             completion:^(BOOL finished){
+                                 // 添加手势
+                                 [self addPressGestureRecognizerForTopView];
+                                 
+                                 // 处理控制器
+                                 for (GQViewController *vc in self.innerViewControllers) {
+                                     if (vc != [self.innerViewControllers lastObject]) {
+                                         [vc.view removeFromSuperview];
+                                     }
+                                 }
+                                 
+                                 self.innerViewControllers = newArray;
+                                 
+                                 [self layoutViewControllers];
+                             }];
         }
     } else {
-//        // Flow In
-//        移除除了当前最上面的视图，将新设置的最后一个控制器滑入，然后移除最上面的视图，将新设置的其它添加到视图中
-        // 添加到容器中，并设置将要滑入的起始位置
-        [self addTopViewController:topmostViewController];
-        
-        CGRect destinationFrame = [self inDestinationRectForViewController:topmostViewController];
-        
-        CGFloat duration = .0;
-        
-        if (animated) {
-            duration = [self durationForOriginalRect:topmostViewController.view.frame
-                                     destinationRect:destinationFrame
-                                    flowingDirection:self.topViewController.inFlowDirection];
+        for (GQViewController *vc in self.innerViewControllers) {
+            [vc.view removeFromSuperview];
         }
         
-        [UIView animateWithDuration:duration
-                         animations:^{
-                             topmostViewController.view.frame = destinationFrame;
-                         }
-                         completion:^(BOOL finished){
-                             // 添加手势
-                             [self addPressGestureRecognizerForTopView];
-                             
-                             // 处理控制器
-                         }];
+        self.innerViewControllers = newArray;
+        
+        self.topViewController = topmostViewController;
+        
+        [self layoutViewControllers];
     }
-//
-//    self.topViewController = [self.innerViewControllers lastObject];
-//    
-//    
 }
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
