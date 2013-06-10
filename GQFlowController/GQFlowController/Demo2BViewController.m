@@ -13,14 +13,7 @@
 @end
 
 @implementation Demo2BViewController
-- (IBAction)backAction:(id)sender {
-    [self.flowController flowOutToRootViewControllerAnimated:YES];
-    
-//    GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
-//    
-//    [self.flowController setViewControllers:@[a] animated:NO];
 
-}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -58,5 +51,46 @@
 {
     return 0.15;
 }
+
+#pragma mark - UITableViewDataSource Protocol
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *MyIdentifier = @"Demo1Identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier:MyIdentifier];
+    }
+    
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"flowOutToRootViewControllerAnimated:";
+    } else if (indexPath.row == 1) {
+        cell.textLabel.text = @"setViewControllers:animated:";
+    }
+    
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate Protocol
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+    if (indexPath.row == 0) {
+        [self.flowController flowOutToRootViewControllerAnimated:YES];
+    } else if (indexPath.row == 1) {
+        GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+
+        [self.flowController setViewControllers:@[a] animated:YES];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 
 @end

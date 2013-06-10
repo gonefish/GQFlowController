@@ -26,14 +26,6 @@
     return self;
 }
 
-- (IBAction)flowAction:(id)sender {
-    Demo2AViewController *controller = [[Demo2AViewController alloc] initWithNibName:@"Demo2AViewController" bundle:nil];
-    Demo2BViewController *controller2 = [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
-//    [self.flowController flowInViewController:controller animated:YES];
-    
-    [self.flowController setViewControllers:@[controller, controller2] animated:YES];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -49,6 +41,47 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+#pragma mark - UITableViewDataSource Protocol
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *MyIdentifier = @"Demo1Identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier:MyIdentifier];
+    }
+    
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"flowInViewController:animated:";
+    } else if (indexPath.row == 1) {
+        cell.textLabel.text = @"setViewControllers:animated:";
+    }
+    
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate Protocol
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+    Demo2AViewController *a = [[Demo2AViewController alloc] init];
+    Demo2BViewController *b = [[Demo2BViewController alloc] init];
+    
+    if (indexPath.row == 0) {
+        [self.flowController flowInViewController:a animated:YES];
+    } else if (indexPath.row == 1) {
+        [self.flowController setViewControllers:@[a, b] animated:YES];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

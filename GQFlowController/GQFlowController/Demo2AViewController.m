@@ -65,4 +65,52 @@
     }
 }
 
+
+#pragma mark - UITableViewDataSource Protocol
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 3;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *MyIdentifier = @"Demo1Identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier:MyIdentifier];
+    }
+    
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"flowOutViewControllerAnimated:";
+    } else if (indexPath.row == 1) {
+        cell.textLabel.text = @"setViewControllers:animated:";
+    } else if (indexPath.row == 2) {
+        cell.textLabel.text = @"flowInViewController:animated:";
+    }
+    
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate Protocol
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+    if (indexPath.row == 0) {
+        [self.flowController flowOutViewControllerAnimated:YES];
+    } else if (indexPath.row == 1) {        
+        GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+
+        [self.flowController setViewControllers:@[a] animated:YES];
+    } else if (indexPath.row == 2) {
+        Demo2BViewController *b = [[Demo2BViewController alloc] init];
+        
+        [self.flowController flowInViewController:b
+                                         animated:YES];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 @end
