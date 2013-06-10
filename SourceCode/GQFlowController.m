@@ -49,7 +49,7 @@ BOOL checkIsMainThread() {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    [self layoutViewControllers];
+    //[self layoutViewControllers];
     
     [self addPressGestureRecognizerForTopView];
 }
@@ -146,7 +146,6 @@ BOOL checkIsMainThread() {
     [self setViewControllers:aViewControllers animated:NO];
 }
 
-
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
 {
     if (!checkIsMainThread()) return;
@@ -173,17 +172,20 @@ BOOL checkIsMainThread() {
                 [self noChangeSetViewControllers:newArray];
             } else {
                 // Flow Out
+                // 保留最上面的视图控制器
                 for (GQViewController *vc in self.innerViewControllers) {
                     if (vc != [self.innerViewControllers lastObject]) {
+                        [vc willMoveToParentViewController:nil];
+                        
                         [vc.view removeFromSuperview];
+                        
+                        [vc removeFromParentViewController];
                     }
                 }
                 
                 [newArray addObject:[self.innerViewControllers lastObject]];
                 
-                self.innerViewControllers = newArray;
-                
-                [self layoutViewControllers];
+                [self updateChildViewControllers:newArray];
                 
                 [self flowOutViewControllerAnimated:YES];
             }
@@ -199,16 +201,8 @@ BOOL checkIsMainThread() {
                 [self noChangeSetViewControllers:newArray];
             }];
         }
-    } else {
-        for (GQViewController *vc in self.innerViewControllers) {
-            [vc.view removeFromSuperview];
-        }
-        
-        self.innerViewControllers = newArray;
-        
-        self.topViewController = [newArray lastObject];
-        
-        [self layoutViewControllers];
+    } else {        
+        [self updateChildViewControllers:newArray];
     }
 }
 
@@ -223,24 +217,75 @@ BOOL checkIsMainThread() {
     }
 }
 
-#pragma mark - Private Method
+#pragma mark - UIViewController Container Method
 
+/**
+ Container的处理
+ */
+- (void)updateChildViewControllers:(NSMutableArray *)viewControllers
+{
+    self.innerViewControllers = viewControllers;
+    
+    for (GQViewController *vc in self.innerViewControllers) {
+        [self addChildViewController:vc];
+        
+        [self.view addSubview:vc.view];
+        
+        [vc didMoveToParentViewController:self];
+    }
+    
+    self.topViewController = [viewControllers lastObject];
+}
 
 - (void)noChangeSetViewControllers:(NSMutableArray *)viewControllers
 {
     // No Change
     for (GQViewController *vc in self.innerViewControllers) {
         if (vc != [viewControllers lastObject]) {
+            [vc willMoveToParentViewController:nil];
+            
             [vc.view removeFromSuperview];
+            
+            [vc removeFromParentViewController];
         }
     }
     
-    self.innerViewControllers = viewControllers;
-    
-    self.topViewController = [viewControllers lastObject];
-    
-    [self layoutViewControllers];
+    [self updateChildViewControllers:viewControllers];
 }
+
+- (void)addTopViewController:(GQViewController *)viewController
+{
+    // 设置GQViewControllerItem
+    [viewController performSelector:@selector(setFlowController:)
+                         withObject:self];
+    
+    self.topViewController = viewController;
+    
+    [self.innerViewControllers addObject:viewController];
+    
+    [self addChildViewController:viewController];
+    
+    viewController.view.frame = [self inOriginRectForViewController:viewController];
+    
+    [self.view addSubview:viewController.view];
+    
+    [viewController didMoveToParentViewController:self];
+}
+
+- (void)removeTopViewController
+{
+    [self removeTopViewPressGestureRecognizer];
+    
+    [self.topViewController willMoveToParentViewController:nil];
+    
+    [self.topViewController.view removeFromSuperview];
+    
+    [self.topViewController removeFromParentViewController];
+    
+    self.topViewController = [self.innerViewControllers lastObject];
+}
+
+#pragma mark - Other Method
 
 - (NSMutableArray *)innerViewControllers
 {
@@ -282,24 +327,27 @@ BOOL checkIsMainThread() {
 {
     if (!checkIsMainThread()) return nil;
     
+    // 准备移除控制器
     NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
     
-    [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    for (GQViewController *vc in popViewControllers) {
         // 设置GQViewController的flowController属性为nil
-        [obj performSelector:@selector(setFlowController:)
+        [vc performSelector:@selector(setFlowController:)
                   withObject:nil];
         
         // 如果不是topViewController则移除视图
-        if (obj != self.topViewController) {
-            if ([(GQViewController *)obj isViewLoaded]) {
-                [[(GQViewController *)obj view] removeFromSuperview];
-            }
+        if (vc != self.topViewController) {
+            [vc willMoveToParentViewController:nil];
+            
+            [vc.view removeFromSuperview];
+            
+            [vc removeFromParentViewController];
         }
-    }];
+    }
     
     [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
-    if ([self.topViewController isViewLoaded]) {
+    //if ([self.topViewController isViewLoaded]) {
         CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
         
         CGFloat duration = .0;
@@ -319,55 +367,24 @@ BOOL checkIsMainThread() {
                              
                              [self addPressGestureRecognizerForTopView];
                          }];
-    }
+    //}
     
     return popViewControllers;
 }
 
 
 
+/**
+ 重新对视图进行布局
+ */
 - (void)layoutViewControllers
 {
     for (GQViewController *controller in self.innerViewControllers) {
-        [self addChildViewController:controller];
-        
         [self.view addSubview:controller.view];
-        
-        [controller didMoveToParentViewController:self];
     }
 }
 
-- (void)addTopViewController:(GQViewController *)viewController
-{
-    // 设置GQViewControllerItem
-    [viewController performSelector:@selector(setFlowController:)
-                         withObject:self];
-    
-    self.topViewController = viewController;
-    
-    [self.innerViewControllers addObject:viewController];
-    
-    //[self addChildViewController:viewController];
-    
-    viewController.view.frame = [self inOriginRectForViewController:viewController];
-    
-    [self.view addSubview:viewController.view];
-    
-    //[viewController didMoveToParentViewController:self];
-}
 
-- (void)removeTopViewController
-{
-    [self removeTopViewPressGestureRecognizer];
-    
-    //[self.topViewController willMoveToParentViewController:nil];
-    
-    [self.topViewController.view removeFromSuperview];
-    
-    //[self.topViewController removeFromParentViewController];
-    
-    self.topViewController = [self.innerViewControllers lastObject];
-}
 
 // 滑入的起初位置
 - (CGRect)inOriginRectForViewController:(GQViewController *)viewController
@@ -517,8 +534,8 @@ BOOL checkIsMainThread() {
         length = destinationFrame.origin.y - destinationFrame.origin.y;
     }
     
-    // 速度以0.618秒移动一屏为基准
-    return 0.00193 * ABS(length);
+    // 速度以0.5秒移动一屏为基准
+    return 0.00156 * ABS(length);
 }
 // 添加手势
 - (void)addPressGestureRecognizerForTopView
