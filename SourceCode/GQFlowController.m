@@ -49,7 +49,9 @@ BOOL checkIsMainThread() {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    [self layoutFlowViews];
+    [self layoutViewControllers];
+    
+    [self addPressGestureRecognizerForTopView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -327,36 +329,11 @@ BOOL checkIsMainThread() {
 - (void)layoutViewControllers
 {
     for (GQViewController *controller in self.innerViewControllers) {
-        [self.view addSubview:controller.view];
-    }
-}
-
-// 将需要添加的view添加的superview中
-- (void)layoutFlowViews
-{
-    for (GQViewController *controller in self.innerViewControllers) {
-        //[self addChildViewController:controller];
-        
-        controller.view.frame = CGRectMake(0,
-                                           0,
-                                           self.view.frame.size.width,
-                                           self.view.frame.size.height);
+        [self addChildViewController:controller];
         
         [self.view addSubview:controller.view];
         
-        //[controller didMoveToParentViewController:self];
-        
-        // 默认为非激活状态
-        controller.active = NO;
-    }
-    
-    self.topViewController.active = YES;
-    
-    // 只有一层是不添加按住手势
-    if ([self.innerViewControllers count] > 1) {
-        self.topViewController = [self.innerViewControllers lastObject];
-        
-        [self addPressGestureRecognizerForTopView];
+        [controller didMoveToParentViewController:self];
     }
 }
 
