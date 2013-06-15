@@ -80,6 +80,10 @@ BOOL checkIsMainThread() {
 
 - (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
 {
+    if ([viewController isKindOfClass:[GQFlowController class]]) {
+        return;
+    }
+    
     [self flowInViewController:viewController
                       animated:animated
                completionBlock:^{
