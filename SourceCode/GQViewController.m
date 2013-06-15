@@ -16,29 +16,7 @@
 
 @implementation GQViewController
 
-- (id)init
-{
-    self = [super init];
-    
-    if (self) {
-        self.inFlowDirection = GQFlowDirectionLeft;
-        self.outFlowDirection = GQFlowDirectionRight;
-    }
-    
-    return self;
-}
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    
-    if (self) {
-        self.inFlowDirection = GQFlowDirectionLeft;
-        self.outFlowDirection = GQFlowDirectionRight;
-    }
-    
-    return self;
-}
 
 - (UIView *)flowingOverlayView
 {

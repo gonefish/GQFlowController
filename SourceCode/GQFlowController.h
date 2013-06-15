@@ -26,8 +26,12 @@
 
 @end
 
-@interface GQViewController (GQViewControllerItem)
+@interface UIViewController (GQFlowController)
 
 @property (nonatomic, strong, readonly) GQFlowController *flowController;
+
+@property (nonatomic) GQFlowDirection flowInDirection;
+
+@property (nonatomic) GQFlowDirection flowOutDirection;
 
 @end

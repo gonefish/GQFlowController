@@ -20,10 +20,6 @@ typedef enum {
 
 @property (nonatomic, getter=isActive) BOOL active;
 
-@property (nonatomic) GQFlowDirection inFlowDirection;
-
-@property (nonatomic) GQFlowDirection outFlowDirection;
-
 
 @end
 

@@ -338,7 +338,7 @@ BOOL checkIsMainThread() {
     if (animated) {
         duration = [self durationForOriginalRect:viewController.view.frame
                                  destinationRect:destinationFrame
-                                flowingDirection:self.topViewController.inFlowDirection];
+                                flowingDirection:self.topViewController.flowInDirection];
     }
     
     [UIView animateWithDuration:duration
@@ -383,7 +383,7 @@ BOOL checkIsMainThread() {
         if (animated) {
             duration = [self durationForOriginalRect:self.topViewController.view.frame
                                      destinationRect:destinationFrame
-                                    flowingDirection:self.topViewController.outFlowDirection];
+                                    flowingDirection:self.topViewController.flowOutDirection];
         }
         
         [UIView animateWithDuration:duration
@@ -421,7 +421,7 @@ BOOL checkIsMainThread() {
     
     CGRect originFrame = CGRectZero;
     
-    switch (viewController.inFlowDirection) {
+    switch (viewController.flowInDirection) {
         case GQFlowDirectionLeft:
             originFrame = CGRectMake(self.view.frame.size.width,
                                      viewFrame.origin.y,
@@ -460,7 +460,7 @@ BOOL checkIsMainThread() {
     CGRect viewFrame = viewController.view.frame;
     CGRect destinationFrame = CGRectZero;
     
-    switch (viewController.inFlowDirection) {
+    switch (viewController.flowInDirection) {
         case GQFlowDirectionLeft:
             destinationFrame = CGRectMake(self.view.frame.size.width - viewFrame.size.width,
                                           viewFrame.origin.y,
@@ -508,7 +508,7 @@ BOOL checkIsMainThread() {
     CGRect viewFrame = viewController.view.frame;
     CGRect destinationFrame = CGRectZero;
     
-    switch (viewController.outFlowDirection) {
+    switch (viewController.flowOutDirection) {
         case GQFlowDirectionLeft:
             destinationFrame = CGRectMake(-viewFrame.size.width,
                                           viewFrame.origin.y,
@@ -663,8 +663,8 @@ BOOL checkIsMainThread() {
         // 能否移动
         BOOL shouldMove = NO;
         
-        if (self.flowingDirection == self.topViewController.inFlowDirection
-            || self.flowingDirection == self.topViewController.outFlowDirection) {
+        if (self.flowingDirection == self.topViewController.flowInDirection
+            || self.flowingDirection == self.topViewController.flowOutDirection) {
             shouldMove = YES;
         }
 
@@ -727,12 +727,12 @@ BOOL checkIsMainThread() {
             }
             
             if (!cancelFlowing) {
-                if (self.flowingDirection == self.topViewController.inFlowDirection) {                    
+                if (self.flowingDirection == self.topViewController.flowInDirection) {                    
                     destinationFrame = [self inDestinationRectForViewController:self.topViewController];
                 }
                 
                 // 如果in和out是同一方向，则以out为主
-                if (self.flowingDirection == self.topViewController.outFlowDirection) {         
+                if (self.flowingDirection == self.topViewController.flowOutDirection) {         
                     destinationFrame = [self outDestinationRectForViewController:self.topViewController];
                 }
             }
@@ -753,13 +753,13 @@ BOOL checkIsMainThread() {
 
                              // 没有取消回滑
                              if (!cancelFlowing) {
-                                 if (self.flowingDirection == self.topViewController.outFlowDirection) {
+                                 if (self.flowingDirection == self.topViewController.flowOutDirection) {
                                      if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
                                          [self removeTopViewController];
                                          
                                          [self addPressGestureRecognizerForTopView];
                                      }
-                                 } else if (self.flowingDirection == self.topViewController.inFlowDirection) {
+                                 } else if (self.flowingDirection == self.topViewController.flowInDirection) {
                                      if (CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
                                          [self addPressGestureRecognizerForTopView];
                                      }
@@ -785,10 +785,14 @@ BOOL checkIsMainThread() {
 #pragma mark - GQViewControllerItem Category
 
 static char kGQFlowControllerObjectKey;
+static char kGQFlowInDirectionObjectKey;
+static char kGQFlowOutDirectionObjectKey;
 
-@implementation GQViewController (GQViewControllerItem)
+@implementation UIViewController (GQFlowController)
 
 @dynamic flowController;
+@dynamic flowInDirection;
+//@dynamic flowOutDirection;
 
 - (GQFlowController *)flowController
 {    
@@ -798,6 +802,42 @@ static char kGQFlowControllerObjectKey;
 - (void)setFlowController:(GQFlowController *)flowController
 {
     objc_setAssociatedObject(self, &kGQFlowControllerObjectKey, flowController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (GQFlowDirection)flowInDirection
+{
+    NSNumber *direction = (NSNumber *)objc_getAssociatedObject(self, &kGQFlowInDirectionObjectKey);
+    
+    if (direction == nil) {
+        self.flowInDirection = GQFlowDirectionLeft;
+        
+        direction = [NSNumber numberWithInt:GQFlowDirectionLeft];
+    }
+    
+    return [direction intValue];
+}
+
+- (void)setFlowInDirection:(GQFlowDirection)flowInDirection
+{
+    objc_setAssociatedObject(self, &kGQFlowInDirectionObjectKey, [NSNumber numberWithInt:flowInDirection], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (GQFlowDirection)flowOutDirection
+{
+    NSNumber *direction = (NSNumber *)objc_getAssociatedObject(self, &kGQFlowOutDirectionObjectKey);
+    
+    if (direction == nil) {
+        self.flowOutDirection = GQFlowDirectionRight;
+        
+        direction = [NSNumber numberWithInt:GQFlowDirectionRight];
+    }
+    
+    return [direction intValue];
+}
+
+- (void)setFlowOutDirection:(GQFlowDirection)flowOutDirection
+{
+    objc_setAssociatedObject(self, &kGQFlowInDirectionObjectKey, [NSNumber numberWithInt:flowOutDirection], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
