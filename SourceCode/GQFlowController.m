@@ -169,19 +169,14 @@ BOOL checkIsMainThread() {
     if (animated) {
         if ([self.innerViewControllers containsObject:[newArray lastObject]]) {
             if ([newArray lastObject] == [self.innerViewControllers lastObject]) {
-                [self noChangeSetViewControllers:newArray];
+                // No Animate
+                [self holdViewControllers:@[[newArray lastObject]]];
+                
+                [self updateChildViewControllers:newArray];
             } else {
                 // Flow Out
                 // 保留最上面的视图控制器
-                for (GQViewController *vc in self.innerViewControllers) {
-                    if (vc != [self.innerViewControllers lastObject]) {
-                        [vc willMoveToParentViewController:nil];
-                        
-                        [vc.view removeFromSuperview];
-                        
-                        [vc removeFromParentViewController];
-                    }
-                }
+                [self holdViewControllers:@[[self.innerViewControllers lastObject]]];
                 
                 [newArray addObject:[self.innerViewControllers lastObject]];
                 
@@ -191,17 +186,35 @@ BOOL checkIsMainThread() {
             }
         } else {
             // Flow In
-            [self flowInViewController:[newArray lastObject]
+            
+            // 保留最上层的视图控制器
+            UIViewController *topmostViewController = [self.innerViewControllers lastObject];
+            
+            [self holdViewControllers:@[topmostViewController]];
+            
+            // 重构层级中的视图控制器
+            GQViewController *flowInViewController = [newArray lastObject];
+            
+            [newArray removeLastObject];
+            
+            [newArray addObject:topmostViewController];
+            
+            [self updateChildViewControllers:newArray];
+            
+            [self flowInViewController:flowInViewController
                               animated:animated
                        completionBlock:^(){
-                // 添加手势
-                [self addPressGestureRecognizerForTopView];
-                
-                // 同No Change一样的流程
-                [self noChangeSetViewControllers:newArray];
+                           // 添加手势
+                           [self addPressGestureRecognizerForTopView];
+                           
+                           // 移除原最上层的视图控制器
+                           [self removeContentViewControler:topmostViewController];
             }];
         }
-    } else {        
+    } else {
+        // 移除现在的视图控制器
+        [self holdViewControllers:nil];
+        
         [self updateChildViewControllers:newArray];
     }
 }
@@ -219,38 +232,47 @@ BOOL checkIsMainThread() {
 
 #pragma mark - UIViewController Container Method
 
+- (void)holdViewControllers:(NSArray *)viewControllers
+{
+    // 移除没有指定的视图控制器
+    for (UIViewController *vc in self.innerViewControllers) {
+        if (viewControllers == nil
+            || ![viewControllers containsObject:vc]) {
+            [self removeContentViewControler:vc];
+        }
+    }
+}
+
+- (void)addContentViewController:(UIViewController *)viewController
+{
+    [self addChildViewController:viewController];
+    
+    [self.view addSubview:viewController.view];
+    
+    [viewController didMoveToParentViewController:self];
+}
+
+- (void)removeContentViewControler:(UIViewController *)viewController
+{
+    [viewController willMoveToParentViewController:nil];
+    
+    [viewController.view removeFromSuperview];
+    
+    [viewController removeFromParentViewController];
+}
+
 /**
- Container的处理
+ 更新子控制器
  */
 - (void)updateChildViewControllers:(NSMutableArray *)viewControllers
 {
+    for (GQViewController *vc in viewControllers) {
+        [self addContentViewController:vc];
+    }
+    
     self.innerViewControllers = viewControllers;
     
-    for (GQViewController *vc in self.innerViewControllers) {
-        [self addChildViewController:vc];
-        
-        [self.view addSubview:vc.view];
-        
-        [vc didMoveToParentViewController:self];
-    }
-    
     self.topViewController = [viewControllers lastObject];
-}
-
-- (void)noChangeSetViewControllers:(NSMutableArray *)viewControllers
-{
-    // No Change
-    for (GQViewController *vc in self.innerViewControllers) {
-        if (vc != [viewControllers lastObject]) {
-            [vc willMoveToParentViewController:nil];
-            
-            [vc.view removeFromSuperview];
-            
-            [vc removeFromParentViewController];
-        }
-    }
-    
-    [self updateChildViewControllers:viewControllers];
 }
 
 - (void)addTopViewController:(GQViewController *)viewController
