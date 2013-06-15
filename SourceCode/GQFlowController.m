@@ -209,6 +209,8 @@ BOOL checkIsMainThread() {
                            
                            // 移除原最上层的视图控制器
                            [self removeContentViewControler:topmostViewController];
+                           
+                           [self.innerViewControllers removeObject:topmostViewController];
             }];
         }
     } else {

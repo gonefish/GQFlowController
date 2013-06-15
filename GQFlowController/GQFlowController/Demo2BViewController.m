@@ -36,6 +36,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    
+}
+
 #pragma mark - GQFlowControllerDelegate
 
 - (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame

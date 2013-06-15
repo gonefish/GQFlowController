@@ -43,6 +43,11 @@
     [super viewDidAppear:animated];
 }
 
+- (void)dealloc
+{
+    
+}
+
 #pragma mark - UITableViewDataSource Protocol
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -73,11 +78,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {    
     Demo2AViewController *a = [[Demo2AViewController alloc] init];
-    Demo2BViewController *b = [[Demo2BViewController alloc] init];
     
     if (indexPath.row == 0) {
         [self.flowController flowInViewController:a animated:YES];
     } else if (indexPath.row == 1) {
+        Demo2BViewController *b = [[Demo2BViewController alloc] init];
         [self.flowController setViewControllers:@[a, b] animated:YES];
     }
     

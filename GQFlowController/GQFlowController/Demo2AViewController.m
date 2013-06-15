@@ -113,4 +113,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+- (void)dealloc
+{
+    
+}
+
 @end
