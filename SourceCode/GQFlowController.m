@@ -50,8 +50,6 @@ BOOL checkIsMainThread() {
 	// Do any additional setup after loading the view.
     
     //[self layoutViewControllers];
-    
-    [self addPressGestureRecognizerForTopView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -177,6 +175,8 @@ BOOL checkIsMainThread() {
                 [self holdViewControllers:@[[newArray lastObject]]];
                 
                 [self updateChildViewControllers:newArray];
+                
+                [self addPressGestureRecognizerForTopView];
             } else {
                 // Flow Out
                 // 保留最上面的视图控制器
@@ -222,6 +222,8 @@ BOOL checkIsMainThread() {
         [self holdViewControllers:nil];
         
         [self updateChildViewControllers:newArray];
+        
+        [self addPressGestureRecognizerForTopView];
     }
 }
 
@@ -840,7 +842,7 @@ static char kQGOverlayViewObjectKey;
 
 - (void)setFlowOutDirection:(GQFlowDirection)flowOutDirection
 {
-    objc_setAssociatedObject(self, &kGQFlowInDirectionObjectKey, [NSNumber numberWithInt:flowOutDirection], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &kGQFlowOutDirectionObjectKey, [NSNumber numberWithInt:flowOutDirection], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)setOverlayContent:(BOOL)yesOrNo
@@ -852,7 +854,7 @@ static char kQGOverlayViewObjectKey;
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.frame];
         
-        objc_setAssociatedObject(self, &kQGOverlayContentObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, &kQGOverlayViewObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     
     if (yesOrNo) {
