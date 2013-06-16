@@ -27,13 +27,16 @@
     self.flowController = nil;
 }
 
+
+
+
 - (void)testSetViewControllersAnimated
 {    
     NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"");
     
     for (UIViewController *controller in self.flowController.viewControllers) {
         STAssertEqualObjects(controller.flowController, self.flowController, @"");
@@ -130,6 +133,57 @@
     STAssertEquals([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
     
     STAssertEquals([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
+}
+
+#pragma mark - GQFlowController Category Test
+
+- (void)testPrivateFlowControllerSetter
+{
+    UIViewController *vc = [[UIViewController alloc] init];
+    
+    STAssertNil(vc.flowController, @"don't setting flowController");
+    
+    GQFlowController *flowController = [[GQFlowController alloc] init];
+    
+    [vc performSelector:@selector(setFlowController:)
+             withObject:flowController];
+    
+    STAssertNotNil(vc.flowController, @"flowController settings");
+}
+
+- (void)testFlowInDirection
+{
+    UIViewController *vc = [[UIViewController alloc] init];
+    
+    STAssertEquals(vc.flowInDirection, GQFlowDirectionLeft, @"默认值不正确");
+    
+    vc.flowInDirection = GQFlowDirectionRight;
+    
+    STAssertEquals(vc.flowInDirection, GQFlowDirectionRight, @"赋值不不正确");
+}
+
+- (void)testFlowOutDirection
+{
+    UIViewController *vc = [[UIViewController alloc] init];
+    
+    STAssertEquals(vc.flowOutDirection, GQFlowDirectionRight, @"默认值不正确");
+    
+    vc.flowOutDirection = GQFlowDirectionLeft;
+    
+    STAssertEquals(vc.flowOutDirection, GQFlowDirectionLeft, @"赋值不不正确");
+}
+
+- (void)testOverlayContent
+{
+    UIViewController *vc = [[UIViewController alloc] init];
+    
+    [vc setOverlayContent:YES];
+    
+    STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"coverView don't add view");
+    
+    [vc setOverlayContent:NO];
+    
+    STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"coverView add view");
 }
 
 @end
