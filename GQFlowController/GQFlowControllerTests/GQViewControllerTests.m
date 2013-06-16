@@ -30,11 +30,11 @@
 
 - (void)testActive
 {
-    [self.viewController setActive:YES];
+    [self.viewController setOverlayContent:YES];
     
     STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)0, @"coverView don't add view");
     
-    [self.viewController setActive:NO];
+    [self.viewController setOverlayContent:NO];
     
     STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)1, @"coverView add view");
 }

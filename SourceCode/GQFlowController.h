@@ -10,6 +10,8 @@
 #import "GQViewController.h"
 #import "GQFlowControllerDelegate.h"
 
+
+
 @interface GQFlowController : UIViewController <UIGestureRecognizerDelegate>
 
 - (id)initWithRootViewController:(GQViewController *)rootViewController;
@@ -33,5 +35,7 @@
 @property (nonatomic) GQFlowDirection flowInDirection;
 
 @property (nonatomic) GQFlowDirection flowOutDirection;
+
+@property (nonatomic, getter=isOverlayContent) BOOL overlayContent;
 
 @end

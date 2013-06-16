@@ -18,8 +18,5 @@ typedef enum {
 
 @interface GQViewController : UIViewController
 
-@property (nonatomic, getter=isActive) BOOL active;
-
-
 @end
 

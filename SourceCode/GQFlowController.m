@@ -604,7 +604,7 @@ BOOL checkIsMainThread() {
         self.startPoint = pressPoint;
         self.prevPoint = pressPoint;
         
-        self.topViewController.active = NO;
+        self.topViewController.overlayContent = NO;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {            
@@ -685,7 +685,7 @@ BOOL checkIsMainThread() {
             // 重置长按状态信息
             [self resetLongPressStatus];
             
-            self.topViewController.active = YES;
+            self.topViewController.overlayContent = YES;
             
             return;
         }
@@ -766,7 +766,7 @@ BOOL checkIsMainThread() {
                                  }
                              }
 
-                             self.topViewController.active = YES;
+                             self.topViewController.overlayContent = YES;
                              
                              // 重置长按状态信息
                              [self resetLongPressStatus];
@@ -787,12 +787,15 @@ BOOL checkIsMainThread() {
 static char kGQFlowControllerObjectKey;
 static char kGQFlowInDirectionObjectKey;
 static char kGQFlowOutDirectionObjectKey;
+static char kQGOverlayContentObjectKey;
+static char kQGOverlayViewObjectKey;
 
 @implementation UIViewController (GQFlowController)
 
 @dynamic flowController;
 @dynamic flowInDirection;
-//@dynamic flowOutDirection;
+@dynamic flowOutDirection;
+@dynamic overlayContent;
 
 - (GQFlowController *)flowController
 {    
@@ -838,6 +841,30 @@ static char kGQFlowOutDirectionObjectKey;
 - (void)setFlowOutDirection:(GQFlowDirection)flowOutDirection
 {
     objc_setAssociatedObject(self, &kGQFlowInDirectionObjectKey, [NSNumber numberWithInt:flowOutDirection], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)setOverlayContent:(BOOL)yesOrNo
+{
+    objc_setAssociatedObject(self, &kQGOverlayContentObjectKey, [NSNumber numberWithInt:yesOrNo], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    id overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
+    
+    if (overlayView == nil) {
+        overlayView = [[UIView alloc] initWithFrame:self.view.frame];
+        
+        objc_setAssociatedObject(self, &kQGOverlayContentObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
+    if (yesOrNo) {
+        [overlayView removeFromSuperview];
+    } else {
+        [self.view addSubview:overlayView];
+    }
+}
+
+- (BOOL)overlayContent
+{
+    return [(NSNumber *)objc_getAssociatedObject(self, &kQGOverlayContentObjectKey) boolValue];
 }
 
 @end

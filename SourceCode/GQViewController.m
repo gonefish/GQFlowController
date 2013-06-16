@@ -27,15 +27,4 @@
     return _flowingOverlayView;
 }
 
-- (void)setActive:(BOOL)active
-{
-    _active = active;
-    
-    if (self.isActive) {
-        [self.flowingOverlayView removeFromSuperview];
-    } else {
-        [self.view addSubview:self.flowingOverlayView];
-    }
-}
-
 @end
