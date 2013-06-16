@@ -13,15 +13,6 @@
       <FileRef
          location = "group:GQFlowController.m">
       </FileRef>
-      <FileRef
-         location = "group:GQFlowControllerDelegate.h">
-      </FileRef>
-      <FileRef
-         location = "group:GQViewController.h">
-      </FileRef>
-      <FileRef
-         location = "group:GQViewController.m">
-      </FileRef>
    </Group>
    <FileRef
       location = "group:README.md">

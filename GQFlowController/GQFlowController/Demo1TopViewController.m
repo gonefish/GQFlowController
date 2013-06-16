@@ -19,7 +19,7 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
 {
     if (direction == GQFlowDirectionLeft
         && self.view.frame.origin.x == 0) {

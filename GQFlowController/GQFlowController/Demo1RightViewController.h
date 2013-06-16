@@ -6,8 +6,6 @@
 //  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
 //
 
-#import "GQViewController.h"
-
-@interface Demo1RightViewController : GQViewController
+@interface Demo1RightViewController : UIViewController
 
 @end

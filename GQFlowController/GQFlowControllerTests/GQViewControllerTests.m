@@ -10,45 +10,45 @@
 
 @implementation GQViewControllerTests
 
-- (void)setUp
-{
-    [super setUp];
-    
-    // Set-up code here.
-    
-    self.viewController = [[GQViewController alloc] init];
-}
+//- (void)setUp
+//{
+//    [super setUp];
+//    
+//    // Set-up code here.
+//    
+//    self.viewController = [[GQViewController alloc] init];
+//}
+//
+//- (void)tearDown
+//{
+//    // Tear-down code here.
+//    
+//    [super tearDown];
+//    
+//    self.viewController = nil;
+//}
 
-- (void)tearDown
-{
-    // Tear-down code here.
-    
-    [super tearDown];
-    
-    self.viewController = nil;
-}
-
-- (void)testActive
-{
-    [self.viewController setOverlayContent:YES];
-    
-    STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)0, @"coverView don't add view");
-    
-    [self.viewController setOverlayContent:NO];
-    
-    STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)1, @"coverView add view");
-}
-
-- (void)testPrivateFlowControllerSetter
-{
-    STAssertNil(self.viewController.flowController, @"don't setting flowController");
-    
-    GQFlowController *flowController = [[GQFlowController alloc] init];
-    
-    [self.viewController performSelector:@selector(setFlowController:)
-                              withObject:flowController];
-    
-    STAssertNotNil(self.viewController.flowController, @"flowController settings");
-}
+//- (void)testActive
+//{
+//    [self.viewController setOverlayContent:YES];
+//    
+//    STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)0, @"coverView don't add view");
+//    
+//    [self.viewController setOverlayContent:NO];
+//    
+//    STAssertEquals([[self.viewController.view subviews] count], (NSUInteger)1, @"coverView add view");
+//}
+//
+//- (void)testPrivateFlowControllerSetter
+//{
+//    STAssertNil(self.viewController.flowController, @"don't setting flowController");
+//    
+//    GQFlowController *flowController = [[GQFlowController alloc] init];
+//    
+//    [self.viewController performSelector:@selector(setFlowController:)
+//                              withObject:flowController];
+//    
+//    STAssertNotNil(self.viewController.flowController, @"flowController settings");
+//}
 
 @end

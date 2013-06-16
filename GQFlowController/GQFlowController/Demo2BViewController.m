@@ -89,7 +89,7 @@
     if (indexPath.row == 0) {
         [self.flowController flowOutToRootViewControllerAnimated:YES];
     } else if (indexPath.row == 1) {
-        GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+        UIViewController *a = [self.flowController.viewControllers objectAtIndex:0];
 
         [self.flowController setViewControllers:@[a] animated:YES];
     }

@@ -32,7 +32,7 @@
     [self.flowController flowInViewController:b
                                      animated:YES];
     
-//    GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+//    UIViewController *a = [self.flowController.viewControllers objectAtIndex:0];
 //    
 //    [self.flowController setViewControllers:@[a] animated:YES];
 }
@@ -56,7 +56,7 @@
     return 0.15;
 }
 
-- (GQViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
 {
     if (direction == GQFlowDirectionLeft) {
         return [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
@@ -100,7 +100,7 @@
     if (indexPath.row == 0) {
         [self.flowController flowOutViewControllerAnimated:YES];
     } else if (indexPath.row == 1) {        
-        GQViewController *a = [self.flowController.viewControllers objectAtIndex:0];
+        UIViewController *a = [self.flowController.viewControllers objectAtIndex:0];
 
         [self.flowController setViewControllers:@[a] animated:YES];
     } else if (indexPath.row == 2) {

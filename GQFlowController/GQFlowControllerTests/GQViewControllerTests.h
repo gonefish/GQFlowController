@@ -13,6 +13,6 @@
 
 @interface GQViewControllerTests : SenTestCase
 
-@property (nonatomic, strong) GQViewController *viewController;
+//@property (nonatomic, strong) GQViewController *viewController;
 
 @end

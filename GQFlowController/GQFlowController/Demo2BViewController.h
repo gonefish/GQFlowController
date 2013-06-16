@@ -7,8 +7,7 @@
 //
 
 #import "GQFlowController.h"
-#import "GQFlowControllerDelegate.h"
 
-@interface Demo2BViewController : GQViewController <GQFlowControllerDelegate>
+@interface Demo2BViewController : UIViewController <GQFlowControllerDelegate>
 
 @end

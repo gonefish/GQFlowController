@@ -29,20 +29,20 @@
 
 - (void)testSetViewControllersAnimated
 {    
-    NSArray *aViewControllers = @[[UIViewController new], [GQViewController new]];
+    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
     
     self.flowController.viewControllers = aViewControllers;
     
     STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
     
-    for (GQViewController *controller in self.flowController.viewControllers) {
+    for (UIViewController *controller in self.flowController.viewControllers) {
         STAssertEqualObjects(controller.flowController, self.flowController, @"");
     }
 }
 
 - (void)testTopViewController
 {
-    NSArray *aViewControllers = @[[GQViewController new], [GQViewController new]];
+    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
     
     self.flowController.viewControllers = aViewControllers;
     
@@ -51,8 +51,8 @@
 
 - (void)testInitWithViewControllers
 {
-    GQViewController *v1 = [GQViewController new];
-    GQViewController *v2 = [GQViewController new];
+    UIViewController *v1 = [UIViewController new];
+    UIViewController *v2 = [UIViewController new];
     
     NSArray *aViewControllers = @[v1, v2];
     
@@ -68,7 +68,7 @@
 
 - (void)testInitWithRootViewController
 {
-    GQViewController *testController = [GQViewController new];
+    UIViewController *testController = [UIViewController new];
     GQFlowController *flowController =[[GQFlowController alloc] initWithRootViewController:testController];
     
     STAssertEquals([flowController.viewControllers count], (NSUInteger)1, @"");
@@ -80,7 +80,7 @@
 
 - (void)testFlowInViewControllerAnimated
 {
-    GQViewController *testController = [GQViewController new];
+    UIViewController *testController = [UIViewController new];
     
     [self.flowController flowInViewController:testController animated:NO];
     
@@ -89,8 +89,8 @@
 
 - (void)testFlowOutViewControllerAnimated
 {
-    GQViewController *a = [GQViewController new];
-    GQViewController *b = [GQViewController new];
+    UIViewController *a = [UIViewController new];
+    UIViewController *b = [UIViewController new];
     
     STAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"没有viewControllers时，应该nil");
     
@@ -98,7 +98,7 @@
     
     STAssertEqualObjects(b.flowController, self.flowController, @"flowController属性没有被设置");
     
-    GQViewController *pop = [self.flowController flowOutViewControllerAnimated:NO];
+    UIViewController *pop = [self.flowController flowOutViewControllerAnimated:NO];
     
     STAssertEqualObjects(pop, b, @"滑出的对象不正确");
     
@@ -111,7 +111,7 @@
 
 - (void)testFlowOutToRootViewControllerAnimated
 {
-    NSArray *aViewControllers = @[[GQViewController new], [GQViewController new], [GQViewController new], [GQViewController new]];
+    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new], [UIViewController new], [UIViewController new]];
     
     self.flowController.viewControllers = aViewControllers;
     
@@ -122,8 +122,8 @@
 
 - (void)testFlowOutToViewControllerAnimated
 {
-    GQViewController *toViewController = [GQViewController new];
-    NSArray *aViewControllers = @[[GQViewController new], [GQViewController new], toViewController, [GQViewController new]];
+    UIViewController *toViewController = [UIViewController new];
+    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new], toViewController, [UIViewController new]];
     
     self.flowController.viewControllers = aViewControllers;
     

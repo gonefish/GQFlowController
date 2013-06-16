@@ -21,7 +21,7 @@ BOOL checkIsMainThread() {
 
 @interface GQFlowController ()
 
-@property (nonatomic, strong) GQViewController *topViewController;
+@property (nonatomic, strong) UIViewController *topViewController;
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
 
 @property (nonatomic) CGPoint prevPoint;
@@ -71,12 +71,12 @@ BOOL checkIsMainThread() {
     return self;
 }
 
-- (id)initWithRootViewController:(GQViewController *)rootViewController
+- (id)initWithRootViewController:(UIViewController *)rootViewController
 {
     return [self initWithViewControllers:@[rootViewController]];
 }
 
-- (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated
+- (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     if ([viewController isKindOfClass:[GQFlowController class]]) {
         return;
@@ -90,7 +90,7 @@ BOOL checkIsMainThread() {
     }];
 }
 
-- (GQViewController *)flowOutViewControllerAnimated:(BOOL)animated
+- (UIViewController *)flowOutViewControllerAnimated:(BOOL)animated
 {
     if ([self.innerViewControllers count] > 1) {
         NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
@@ -117,7 +117,7 @@ BOOL checkIsMainThread() {
     }
 }
 
-- (NSArray *)flowOutToViewController:(GQViewController *)viewController animated:(BOOL)animated
+- (NSArray *)flowOutToViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
@@ -152,11 +152,11 @@ BOOL checkIsMainThread() {
 {
     if (!checkIsMainThread()) return;
     
-    // 判断是否为GQViewController的子类，如不是丢弃
+    // 判断是否为UIViewController的子类，如不是丢弃
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
     [viewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-        if (![obj isKindOfClass:[GQViewController class]]) {
+        if (![obj isKindOfClass:[UIViewController class]]) {
             [indexSet addIndex:idx];
         } else {
             [obj performSelector:@selector(setFlowController:)
@@ -197,7 +197,7 @@ BOOL checkIsMainThread() {
             [self holdViewControllers:@[topmostViewController]];
             
             // 重构层级中的视图控制器
-            GQViewController *flowInViewController = [newArray lastObject];
+            UIViewController *flowInViewController = [newArray lastObject];
             
             [newArray removeLastObject];
             
@@ -274,7 +274,7 @@ BOOL checkIsMainThread() {
  */
 - (void)updateChildViewControllers:(NSMutableArray *)viewControllers
 {
-    for (GQViewController *vc in viewControllers) {
+    for (UIViewController *vc in viewControllers) {
         [self addContentViewController:vc];
     }
     
@@ -283,9 +283,9 @@ BOOL checkIsMainThread() {
     self.topViewController = [viewControllers lastObject];
 }
 
-- (void)addTopViewController:(GQViewController *)viewController
+- (void)addTopViewController:(UIViewController *)viewController
 {
-    // 设置GQViewControllerItem
+    // 设置UIViewControllerItem
     [viewController performSelector:@selector(setFlowController:)
                          withObject:self];
     
@@ -326,7 +326,7 @@ BOOL checkIsMainThread() {
     return _innerViewControllers;
 }
 
-- (void)flowInViewController:(GQViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
+- (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
     if (!checkIsMainThread()) return;
     
@@ -360,8 +360,8 @@ BOOL checkIsMainThread() {
     // 准备移除控制器
     NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
     
-    for (GQViewController *vc in popViewControllers) {
-        // 设置GQViewController的flowController属性为nil
+    for (UIViewController *vc in popViewControllers) {
+        // 设置UIViewController的flowController属性为nil
         [vc performSelector:@selector(setFlowController:)
                   withObject:nil];
         
@@ -409,7 +409,7 @@ BOOL checkIsMainThread() {
  */
 - (void)layoutViewControllers
 {
-    for (GQViewController *controller in self.innerViewControllers) {
+    for (UIViewController *controller in self.innerViewControllers) {
         [self.view addSubview:controller.view];
     }
 }
@@ -417,7 +417,7 @@ BOOL checkIsMainThread() {
 
 
 // 滑入的起初位置
-- (CGRect)inOriginRectForViewController:(GQViewController *)viewController
+- (CGRect)inOriginRectForViewController:(UIViewController *)viewController
 {
     CGRect viewFrame = viewController.view.frame;
     
@@ -457,7 +457,7 @@ BOOL checkIsMainThread() {
 }
 
 // 滑入的目标位置
-- (CGRect)inDestinationRectForViewController:(GQViewController *)viewController
+- (CGRect)inDestinationRectForViewController:(UIViewController *)viewController
 {
     CGRect viewFrame = viewController.view.frame;
     CGRect destinationFrame = CGRectZero;
@@ -496,7 +496,7 @@ BOOL checkIsMainThread() {
 }
 
 //// 滑出的默认初始位置
-//- (CGRect)outOriginRectForViewController:(GQViewController *)viewController
+//- (CGRect)outOriginRectForViewController:(UIViewController *)viewController
 //{
 //    CGRect viewFrame = viewController.view.frame;
 //    CGRect originFrame = CGRectZero;
@@ -505,7 +505,7 @@ BOOL checkIsMainThread() {
 //}
 
 // 滑出的目标位置、任意位置都能滑出
-- (CGRect)outDestinationRectForViewController:(GQViewController *)viewController
+- (CGRect)outDestinationRectForViewController:(UIViewController *)viewController
 {
     CGRect viewFrame = viewController.view.frame;
     CGRect destinationFrame = CGRectZero;
@@ -630,7 +630,7 @@ BOOL checkIsMainThread() {
 
             // 移动的View可能不是Top View
             if ([self.topViewController respondsToSelector:@selector(flowController:viewControllerForFlowDirection:)]) {
-                GQViewController *controller = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+                UIViewController *controller = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
                                                                                      viewControllerForFlowDirection:self.flowingDirection];
                 
                 // 判断是否实现GQFlowControllerDelegate
@@ -784,7 +784,7 @@ BOOL checkIsMainThread() {
 
 @end
 
-#pragma mark - GQViewControllerItem Category
+#pragma mark - UIViewControllerItem Category
 
 static char kGQFlowControllerObjectKey;
 static char kGQFlowInDirectionObjectKey;
