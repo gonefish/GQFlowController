@@ -102,15 +102,15 @@
 - (void)didFlowToDestinationRect:(GQFlowController *)flowController
 {
     if (self.view.frame.origin.x > 0) {
-        [[[flowController viewControllers] objectAtIndex:1] setOverlayContent:YES];
-        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:NO];
-    } else if (self.view.frame.origin.x < 0) {
-        [[[flowController viewControllers] objectAtIndex:0] setOverlayContent:YES];
-        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:NO];
-    } else {
         [[[flowController viewControllers] objectAtIndex:1] setOverlayContent:NO];
+        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:YES];
+    } else if (self.view.frame.origin.x < 0) {
         [[[flowController viewControllers] objectAtIndex:0] setOverlayContent:NO];
         [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:YES];
+    } else {
+        [[[flowController viewControllers] objectAtIndex:1] setOverlayContent:YES];
+        [[[flowController viewControllers] objectAtIndex:0] setOverlayContent:YES];
+        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:NO];
     }
 }
 

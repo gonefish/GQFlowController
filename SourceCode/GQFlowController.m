@@ -606,7 +606,7 @@ BOOL checkIsMainThread() {
         self.startPoint = pressPoint;
         self.prevPoint = pressPoint;
         
-        self.topViewController.overlayContent = NO;
+        self.topViewController.overlayContent = YES;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {            
@@ -687,7 +687,7 @@ BOOL checkIsMainThread() {
             // 重置长按状态信息
             [self resetLongPressStatus];
             
-            self.topViewController.overlayContent = YES;
+            self.topViewController.overlayContent = NO;
             
             return;
         }
@@ -768,7 +768,7 @@ BOOL checkIsMainThread() {
                                  }
                              }
 
-                             self.topViewController.overlayContent = YES;
+                             self.topViewController.overlayContent = NO;
                              
                              // 重置长按状态信息
                              [self resetLongPressStatus];
@@ -858,9 +858,9 @@ static char kQGOverlayViewObjectKey;
     }
     
     if (yesOrNo) {
-        [overlayView removeFromSuperview];
-    } else {
         [self.view addSubview:overlayView];
+    } else {
+        [overlayView removeFromSuperview];
     }
 }
 

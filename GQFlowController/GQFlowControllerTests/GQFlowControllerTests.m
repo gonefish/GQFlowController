@@ -177,11 +177,11 @@
 {
     UIViewController *vc = [[UIViewController alloc] init];
     
-    [vc setOverlayContent:YES];
+    [vc setOverlayContent:NO];
     
     STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"coverView don't add view");
     
-    [vc setOverlayContent:NO];
+    [vc setOverlayContent:YES];
     
     STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"coverView add view");
 }
