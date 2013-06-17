@@ -571,7 +571,7 @@ BOOL checkIsMainThread() {
 - (void)addPressGestureRecognizerForTopView
 {
     // 判断是否实现GQFlowControllerDelegate
-    if (![self.topViewController conformsToProtocol:@protocol(GQFlowControllerDelegate)]) {
+    if (![self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
         return;
     }
     
@@ -588,7 +588,7 @@ BOOL checkIsMainThread() {
 - (void)removeTopViewPressGestureRecognizer
 {
     // 判断是否实现GQFlowControllerDelegate
-    if (![self.topViewController conformsToProtocol:@protocol(GQFlowControllerDelegate)]) {
+    if (![self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
         return;
     }
     
@@ -630,11 +630,11 @@ BOOL checkIsMainThread() {
 
             // 移动的View可能不是Top View
             if ([self.topViewController respondsToSelector:@selector(flowController:viewControllerForFlowDirection:)]) {
-                UIViewController *controller = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+                UIViewController *controller = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                                                      viewControllerForFlowDirection:self.flowingDirection];
                 
                 // 判断是否实现GQFlowControllerDelegate
-                if (![controller conformsToProtocol:@protocol(GQFlowControllerDelegate)]) {
+                if (![controller conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
                     NSLog(@"滑出其它的控制器必须实现GQFlowControllerDelegate");
                 } else {
                     // 校验不是topViewController，并添加到容器中
@@ -671,7 +671,7 @@ BOOL checkIsMainThread() {
         }
 
         if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
-            shouldMove = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+            shouldMove = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                                              shouldFlowToRect:newFrame];
         }
         
@@ -698,7 +698,7 @@ BOOL checkIsMainThread() {
         BOOL cancelFlowing = NO; // 是否需要取消回退滑动
         
         if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
-            destinationFrame = [(id<GQFlowControllerDelegate>)self.topViewController flowController:self
+            destinationFrame = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                          destinationRectForFlowDirection:self.flowingDirection];
             
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
@@ -706,7 +706,7 @@ BOOL checkIsMainThread() {
             }
         } else {
             if ([self.topViewController respondsToSelector:@selector(flowingBoundary:)]) {
-                CGFloat boundary = [(id<GQFlowControllerDelegate>)self.topViewController flowingBoundary:self];
+                CGFloat boundary = [(id<GQViewControllerDelegate>)self.topViewController flowingBoundary:self];
 
                 if (boundary > .0
                     && boundary < 1.0) {
@@ -750,7 +750,7 @@ BOOL checkIsMainThread() {
                          }
                          completion:^(BOOL finished){                                 
                              if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect:)]) {
-                                 [(id<GQFlowControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
+                                 [(id<GQViewControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
                              }
 
                              // 没有取消回滑
@@ -792,7 +792,7 @@ static char kGQFlowOutDirectionObjectKey;
 static char kQGOverlayContentObjectKey;
 static char kQGOverlayViewObjectKey;
 
-@implementation UIViewController (GQFlowController)
+@implementation UIViewController (GQViewController)
 
 @dynamic flowController;
 @dynamic flowInDirection;
