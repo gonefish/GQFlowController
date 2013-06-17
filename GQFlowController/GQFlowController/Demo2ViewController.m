@@ -3,7 +3,7 @@
 //  GQFlowController
 //
 //  Created by 钱国强 on 13-5-11.
-//  Copyright (c) 2013年 gonefish@gmail.com. All rights reserved.
+//  Copyright (c) 2013年 Qian GuoQiang. All rights reserved.
 //
 
 #import "Demo2ViewController.h"

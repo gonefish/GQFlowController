@@ -301,7 +301,7 @@
 			attributes = {
 				CLASSPREFIX = GQ;
 				LastUpgradeCheck = 0460;
-				ORGANIZATIONNAME = "gonefish@gmail.com";
+				ORGANIZATIONNAME = "Qian GuoQiang";
 			};
 			buildConfigurationList = E34A63F516FEB8DD0053A496 /* Build configuration list for PBXProject "GQFlowController" */;
 			compatibilityVersion = "Xcode 3.2";
