@@ -698,11 +698,14 @@ BOOL checkIsMainThread() {
         BOOL cancelFlowing = NO; // 是否需要取消回退滑动
         
         if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
+            // 自定义视图控制器最终停止移动的位置
             destinationFrame = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                          destinationRectForFlowDirection:self.flowingDirection];
             
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
                 cancelFlowing = YES;
+                
+                destinationFrame = self.originalFrame;
             }
         } else {
             if ([self.topViewController respondsToSelector:@selector(flowingBoundary:)]) {
