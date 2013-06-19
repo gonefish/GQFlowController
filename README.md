@@ -1,11 +1,14 @@
 GQFlowController
 ================
 
-GQFlowController实现了一个多层的容器视图控制器，支持从4个不同方向滑入或滑出视图界面。
+GQFlowController实现了一个多层的容器视图控制器，其目标是实现类似于[网易新闻客户端](https://itunes.apple.com/cn/app/wang-yi-xin-wen/id425349261?mt=8)iPhone的UI结构（主要是3.0之后的版本）。
 
-目标是实现类似于[网易新闻客户端3.0](https://itunes.apple.com/cn/app/wang-yi-xin-wen/id425349261?mt=8)的UI结构。
-
-提供通过架构，支持iPad和iPhone。
+特性：
+* 支持从4个不同方向滑入或滑出视图控制器界面
+* 多层视图控制器结构
+* 滑动手势
+* ARC支持
+* 支持iPad(暂不支持)
 
 
 启用长按移动视图手势
@@ -88,3 +91,7 @@ iPad的支持
 
 [Q.GuoQiang](https://github.com/gonefish)
 
+License
+-------
+
+GQFlowController is available under the New BSD license. See the LICENSE file for more info.

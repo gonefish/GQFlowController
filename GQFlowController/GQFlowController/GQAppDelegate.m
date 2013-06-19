@@ -36,7 +36,7 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     
-    self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+    self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo1ViewControllers]];
     
     self.window.rootViewController = self.flowController;
     
