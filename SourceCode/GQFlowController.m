@@ -229,15 +229,6 @@ BOOL checkIsMainThread() {
 
 #pragma mark - UIGestureRecognizerDelegate Protocol
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if (self.topViewController.view == touch.view) {
-        return YES;
-    } else {
-        return NO;
-    }
-}
-
 #pragma mark - UIViewController Container Method
 
 - (void)holdViewControllers:(NSArray *)viewControllers
@@ -580,6 +571,7 @@ BOOL checkIsMainThread() {
                                                                                     action:@selector(pressMoveGesture)];
         self.pressGestureRecognizer.delegate = self;
         self.pressGestureRecognizer.minimumPressDuration = .0;
+        self.pressGestureRecognizer.cancelsTouchesInView = NO;
     }
     
     [self.topViewController.view addGestureRecognizer:self.pressGestureRecognizer];
