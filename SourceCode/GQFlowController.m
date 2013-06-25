@@ -598,6 +598,7 @@ BOOL checkIsMainThread() {
         self.startPoint = pressPoint;
         self.prevPoint = pressPoint;
         
+        // 滑动时添加遮罩层，阻止其它事件
         self.topViewController.overlayContent = YES;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
@@ -657,6 +658,7 @@ BOOL checkIsMainThread() {
         // 能否移动
         BOOL shouldMove = NO;
         
+        // 仅仅允许设置的移动方位
         if (self.flowingDirection == self.topViewController.flowInDirection
             || self.flowingDirection == self.topViewController.flowOutDirection) {
             shouldMove = YES;
@@ -743,39 +745,34 @@ BOOL checkIsMainThread() {
                          animations:^{
                              self.topViewController.view.frame = destinationFrame;
                          }
-                         completion:^(BOOL finished){                                 
+                         completion:^(BOOL finished){
                              if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect:)]) {
-                                 [(id<GQViewControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
+                                 [(id <GQViewControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
                              }
-
-                             // 没有取消回滑
-                             if (!cancelFlowing) {
-                                 if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                                     if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
+                             
+                             if (![self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
+                                 // 不取消回滑
+                                 if (!cancelFlowing) {
+                                     if (self.flowingDirection == self.topViewController.flowOutDirection) {
                                          [self removeTopViewController];
-                                         
-                                         [self addPressGestureRecognizerForTopView];
                                      }
-                                 } else if (self.flowingDirection == self.topViewController.flowInDirection) {
-                                     if (CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
-                                         [self addPressGestureRecognizerForTopView];
+                                 } else {
+                                     if (self.flowingDirection == self.topViewController.flowInDirection) {
+                                         [self removeTopViewController];
                                      }
                                  }
+                                 
+                                 self.topViewController.overlayContent = NO;
                              }
-
-                             self.topViewController.overlayContent = NO;
+                             
+                             // 重新添加top view的手势
+                             [self addPressGestureRecognizerForTopView];
                              
                              // 重置长按状态信息
                              [self resetLongPressStatus];
                          }];
     }
-    
-    NSLog(@"%f", pressPoint.x);
 }
-
-
-
-
 
 @end
 
