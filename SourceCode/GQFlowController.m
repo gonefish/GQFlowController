@@ -303,6 +303,7 @@ BOOL checkIsMainThread() {
     
     [self.topViewController removeFromParentViewController];
     
+    // 不自己删除lastObject是因为确保viewControllers被设置时的正确性
     self.topViewController = [self.innerViewControllers lastObject];
 }
 
@@ -751,15 +752,12 @@ BOOL checkIsMainThread() {
                              }
                              
                              if (![self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
-                                 // 不取消回滑
-                                 if (!cancelFlowing) {
-                                     if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                                         [self removeTopViewController];
-                                     }
-                                 } else {
-                                     if (self.flowingDirection == self.topViewController.flowInDirection) {
-                                         [self removeTopViewController];
-                                     }
+
+                                 // 如果topViewController已经移出窗口，则进行删除操作
+                                 if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
+                                     [self.innerViewControllers removeLastObject];
+                                     
+                                     [self removeTopViewController];
                                  }
                                  
                                  self.topViewController.overlayContent = NO;
@@ -845,6 +843,8 @@ static char kQGOverlayViewObjectKey;
     
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.frame];
+//        [(UIView *)overlayView setBackgroundColor:[UIColor redColor]];
+//        [(UIView *)overlayView setAlpha:.5];
         
         objc_setAssociatedObject(self, &kQGOverlayViewObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
