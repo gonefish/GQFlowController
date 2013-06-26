@@ -184,6 +184,8 @@
     [vc setOverlayContent:YES];
     
     STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"coverView add view");
+    
+    STAssertEquals(vc.isOverlayContent, YES, @"");
 }
 
 @end

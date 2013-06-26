@@ -21,14 +21,19 @@
 
 - (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
 {
+    UIViewController *leftViewController = [[flowController viewControllers] objectAtIndex:0];
+    leftViewController.overlayContent = YES;
+    UIViewController *rightViewController = [[flowController viewControllers] objectAtIndex:1];
+    rightViewController.overlayContent = YES;
+    
     if (direction == GQFlowDirectionLeft
         && self.view.frame.origin.x == 0) {
-        [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:NO];
-        [[[[flowController viewControllers] objectAtIndex:1] view] setHidden:YES];
+        leftViewController.view.hidden = NO;
+        rightViewController.view.hidden = YES;
     } else if (direction == GQFlowDirectionRight
                && self.view.frame.origin.x == 0) {
-        [[[[flowController viewControllers] objectAtIndex:1] view] setHidden:NO];
-        [[[[flowController viewControllers] objectAtIndex:0] view] setHidden:YES];
+        leftViewController.view.hidden = YES;
+        rightViewController.view.hidden = NO;
     }
     
     return self;
@@ -101,16 +106,20 @@
 
 - (void)didFlowToDestinationRect:(GQFlowController *)flowController
 {
+    UIViewController *leftViewController = [[flowController viewControllers] objectAtIndex:0];
+    UIViewController *rightViewController = [[flowController viewControllers] objectAtIndex:1];
+    UIViewController *topViewController = [[flowController viewControllers] objectAtIndex:2];
+    
     if (self.view.frame.origin.x > 0) {
-        [[[flowController viewControllers] objectAtIndex:1] setOverlayContent:NO];
-        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:YES];
+        rightViewController.overlayContent = NO;
+        topViewController.overlayContent = YES;
     } else if (self.view.frame.origin.x < 0) {
-        [[[flowController viewControllers] objectAtIndex:0] setOverlayContent:NO];
-        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:YES];
+        leftViewController.overlayContent = NO;
+        topViewController.overlayContent = YES;
     } else {
-        [[[flowController viewControllers] objectAtIndex:1] setOverlayContent:YES];
-        [[[flowController viewControllers] objectAtIndex:0] setOverlayContent:YES];
-        [[[flowController viewControllers] objectAtIndex:2] setOverlayContent:NO];
+        leftViewController.overlayContent = YES;
+        rightViewController.overlayContent = YES;
+        topViewController.overlayContent = NO;
     }
 }
 
