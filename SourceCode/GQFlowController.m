@@ -37,8 +37,18 @@ BOOL checkIsMainThread() {
 @dynamic viewControllers;
 
 - (void)loadView
-{
-    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+{    
+    CGRect initFrame = [[UIScreen mainScreen] bounds];
+
+    if (self.wantsFullScreenLayout == NO) {
+        CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+        initFrame = CGRectMake(.0,
+                               statusBarFrame.size.height,
+                               initFrame.size.width,
+                               initFrame.size.height - statusBarFrame.size.height);
+    }
+    
+    self.view = [[UIView alloc] initWithFrame:initFrame];
     self.view.backgroundColor = [UIColor whiteColor];
 
     self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
