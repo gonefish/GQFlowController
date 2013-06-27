@@ -559,11 +559,17 @@ BOOL checkIsMainThread() {
     // 速度以0.5秒移动一屏为基准
     return 0.00156 * ABS(length);
 }
+
 // 添加手势
 - (void)addPressGestureRecognizerForTopView
 {
     // 判断是否实现GQFlowControllerDelegate
     if (![self.topViewController conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
+        return;
+    }
+    
+    // 仅有1个视图控制器时总是不添加手势
+    if ([self.viewControllers count] < 2) {
         return;
     }
     
