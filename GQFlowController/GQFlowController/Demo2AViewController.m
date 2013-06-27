@@ -78,16 +78,18 @@
     static NSString *MyIdentifier = @"Demo1Identifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:MyIdentifier];
     }
     
     if (indexPath.row == 0) {
         cell.textLabel.text = @"flowOutViewControllerAnimated:";
+        cell.detailTextLabel.text = @"Press to right moveing";
     } else if (indexPath.row == 1) {
         cell.textLabel.text = @"setViewControllers:animated:";
     } else if (indexPath.row == 2) {
         cell.textLabel.text = @"flowInViewController:animated:";
+        cell.detailTextLabel.text = @"Press to left moveing";
     }
     
     return cell;
