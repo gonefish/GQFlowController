@@ -11,9 +11,17 @@ GQFlowController实现了一个多层的容器视图控制器，其目标是实�
 * 支持iPad(暂不支持)
 
 
-启用长按移动视图手势
---------------
-在GQFlowController的设计中，提供对topViewController的长按手势支持，只需实现GQViewControllerDelegate中的方法，就可以控制界面的滑动效果。
+
+GQViewController Category
+-------------------------
+通过Category的特性来扩展UIViewController的方法，这些方法可以让你在UIViewController中访问GQFlowController的实例和其它功能的设置。
+
+
+GQViewControllerDelegate Protocol
+---------------------------------
+该协议定义了长按滑动手势的相关方法，可以在UIViewController的子类中实现该协议，来控制不同的长按滑动行为。
+
+在GQFlowController的设计中，提供对顶层内容视图控制器的长按手势支持，当顶层UIViewController实现该协议，则会激活GQFlowController中长按滑动手势功能。
 
 
 从UINavigationController移植到GQFlowController
@@ -79,6 +87,14 @@ Demo说明
 Demo1展示了如果实现类Path的实现。
 
 Demo2展示了类UINavigationController的各个方法。
+
+
+Requirements
+------------
+GQFlowController requires Xcode 4.5 and iOS 6.0 or later SDK (LLVM Compiler 4.0)。
+
+[Objective-C Feature Availability Index](http://developer.apple.com/library/ios/#releasenotes/ObjectiveC/ObjCAvailabilityIndex/)
+
 
 计划
 -----
