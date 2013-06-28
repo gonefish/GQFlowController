@@ -681,16 +681,16 @@ BOOL checkIsMainThread() {
         
         // 能否移动
         BOOL shouldMove = NO;
-        
-        // 仅仅允许设置的移动方位
-        if (self.flowingDirection == self.topViewController.flowInDirection
-            || self.flowingDirection == self.topViewController.flowOutDirection) {
-            shouldMove = YES;
-        }
 
         if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
             shouldMove = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                                              shouldFlowToRect:newFrame];
+        } else {
+            // 仅仅允许设置的移动方位
+            if (self.flowingDirection == self.topViewController.flowInDirection
+                || self.flowingDirection == self.topViewController.flowOutDirection) {
+                shouldMove = YES;
+            }
         }
         
         if (shouldMove) {
