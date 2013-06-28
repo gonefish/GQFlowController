@@ -68,6 +68,11 @@ BOOL checkIsMainThread() {
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return [self.topViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+}
+
 #pragma mark - Public Method
 
 - (id)initWithViewControllers:(NSArray *)viewControllers

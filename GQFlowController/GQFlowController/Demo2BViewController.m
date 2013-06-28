@@ -41,6 +41,11 @@
     
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return YES;
+}
+
 #pragma mark - GQFlowControllerDelegate
 
 - (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame
