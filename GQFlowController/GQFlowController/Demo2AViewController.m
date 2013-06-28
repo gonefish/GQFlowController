@@ -70,6 +70,14 @@
     }
 }
 
+- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame
+{
+    if (frame.origin.x >= .0) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
 
 #pragma mark - UITableViewDataSource Protocol
 
