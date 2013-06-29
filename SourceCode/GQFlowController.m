@@ -62,15 +62,15 @@ BOOL checkIsMainThread() {
     //[self layoutViewControllers];
 }
 
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return [self.topViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
 }
 
 #pragma mark - Public Method
