@@ -97,12 +97,16 @@ BOOL checkIsMainThread() {
         return;
     }
     
+    viewController.overlayContent = YES;
+    
     [self flowInViewController:viewController
                       animated:animated
                completionBlock:^{
-        // 添加手势
-        [self addPressGestureRecognizerForTopView];
-    }];
+                   // 添加手势
+                   [self addPressGestureRecognizerForTopView];
+                   
+                   viewController.overlayContent = NO;
+               }];
 }
 
 - (UIViewController *)flowOutViewControllerAnimated:(BOOL)animated
@@ -394,7 +398,9 @@ BOOL checkIsMainThread() {
                                      destinationRect:destinationFrame
                                     flowingDirection:self.topViewController.flowOutDirection];
         }
-        
+    
+    self.topViewController.overlayContent = YES;
+    
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
@@ -620,10 +626,8 @@ BOOL checkIsMainThread() {
         self.startPoint = pressPoint;
         self.prevPoint = pressPoint;
         
-        if (self.topViewController.isOverlayContent == NO) {
-            // 滑动时添加遮罩层，阻止其它事件
-            self.topViewController.overlayContent = YES;
-        }
+        // 滑动时激活遮罩层
+        self.topViewController.overlayContent = YES;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {            
@@ -705,9 +709,8 @@ BOOL checkIsMainThread() {
             // 重置长按状态信息
             [self resetLongPressStatus];
             
-            if (self.topViewController.isOverlayContent == NO) {
-                self.topViewController.overlayContent = NO;
-            }
+
+            self.topViewController.overlayContent = NO;
 
             return;
         }
@@ -862,9 +865,13 @@ static char kQGOverlayViewObjectKey;
 
 - (void)setOverlayContent:(BOOL)yesOrNo
 {
+    if (self.isOverlayContent == yesOrNo) {
+        return;
+    }
+    
     objc_setAssociatedObject(self, &kQGOverlayContentObjectKey, [NSNumber numberWithInt:yesOrNo], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
-    id overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
+    UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
     
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.frame];
@@ -875,9 +882,27 @@ static char kQGOverlayViewObjectKey;
     }
     
     if (yesOrNo) {
+        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
+        
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        
+        [self.view.layer renderInContext:context];
+        
+        UIImage *contentShot = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
+        
+        UIImageView* shotView = [[UIImageView alloc] initWithImage:contentShot];
+        
+        [overlayView addSubview:shotView];
+        
         [self.view addSubview:overlayView];
     } else {
         [overlayView removeFromSuperview];
+        
+        [overlayView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            [(UIView *)obj removeFromSuperview];
+        }];
     }
 }
 
