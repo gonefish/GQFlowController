@@ -59,7 +59,18 @@ BOOL checkIsMainThread() {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    //[self layoutViewControllers];
+    [self layoutViewControllers];
+    
+    [self addPressGestureRecognizerForTopView];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        [self removeContentViewControler:obj];
+    }];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
@@ -171,7 +182,7 @@ BOOL checkIsMainThread() {
 {
     if (!checkIsMainThread()) return;
     
-    // 判断是否为UIViewController的子类，如不是丢弃
+    // 如果不是UIViewController的子类，则过滤掉
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
     [viewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
@@ -183,66 +194,72 @@ BOOL checkIsMainThread() {
         }
     }];
     
-    NSMutableArray *newArray = [NSMutableArray arrayWithArray:viewControllers];
+    NSMutableArray *newArray = [viewControllers mutableCopy];
     
     [newArray removeObjectsAtIndexes:indexSet];
     
-    if (animated) {
-        if ([self.innerViewControllers containsObject:[newArray lastObject]]) {
-            if ([newArray lastObject] == [self.innerViewControllers lastObject]) {
-                // No Animate
-                [self holdViewControllers:@[[newArray lastObject]]];
-                
-                [self updateChildViewControllers:newArray];
-                
-                [self addPressGestureRecognizerForTopView];
+    if ([self isViewLoaded]) {
+        if (animated) {
+            if ([self.innerViewControllers containsObject:[newArray lastObject]]) {
+                if ([newArray lastObject] == [self.innerViewControllers lastObject]) {
+                    // No Animate
+                    [self holdViewControllers:@[[newArray lastObject]]];
+                    
+                    [self updateChildViewControllers:newArray];
+                    
+                    [self addPressGestureRecognizerForTopView];
+                } else {
+                    // Flow Out
+                    // 保留最上面的视图控制器
+                    [self holdViewControllers:@[[self.innerViewControllers lastObject]]];
+                    
+                    [newArray addObject:[self.innerViewControllers lastObject]];
+                    
+                    [self updateChildViewControllers:newArray];
+                    
+                    [self flowOutViewControllerAnimated:YES];
+                }
             } else {
-                // Flow Out
-                // 保留最上面的视图控制器
-                [self holdViewControllers:@[[self.innerViewControllers lastObject]]];
+                // Flow In
                 
-                [newArray addObject:[self.innerViewControllers lastObject]];
+                // 保留最上层的视图控制器
+                UIViewController *topmostViewController = [self.innerViewControllers lastObject];
+                
+                [self holdViewControllers:@[topmostViewController]];
+                
+                // 重构层级中的视图控制器
+                UIViewController *flowInViewController = [newArray lastObject];
+                
+                [newArray removeLastObject];
+                
+                [newArray addObject:topmostViewController];
                 
                 [self updateChildViewControllers:newArray];
                 
-                [self flowOutViewControllerAnimated:YES];
+                [self flowInViewController:flowInViewController
+                                  animated:animated
+                           completionBlock:^(){
+                               // 添加手势
+                               [self addPressGestureRecognizerForTopView];
+                               
+                               // 移除原最上层的视图控制器
+                               [self removeContentViewControler:topmostViewController];
+                               
+                               [self.innerViewControllers removeObject:topmostViewController];
+                           }];
             }
         } else {
-            // Flow In
-            
-            // 保留最上层的视图控制器
-            UIViewController *topmostViewController = [self.innerViewControllers lastObject];
-            
-            [self holdViewControllers:@[topmostViewController]];
-            
-            // 重构层级中的视图控制器
-            UIViewController *flowInViewController = [newArray lastObject];
-            
-            [newArray removeLastObject];
-            
-            [newArray addObject:topmostViewController];
+            // 移除现在的视图控制器
+            [self holdViewControllers:nil];
             
             [self updateChildViewControllers:newArray];
             
-            [self flowInViewController:flowInViewController
-                              animated:animated
-                       completionBlock:^(){
-                           // 添加手势
-                           [self addPressGestureRecognizerForTopView];
-                           
-                           // 移除原最上层的视图控制器
-                           [self removeContentViewControler:topmostViewController];
-                           
-                           [self.innerViewControllers removeObject:topmostViewController];
-            }];
+            [self addPressGestureRecognizerForTopView];
         }
     } else {
-        // 移除现在的视图控制器
-        [self holdViewControllers:nil];
+        self.innerViewControllers = newArray;
         
-        [self updateChildViewControllers:newArray];
-        
-        [self addPressGestureRecognizerForTopView];
+        self.topViewController = [newArray lastObject];
     }
 }
 
@@ -284,13 +301,11 @@ BOOL checkIsMainThread() {
  */
 - (void)updateChildViewControllers:(NSMutableArray *)viewControllers
 {
-    for (UIViewController *vc in viewControllers) {
-        [self addContentViewController:vc];
-    }
-    
     self.innerViewControllers = viewControllers;
     
     self.topViewController = [viewControllers lastObject];
+    
+    [self layoutViewControllers];
 }
 
 - (void)addTopViewController:(UIViewController *)viewController
@@ -325,6 +340,17 @@ BOOL checkIsMainThread() {
     // 不自己删除lastObject是因为确保viewControllers被设置时的正确性
     self.topViewController = [self.innerViewControllers lastObject];
 }
+
+/**
+ 重新对视图进行布局
+ */
+- (void)layoutViewControllers
+{
+    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        [self addContentViewController:obj];
+    }];
+}
+
 
 #pragma mark - Other Method
 
@@ -417,15 +443,6 @@ BOOL checkIsMainThread() {
 
 
 
-/**
- 重新对视图进行布局
- */
-- (void)layoutViewControllers
-{
-    for (UIViewController *controller in self.innerViewControllers) {
-        [self.view addSubview:controller.view];
-    }
-}
 
 
 
@@ -597,8 +614,8 @@ BOOL checkIsMainThread() {
     if (self.pressGestureRecognizer == nil) {
         self.pressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(pressMoveGesture)];
-        self.pressGestureRecognizer.delegate = self;
-        self.pressGestureRecognizer.minimumPressDuration = .0;
+//        self.pressGestureRecognizer.delegate = self;
+        self.pressGestureRecognizer.minimumPressDuration = .1;
         self.pressGestureRecognizer.cancelsTouchesInView = NO;
     }
     

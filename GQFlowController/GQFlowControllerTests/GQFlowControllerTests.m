@@ -28,7 +28,17 @@
 }
 
 
+- (void)testFlowControllersIsViewLoaded
+{
+    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    NSArray *viewControllers = @[[UIViewController new], [UIViewController new]];
+    
+    self.flowController.viewControllers = viewControllers;
+    
+    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
 
+}
 
 - (void)testSetViewControllersAnimated
 {    
@@ -36,10 +46,10 @@
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"");
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
     
     for (UIViewController *controller in self.flowController.viewControllers) {
-        STAssertEqualObjects(controller.flowController, self.flowController, @"");
+        STAssertEqualObjects(controller.flowController, self.flowController, @"子控制器访问不了");
     }
 }
 
@@ -179,11 +189,13 @@
     
     [vc setOverlayContent:NO];
     
-    STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"coverView don't add view");
+    STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"");
     
     [vc setOverlayContent:YES];
     
-    STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"coverView add view");
+    STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"");
+    
+    STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)1, @"截图已经添加");
     
     STAssertEquals(vc.isOverlayContent, YES, @"");
 }
