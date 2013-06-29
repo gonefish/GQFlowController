@@ -65,7 +65,7 @@
     static NSString *MyIdentifier = @"Demo1Identifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:MyIdentifier];
     }
     
@@ -73,6 +73,7 @@
         cell.textLabel.text = @"flowInViewController:animated:";
     } else if (indexPath.row == 1) {
         cell.textLabel.text = @"setViewControllers:animated:";
+        cell.detailTextLabel.text = @"setViewControllers:@[a, b] animated:YES";
     }
     
     return cell;
