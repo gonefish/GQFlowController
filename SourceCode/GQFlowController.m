@@ -101,6 +101,8 @@
     }
     
     if ([self isViewLoaded]) {
+        self.topViewController.overlayContent = YES;
+        
         viewController.overlayContent = YES;
         
         [self flowInViewController:viewController
@@ -239,6 +241,10 @@
                 [newArray addObject:topmostViewController];
                 
                 [self updateChildViewControllers:newArray];
+
+                self.topViewController.overlayContent = YES;
+                
+                flowInViewController.overlayContent = YES;
                 
                 [self flowInViewController:flowInViewController
                                   animated:animated
@@ -250,6 +256,8 @@
                                [self removeContentViewControler:topmostViewController];
                                
                                [self.innerViewControllers removeObject:topmostViewController];
+                               
+                               flowInViewController.overlayContent = NO;
                            }];
             }
         } else {
@@ -400,20 +408,20 @@
     [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
     if ([self isViewLoaded]) {
-        for (UIViewController *vc in popViewControllers) {
+        [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
             // 设置UIViewController的flowController属性为nil
-            [vc performSelector:@selector(setFlowController:)
-                     withObject:nil];
+            [obj performSelector:@selector(setFlowController:)
+                      withObject:nil];
             
             // 如果不是topViewController则移除视图
-            if (vc != self.topViewController) {
-                [vc willMoveToParentViewController:nil];
+            if (obj != self.topViewController) {
+                [obj willMoveToParentViewController:nil];
                 
-                [vc.view removeFromSuperview];
+                [[obj view] removeFromSuperview];
                 
-                [vc removeFromParentViewController];
+                [obj removeFromParentViewController];
             }
-        }
+        }];
         
         CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
         
@@ -427,6 +435,10 @@
         
         self.topViewController.overlayContent = YES;
         
+        UIViewController *lastController = [self.innerViewControllers lastObject];
+        
+        lastController.overlayContent = YES;
+        
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
@@ -435,9 +447,12 @@
                              [self removeTopViewController];
                              
                              [self addPressGestureRecognizerForTopView];
+                             
+                             lastController.overlayContent = NO;
                          }];
     } else {
         [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            // 设置UIViewController的flowController属性为nil
             [obj performSelector:@selector(setFlowController:)
                       withObject:nil];
         }];
@@ -615,7 +630,7 @@
         self.pressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(pressMoveGesture)];
 //        self.pressGestureRecognizer.delegate = self;
-        self.pressGestureRecognizer.minimumPressDuration = .1;
+        self.pressGestureRecognizer.minimumPressDuration = 0;
         self.pressGestureRecognizer.cancelsTouchesInView = NO;
     }
     
@@ -677,7 +692,6 @@
                 } else {
                     // 校验不是topViewController，并添加到容器中
                     if (controller != self.topViewController) {
-                        // 这个代码可以合成一步
                         [self addTopViewController:controller];
                     }
                 }
