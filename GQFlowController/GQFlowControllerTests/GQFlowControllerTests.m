@@ -37,7 +37,14 @@
     self.flowController.viewControllers = viewControllers;
     
     STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
-
+    
+    [self.flowController flowInViewController:[UIViewController new] animated:YES];
+    
+    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    [self.flowController flowOutToRootViewControllerAnimated:YES];
+    
+    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
 }
 
 - (void)testSetViewControllersAnimated

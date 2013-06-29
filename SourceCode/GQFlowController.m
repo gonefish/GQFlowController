@@ -3,21 +3,11 @@
 //  GQFlowController
 //
 //  Created by 钱国强 on 13-3-24.
-//  Copyright (c) 2013年 Qian GuoQiang. All rights reserved.
+//  Copyright (c) 2013年 Qian GuoQiang (gonefish@gmail.com). All rights reserved.
 //
 
 #import "GQFlowController.h"
 #import <objc/runtime.h>
-
-BOOL checkIsMainThread() {
-    BOOL rel = [NSThread isMainThread];
-
-    if (!rel) {
-        NSLog(@"This method must in main thread");
-    }
-    
-    return rel;
-}
 
 @interface GQFlowController ()
 
@@ -104,24 +94,34 @@ BOOL checkIsMainThread() {
 
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    if ([viewController isKindOfClass:[GQFlowController class]]) {
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
+    if ([viewController isKindOfClass:[self class]]) {
         return;
     }
     
-    viewController.overlayContent = YES;
-    
-    [self flowInViewController:viewController
-                      animated:animated
-               completionBlock:^{
-                   // 添加手势
-                   [self addPressGestureRecognizerForTopView];
-                   
-                   viewController.overlayContent = NO;
-               }];
+    if ([self isViewLoaded]) {
+        viewController.overlayContent = YES;
+        
+        [self flowInViewController:viewController
+                          animated:animated
+                   completionBlock:^{
+                       // 添加手势
+                       [self addPressGestureRecognizerForTopView];
+                       
+                       viewController.overlayContent = NO;
+                   }];
+    } else {
+        [self.innerViewControllers addObject:viewController];
+        
+        self.topViewController = viewController;
+    }
 }
 
 - (UIViewController *)flowOutViewControllerAnimated:(BOOL)animated
 {
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
     if ([self.innerViewControllers count] > 1) {
         NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
                                                    animated:animated];
@@ -137,6 +137,8 @@ BOOL checkIsMainThread() {
 
 - (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated
 {
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
     if ([self.innerViewControllers count] > 1) {
         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [self.innerViewControllers count] - 1)];
         
@@ -149,6 +151,8 @@ BOOL checkIsMainThread() {
 
 - (NSArray *)flowOutToViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
     __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
     [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
@@ -180,7 +184,7 @@ BOOL checkIsMainThread() {
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
 {
-    if (!checkIsMainThread()) return;
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
     // 如果不是UIViewController的子类，则过滤掉
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
@@ -365,8 +369,6 @@ BOOL checkIsMainThread() {
 
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
-    if (!checkIsMainThread()) return;
-    
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
     
@@ -392,29 +394,27 @@ BOOL checkIsMainThread() {
 
 - (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
 {
-    if (!checkIsMainThread()) return nil;
-    
     // 准备移除控制器
     NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
     
-    for (UIViewController *vc in popViewControllers) {
-        // 设置UIViewController的flowController属性为nil
-        [vc performSelector:@selector(setFlowController:)
-                  withObject:nil];
-        
-        // 如果不是topViewController则移除视图
-        if (vc != self.topViewController) {
-            [vc willMoveToParentViewController:nil];
-            
-            [vc.view removeFromSuperview];
-            
-            [vc removeFromParentViewController];
-        }
-    }
-    
     [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
-    //if ([self.topViewController isViewLoaded]) {
+    if ([self isViewLoaded]) {
+        for (UIViewController *vc in popViewControllers) {
+            // 设置UIViewController的flowController属性为nil
+            [vc performSelector:@selector(setFlowController:)
+                     withObject:nil];
+            
+            // 如果不是topViewController则移除视图
+            if (vc != self.topViewController) {
+                [vc willMoveToParentViewController:nil];
+                
+                [vc.view removeFromSuperview];
+                
+                [vc removeFromParentViewController];
+            }
+        }
+        
         CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
         
         CGFloat duration = .0;
@@ -424,9 +424,9 @@ BOOL checkIsMainThread() {
                                      destinationRect:destinationFrame
                                     flowingDirection:self.topViewController.flowOutDirection];
         }
-    
-    self.topViewController.overlayContent = YES;
-    
+        
+        self.topViewController.overlayContent = YES;
+        
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
@@ -436,15 +436,15 @@ BOOL checkIsMainThread() {
                              
                              [self addPressGestureRecognizerForTopView];
                          }];
-    //}
+    } else {
+        [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            [obj performSelector:@selector(setFlowController:)
+                      withObject:nil];
+        }];
+    }
     
     return popViewControllers;
 }
-
-
-
-
-
 
 // 滑入的起初位置
 - (CGRect)inOriginRectForViewController:(UIViewController *)viewController
