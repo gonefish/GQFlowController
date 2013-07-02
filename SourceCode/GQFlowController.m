@@ -692,6 +692,8 @@
                 } else {
                     // 校验不是topViewController，并添加到容器中
                     if (controller != self.topViewController) {
+                        controller.overlayContent = YES;
+                        
                         [self addTopViewController:controller];
                     }
                 }
@@ -923,7 +925,7 @@ static char kQGOverlayViewObjectKey;
         
         UIGraphicsEndImageContext();
         
-        UIImageView* shotView = [[UIImageView alloc] initWithImage:contentShot];
+        UIImageView *shotView = [[UIImageView alloc] initWithImage:contentShot];
         
         [overlayView addSubview:shotView];
         
