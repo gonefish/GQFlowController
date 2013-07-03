@@ -114,7 +114,8 @@
     }
     
     if ([self isViewLoaded]) {
-        self.topViewController.overlayContent = YES;
+        UIViewController *oldTopViewController = self.topViewController;
+        oldTopViewController.overlayContent = YES;
         
         viewController.overlayContent = YES;
         
@@ -125,6 +126,7 @@
                        [self addPressGestureRecognizerForTopView];
                        
                        viewController.overlayContent = NO;
+                       oldTopViewController.overlayContent = NO;
                    }];
     } else {
         [self.innerViewControllers addObject:viewController];
