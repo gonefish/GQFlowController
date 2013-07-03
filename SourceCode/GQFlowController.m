@@ -63,15 +63,28 @@
     }];
 }
 
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    if (self.topViewController) {
+        return [self.topViewController supportedInterfaceOrientations];
+    } else {
+        return [super supportedInterfaceOrientations];
+    }
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (self.topViewController) {
+        return [self.topViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+    } else {
+        return [super shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+    }
 }
 
 #pragma mark - Public Method
