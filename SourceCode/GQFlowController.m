@@ -670,12 +670,12 @@
         // 设置初始点
         self.startPoint = pressPoint;
         self.prevPoint = pressPoint;
-        
-        // 滑动时激活遮罩层
-        self.topViewController.overlayContent = YES;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
-        if (self.flowingDirection == GQFlowDirectionUnknow) {            
+        if (self.flowingDirection == GQFlowDirectionUnknow) {
+            // 滑动时激活遮罩层
+            self.topViewController.overlayContent = YES;
+
             // 判断移动的方向
             CGFloat x = pressPoint.x - self.startPoint.x;
             CGFloat y = pressPoint.y - self.startPoint.y;
@@ -754,9 +754,6 @@
         if (CGPointEqualToPoint(self.startPoint, self.prevPoint)) {
             // 重置长按状态信息
             [self resetLongPressStatus];
-            
-
-            self.topViewController.overlayContent = NO;
 
             return;
         }
@@ -921,6 +918,7 @@ static char kQGOverlayViewObjectKey;
     
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.frame];
+        overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
 //        [(UIView *)overlayView setBackgroundColor:[UIColor redColor]];
 //        [(UIView *)overlayView setAlpha:.5];
         
