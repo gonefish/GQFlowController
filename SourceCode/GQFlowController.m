@@ -479,13 +479,13 @@
 // 滑入的起初位置
 - (CGRect)inOriginRectForViewController:(UIViewController *)viewController
 {
-    CGRect viewFrame = viewController.view.frame;
+    CGRect viewFrame = self.view.bounds;
     
     CGRect originFrame = CGRectZero;
     
     switch (viewController.flowInDirection) {
         case GQFlowDirectionLeft:
-            originFrame = CGRectMake(self.view.frame.size.width,
+            originFrame = CGRectMake(self.view.bounds.size.width,
                                      viewFrame.origin.y,
                                      viewFrame.size.width,
                                      viewFrame.size.height);
@@ -498,7 +498,7 @@
             break;
         case GQFlowDirectionUp:
             originFrame = CGRectMake(viewFrame.origin.x,
-                                     self.view.frame.size.height,
+                                     self.view.bounds.size.height,
                                      viewFrame.size.width,
                                      viewFrame.size.height);
             break;
@@ -519,12 +519,12 @@
 // 滑入的目标位置
 - (CGRect)inDestinationRectForViewController:(UIViewController *)viewController
 {
-    CGRect viewFrame = viewController.view.frame;
+    CGRect viewFrame = self.view.bounds;
     CGRect destinationFrame = CGRectZero;
     
     switch (viewController.flowInDirection) {
         case GQFlowDirectionLeft:
-            destinationFrame = CGRectMake(self.view.frame.size.width - viewFrame.size.width,
+            destinationFrame = CGRectMake(self.view.bounds.size.width - viewFrame.size.width,
                                           viewFrame.origin.y,
                                           viewFrame.size.width,
                                           viewFrame.size.height);
@@ -537,7 +537,7 @@
             break;
         case GQFlowDirectionUp:
             destinationFrame = CGRectMake(viewFrame.origin.x,
-                                          self.view.frame.size.height - viewFrame.size.height,
+                                          self.view.bounds.size.height - viewFrame.size.height,
                                           viewFrame.size.width,
                                           viewFrame.size.height);
             break;
@@ -919,7 +919,7 @@ static char kQGOverlayViewObjectKey;
     UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
     
     if (overlayView == nil) {
-        overlayView = [[UIView alloc] initWithFrame:self.view.frame];
+        overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
 //        [(UIView *)overlayView setBackgroundColor:[UIColor redColor]];
 //        [(UIView *)overlayView setAlpha:.5];
