@@ -114,16 +114,11 @@
     }
     
     if ([self isViewLoaded]) {
-        UIViewController *oldTopViewController = self.topViewController;
-        oldTopViewController.overlayContent = YES;
-        
         [self flowInViewController:viewController
                           animated:animated
                    completionBlock:^{
                        // 添加手势
                        [self addPressGestureRecognizerForTopView];
-
-                       oldTopViewController.overlayContent = NO;
                    }];
     } else {
         [self.innerViewControllers addObject:viewController];
@@ -253,8 +248,6 @@
                 [newArray addObject:topmostViewController];
                 
                 [self updateChildViewControllers:newArray];
-
-                self.topViewController.overlayContent = YES;
                 
                 [self flowInViewController:flowInViewController
                                   animated:animated
@@ -385,6 +378,10 @@
 
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
+    UIViewController *oldTopViewController = self.topViewController;
+    
+    oldTopViewController.overlayContent = YES;
+    
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
     
@@ -408,6 +405,8 @@
                          block();
                          
                          viewController.overlayContent = NO;
+                         
+                         oldTopViewController.overlayContent = NO;
                      }];
 }
 
@@ -704,9 +703,9 @@
                 } else {
                     // 校验不是topViewController，并添加到容器中
                     if (controller != self.topViewController) {
-                        controller.overlayContent = YES;
-                        
                         [self addTopViewController:controller];
+                        
+                        controller.overlayContent = YES;
                     }
                 }
             }
