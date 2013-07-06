@@ -476,37 +476,37 @@
 // 滑入的起初位置
 - (CGRect)inOriginRectForViewController:(UIViewController *)viewController
 {
-    CGRect viewFrame = self.view.bounds;
+    CGRect viewBounds = self.view.bounds;
     
     CGRect originFrame = CGRectZero;
     
     switch (viewController.flowInDirection) {
         case GQFlowDirectionLeft:
             originFrame = CGRectMake(self.view.bounds.size.width,
-                                     viewFrame.origin.y,
-                                     viewFrame.size.width,
-                                     viewFrame.size.height);
+                                     viewBounds.origin.y,
+                                     viewBounds.size.width,
+                                     viewBounds.size.height);
             break;
         case GQFlowDirectionRight:
-            originFrame = CGRectMake(-viewFrame.size.width,
-                                     viewFrame.origin.y,
-                                     viewFrame.size.width,
-                                     viewFrame.size.height);
+            originFrame = CGRectMake(-viewBounds.size.width,
+                                     viewBounds.origin.y,
+                                     viewBounds.size.width,
+                                     viewBounds.size.height);
             break;
         case GQFlowDirectionUp:
-            originFrame = CGRectMake(viewFrame.origin.x,
+            originFrame = CGRectMake(viewBounds.origin.x,
                                      self.view.bounds.size.height,
-                                     viewFrame.size.width,
-                                     viewFrame.size.height);
+                                     viewBounds.size.width,
+                                     viewBounds.size.height);
             break;
         case GQFlowDirectionDown:
-            originFrame = CGRectMake(viewFrame.origin.x,
-                                     -viewFrame.size.height,
-                                     viewFrame.size.width,
-                                     viewFrame.size.height);
+            originFrame = CGRectMake(viewBounds.origin.x,
+                                     -viewBounds.size.height,
+                                     viewBounds.size.width,
+                                     viewBounds.size.height);
             break;
         default:
-            originFrame = viewFrame;
+            originFrame = viewBounds;
             break;
     }
     
@@ -516,36 +516,36 @@
 // 滑入的目标位置
 - (CGRect)inDestinationRectForViewController:(UIViewController *)viewController
 {
-    CGRect viewFrame = self.view.bounds;
+    CGRect viewBounds = self.view.bounds;
     CGRect destinationFrame = CGRectZero;
     
     switch (viewController.flowInDirection) {
         case GQFlowDirectionLeft:
-            destinationFrame = CGRectMake(self.view.bounds.size.width - viewFrame.size.width,
-                                          viewFrame.origin.y,
-                                          viewFrame.size.width,
-                                          viewFrame.size.height);
+            destinationFrame = CGRectMake(self.view.bounds.size.width - viewBounds.size.width,
+                                          viewBounds.origin.y,
+                                          viewBounds.size.width,
+                                          viewBounds.size.height);
             break;
         case GQFlowDirectionRight:
             destinationFrame = CGRectMake(.0,
-                                          viewFrame.origin.y,
-                                          viewFrame.size.width,
-                                          viewFrame.size.height);
+                                          viewBounds.origin.y,
+                                          viewBounds.size.width,
+                                          viewBounds.size.height);
             break;
         case GQFlowDirectionUp:
-            destinationFrame = CGRectMake(viewFrame.origin.x,
-                                          self.view.bounds.size.height - viewFrame.size.height,
-                                          viewFrame.size.width,
-                                          viewFrame.size.height);
+            destinationFrame = CGRectMake(viewBounds.origin.x,
+                                          self.view.bounds.size.height - viewBounds.size.height,
+                                          viewBounds.size.width,
+                                          viewBounds.size.height);
             break;
         case GQFlowDirectionDown:
-            destinationFrame = CGRectMake(viewFrame.origin.x,
+            destinationFrame = CGRectMake(viewBounds.origin.x,
                                           .0,
-                                          viewFrame.size.width,
-                                          viewFrame.size.height);
+                                          viewBounds.size.width,
+                                          viewBounds.size.height);
             break;
         default:
-            destinationFrame = viewFrame;
+            destinationFrame = viewBounds;
             break;
     }
     
@@ -575,7 +575,7 @@
                                           viewFrame.size.height);
             break;
         case GQFlowDirectionRight:
-            destinationFrame = CGRectMake(self.view.frame.size.width,
+            destinationFrame = CGRectMake(self.view.bounds.size.width,
                                           viewFrame.origin.y,
                                           viewFrame.size.width,
                                           viewFrame.size.height);
@@ -589,7 +589,7 @@
             break;
         case GQFlowDirectionDown:
             destinationFrame = CGRectMake(viewFrame.origin.x,
-                                          self.view.frame.size.height,
+                                          self.view.bounds.size.height,
                                           viewFrame.size.width,
                                           viewFrame.size.height);
             break;
