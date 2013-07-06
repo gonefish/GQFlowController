@@ -117,15 +117,12 @@
         UIViewController *oldTopViewController = self.topViewController;
         oldTopViewController.overlayContent = YES;
         
-        viewController.overlayContent = YES;
-        
         [self flowInViewController:viewController
                           animated:animated
                    completionBlock:^{
                        // 添加手势
                        [self addPressGestureRecognizerForTopView];
-                       
-                       viewController.overlayContent = NO;
+
                        oldTopViewController.overlayContent = NO;
                    }];
     } else {
@@ -259,8 +256,6 @@
 
                 self.topViewController.overlayContent = YES;
                 
-                flowInViewController.overlayContent = YES;
-                
                 [self flowInViewController:flowInViewController
                                   animated:animated
                            completionBlock:^(){
@@ -271,8 +266,6 @@
                                [self removeContentViewControler:topmostViewController];
                                
                                [self.innerViewControllers removeObject:topmostViewController];
-                               
-                               flowInViewController.overlayContent = NO;
                            }];
             }
         } else {
@@ -405,12 +398,16 @@
                                 flowingDirection:self.topViewController.flowInDirection];
     }
     
+    viewController.overlayContent = YES;
+    
     [UIView animateWithDuration:duration
                      animations:^{
                          viewController.view.frame = destinationFrame;
                      }
                      completion:^(BOOL finished){
                          block();
+                         
+                         viewController.overlayContent = NO;
                      }];
 }
 
