@@ -700,9 +700,9 @@
                     if (![controller conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
                         NSLog(@"滑出其它的控制器必须实现GQFlowControllerDelegate");
                     } else {
-                        [self addTopViewController:controller];
+                        self.topViewController.overlayContent = YES;
                         
-                        controller.overlayContent = YES;
+                        [self addTopViewController:controller];
                     }
                 }
             }
@@ -741,6 +741,15 @@
         if (shouldMove) {
             // 滑动时激活遮罩层
             self.topViewController.overlayContent = YES;
+            
+            // 对topViewController下面一层内容进行overlay
+            NSUInteger vcCount = [self.viewControllers count];
+            
+            if (vcCount > 1) {
+                UIViewController *controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
+                
+                controller.overlayContent = YES;
+            }
             
             self.topViewController.view.frame = newFrame;
         }
