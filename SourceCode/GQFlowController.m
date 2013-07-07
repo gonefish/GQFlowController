@@ -671,9 +671,6 @@
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
-            // 滑动时激活遮罩层
-            self.topViewController.overlayContent = YES;
-
             // 判断移动的方向
             CGFloat x = pressPoint.x - self.startPoint.x;
             CGFloat y = pressPoint.y - self.startPoint.y;
@@ -686,9 +683,9 @@
                 }
             } else {
                 if (y > .0) {
-                    self.flowingDirection = GQFlowDirectionUp;
-                } else {
                     self.flowingDirection = GQFlowDirectionDown;
+                } else {
+                    self.flowingDirection = GQFlowDirectionUp;
                 }
             }
 
@@ -697,12 +694,12 @@
                 UIViewController *controller = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                                                      viewControllerForFlowDirection:self.flowingDirection];
                 
-                // 判断是否实现GQFlowControllerDelegate
-                if (![controller conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
-                    NSLog(@"滑出其它的控制器必须实现GQFlowControllerDelegate");
-                } else {
-                    // 校验不是topViewController，并添加到容器中
-                    if (controller != self.topViewController) {
+                // 校验不是topViewController，并添加到容器中
+                if (controller != self.topViewController) {
+                    // 判断是否实现GQFlowControllerDelegate
+                    if (![controller conformsToProtocol:@protocol(GQViewControllerDelegate)]) {
+                        NSLog(@"滑出其它的控制器必须实现GQFlowControllerDelegate");
+                    } else {
                         [self addTopViewController:controller];
                         
                         controller.overlayContent = YES;
@@ -729,19 +726,22 @@
         
         // 能否移动
         BOOL shouldMove = NO;
-
-        if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
-            shouldMove = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
-                                                                             shouldFlowToRect:newFrame];
-        } else {
-            // 仅仅允许设置的移动方位
-            if (self.flowingDirection == self.topViewController.flowInDirection
-                || self.flowingDirection == self.topViewController.flowOutDirection) {
-                shouldMove = YES;
+        
+        // 仅仅允许设置的移动方位
+        if (self.flowingDirection == self.topViewController.flowInDirection
+            || self.flowingDirection == self.topViewController.flowOutDirection) {
+            shouldMove = YES;
+            
+            if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
+                shouldMove = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
+                                                                                 shouldFlowToRect:newFrame];
             }
         }
         
         if (shouldMove) {
+            // 滑动时激活遮罩层
+            self.topViewController.overlayContent = YES;
+            
             self.topViewController.view.frame = newFrame;
         }
         
@@ -906,6 +906,7 @@ static char kQGOverlayViewObjectKey;
 
 - (void)setOverlayContent:(BOOL)yesOrNo
 {
+    // 优化状态处理
     if (self.isOverlayContent == yesOrNo) {
         return;
     }
