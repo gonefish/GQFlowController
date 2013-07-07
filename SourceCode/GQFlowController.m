@@ -662,7 +662,7 @@
 
 - (void)pressMoveGesture
 {
-    CGPoint pressPoint = [self.pressGestureRecognizer locationInView:nil];
+    CGPoint pressPoint = [self.pressGestureRecognizer locationInView:self.view];
     
     if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
