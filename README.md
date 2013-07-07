@@ -1,6 +1,8 @@
 GQFlowController
 ================
 
+A multiple content layer container view controller.
+
 GQFlowController实现了一个多层的容器视图控制器，其目标是实现类似于[网易新闻客户端](https://itunes.apple.com/cn/app/wang-yi-xin-wen/id425349261?mt=8)iPhone的UI结构（主要是3.0之后的版本）。
 
 特性：
