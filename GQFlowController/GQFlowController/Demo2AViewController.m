@@ -79,9 +79,9 @@
     }
 }
 
-- (CGRect)viewBounds:(GQFlowController *)flowController
+- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
 {
-    return CGRectMake(.0, .0, flowController.view.bounds.size.width - 20.0, flowController.view.bounds.size.height);
+    return CGRectMake(20.0, .0, flowController.view.bounds.size.width - 20.0, flowController.view.bounds.size.height);
 }
 
 #pragma mark - UITableViewDataSource Protocol

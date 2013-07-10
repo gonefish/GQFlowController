@@ -57,9 +57,6 @@ typedef enum {
 // .0 ~ 1.0
 - (CGFloat)flowingBoundary:(GQFlowController *)flowController;
 
-// 指定内容控制器的bounds
-- (CGRect)viewBounds:(GQFlowController *)flowController;
-
 @end
 
 @interface UIViewController (GQViewController)
