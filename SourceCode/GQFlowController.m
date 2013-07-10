@@ -475,7 +475,12 @@
 // 滑入的起初位置
 - (CGRect)inOriginRectForViewController:(UIViewController *)viewController
 {
+    // 默认为同容器大小
     CGRect viewBounds = self.view.bounds;
+    
+    if ([self.topViewController respondsToSelector:@selector(viewBounds:)]) {
+        viewBounds = [(id <GQViewControllerDelegate>)self.topViewController viewBounds:self];
+    }
     
     CGRect originFrame = CGRectZero;
     
@@ -515,7 +520,13 @@
 // 滑入的目标位置
 - (CGRect)inDestinationRectForViewController:(UIViewController *)viewController
 {
+    // 默认为同容器大小
     CGRect viewBounds = self.view.bounds;
+    
+    if ([self.topViewController respondsToSelector:@selector(viewBounds:)]) {
+        viewBounds = [(id <GQViewControllerDelegate>)self.topViewController viewBounds:self];
+    }
+
     CGRect destinationFrame = CGRectZero;
     
     switch (viewController.flowInDirection) {

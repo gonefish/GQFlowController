@@ -79,6 +79,11 @@
     }
 }
 
+- (CGRect)viewBounds:(GQFlowController *)flowController
+{
+    return CGRectMake(.0, .0, flowController.view.bounds.size.width - 20.0, flowController.view.bounds.size.height);
+}
+
 #pragma mark - UITableViewDataSource Protocol
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
