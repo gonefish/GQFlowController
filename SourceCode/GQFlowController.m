@@ -63,6 +63,67 @@
     }];
 }
 
+- (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
+{
+    return NO;
+}
+
+- (BOOL)shouldAutomaticallyForwardRotationMethods
+{
+    return NO;
+}
+
+- (BOOL)shouldAutomaticallyForwardAppearanceMethods
+{
+    return NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
+        [self.topViewController beginAppearanceTransition:YES
+                                                 animated:animated];
+    } else {
+        [self.topViewController viewWillAppear:animated];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
+        [self.topViewController endAppearanceTransition];
+    } else {
+        [self.topViewController viewDidAppear:animated];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
+        [self.topViewController beginAppearanceTransition:NO
+                                                 animated:animated];
+    } else {
+        [self.topViewController viewWillDisappear:animated];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
+        [self.topViewController endAppearanceTransition];
+    } else {
+        [self.topViewController viewDidDisappear:animated];
+    }
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -85,6 +146,45 @@
     } else {
         return [super shouldAutorotateToInterfaceOrientation:interfaceOrientation];
     }
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    //[self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation
+     //                                                    duration:duration];
+    
+//    [self.viewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+//        [(UIViewController *)obj willRotateToInterfaceOrientation:toInterfaceOrientation
+//                                                         duration:duration];
+//    }];
+    
+//    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+//    
+//    NSLog(@"%@", self.innerViewControllers);
+//    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+//        NSLog(@"%@", obj);
+//        [(UIViewController *)obj willRotateToInterfaceOrientation:toInterfaceOrientation
+//                                                         duration:duration];
+//    }];
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+{
+//    [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
+//    
+//    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+//        [(UIViewController *)obj willAnimateRotationToInterfaceOrientation:interfaceOrientation
+//                                                                  duration:duration];
+//    }];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+//    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+//    
+//    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+//        [(UIViewController *)obj didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+//    }];
 }
 
 #pragma mark - Public Method
