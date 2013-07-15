@@ -150,41 +150,33 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    //[self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation
-     //                                                    duration:duration];
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation
+                                   duration:duration];
     
-//    [self.viewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-//        [(UIViewController *)obj willRotateToInterfaceOrientation:toInterfaceOrientation
-//                                                         duration:duration];
-//    }];
-    
-//    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-//    
-//    NSLog(@"%@", self.innerViewControllers);
-//    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-//        NSLog(@"%@", obj);
-//        [(UIViewController *)obj willRotateToInterfaceOrientation:toInterfaceOrientation
-//                                                         duration:duration];
-//    }];
+    for (UIViewController *vc in self.innerViewControllers) {
+        [vc willRotateToInterfaceOrientation:toInterfaceOrientation
+                                    duration:duration];
+    }
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
-//    [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
-//    
-//    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-//        [(UIViewController *)obj willAnimateRotationToInterfaceOrientation:interfaceOrientation
-//                                                                  duration:duration];
-//    }];
+    [super willAnimateRotationToInterfaceOrientation:interfaceOrientation
+                                            duration:duration];
+    
+    for (UIViewController *vc in self.innerViewControllers) {
+        [vc willAnimateRotationToInterfaceOrientation:interfaceOrientation
+                                             duration:duration];
+    };
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-//    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-//    
-//    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-//        [(UIViewController *)obj didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-//    }];
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    for (UIViewController *vc in self.innerViewControllers) {
+        [vc didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    };
 }
 
 #pragma mark - Public Method
