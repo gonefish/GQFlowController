@@ -63,6 +63,12 @@
     }];
 }
 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
 {
     return NO;
@@ -124,11 +130,7 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 - (NSUInteger)supportedInterfaceOrientations
 {
@@ -206,11 +208,24 @@
     }
     
     if ([self isViewLoaded]) {
+        if ([viewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
+            [viewController beginAppearanceTransition:YES
+                                             animated:animated];
+        } else {
+            [viewController viewWillAppear:animated];
+        }
+        
         [self flowInViewController:viewController
                           animated:animated
                    completionBlock:^{
                        // 添加手势
                        [self addPressGestureRecognizerForTopView];
+                       
+                       if ([viewController respondsToSelector:@selector(endAppearanceTransition)]) {
+                           [viewController endAppearanceTransition];
+                       } else {
+                           [viewController viewDidAppear:animated];
+                       }
                    }];
     } else {
         [self.innerViewControllers addObject:viewController];
