@@ -76,7 +76,7 @@
 
 - (BOOL)shouldAutomaticallyForwardRotationMethods
 {
-    return NO;
+    return YES;
 }
 
 - (BOOL)shouldAutomaticallyForwardAppearanceMethods
@@ -153,9 +153,14 @@
     [super willRotateToInterfaceOrientation:toInterfaceOrientation
                                    duration:duration];
     
-    for (UIViewController *vc in self.innerViewControllers) {
-        [vc willRotateToInterfaceOrientation:toInterfaceOrientation
-                                    duration:duration];
+    // iOS 5手动处理
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] == 5) {
+        for (UIViewController *vc in self.innerViewControllers) {
+            if ([vc shouldAutorotateToInterfaceOrientation:toInterfaceOrientation]) {
+                [vc willRotateToInterfaceOrientation:toInterfaceOrientation
+                                            duration:duration];
+            }
+        }
     }
 }
 
@@ -164,19 +169,29 @@
     [super willAnimateRotationToInterfaceOrientation:interfaceOrientation
                                             duration:duration];
     
-    for (UIViewController *vc in self.innerViewControllers) {
-        [vc willAnimateRotationToInterfaceOrientation:interfaceOrientation
-                                             duration:duration];
-    };
+    // iOS 5手动处理
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] == 5) {
+        for (UIViewController *vc in self.innerViewControllers) {
+            if ([vc shouldAutorotateToInterfaceOrientation:interfaceOrientation]) {
+                [vc willAnimateRotationToInterfaceOrientation:interfaceOrientation
+                                                     duration:duration];
+            }
+        };
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
-    for (UIViewController *vc in self.innerViewControllers) {
-        [vc didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    };
+    // iOS 5手动处理
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] == 5) {
+        for (UIViewController *vc in self.innerViewControllers) {
+            if ([vc shouldAutorotateToInterfaceOrientation:fromInterfaceOrientation]) {
+                [vc didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+            }  
+        };
+    }
 }
 
 #pragma mark - Public Method
