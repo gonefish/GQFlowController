@@ -130,8 +130,6 @@
     }
 }
 
-
-
 - (NSUInteger)supportedInterfaceOrientations
 {
     if (self.topViewController) {
@@ -557,11 +555,24 @@
         
         lastController.overlayContent = YES;
         
+        if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
+            [self.topViewController beginAppearanceTransition:NO
+                                                     animated:animated];
+        } else {
+            [self.topViewController viewWillDisappear:animated];
+        }
+        
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
                          }
                          completion:^(BOOL finished){
+                             if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
+                                 [self.topViewController endAppearanceTransition];
+                             } else {
+                                 [self.topViewController viewDidDisappear:animated];
+                             }
+                             
                              [self removeTopViewController];
                              
                              [self addPressGestureRecognizerForTopView];
