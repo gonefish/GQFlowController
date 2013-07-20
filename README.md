@@ -10,7 +10,7 @@ GQFlowController实现了一个多层的容器视图控制器，其目标是实�
 * 多层视图控制器结构
 * 滑动手势
 * ARC支持
-* 支持iPad(暂不支持)
+* 支持iPad和iPhone
 
 
 
@@ -90,18 +90,14 @@ Demo1展示了如果实现类Path的实现。
 
 Demo2展示了类UINavigationController的各个方法。
 
+Demo3展示了iPad的使用例子。
+
 
 Requirements
 ------------
 GQFlowController requires Xcode 4.5 and iOS 6.0 or later SDK (LLVM Compiler 4.0)。
 
 [Objective-C Feature Availability Index](http://developer.apple.com/library/ios/#releasenotes/ObjectiveC/ObjCAvailabilityIndex/)
-
-
-计划
------
-iPad的支持
-...
 
 
 联系方式
