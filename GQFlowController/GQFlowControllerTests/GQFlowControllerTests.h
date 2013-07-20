@@ -14,5 +14,6 @@
 @interface GQFlowControllerTests : SenTestCase
 
 @property (nonatomic, strong) GQFlowController *flowController;
+@property (nonatomic) BOOL isiOS6;
 
 @end

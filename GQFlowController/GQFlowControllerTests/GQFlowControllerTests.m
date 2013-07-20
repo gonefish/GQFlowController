@@ -16,6 +16,8 @@
     
     // Set-up code here.
     self.flowController = [GQFlowController new];
+    
+    self.isiOS6 = [[[UIDevice currentDevice] systemVersion] integerValue] > 5;
 }
 
 - (void)tearDown
@@ -208,28 +210,32 @@
 }
 
 - (void)testRotations
-{
+{    
     id topViewController = [OCMockObject mockForClass:[UIViewController class]];
     
-    STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
-    
-    STAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
+    if (self.isiOS6) {
+        STAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
+    } else {
+        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
+    }
     
     [self.flowController performSelector:@selector(setTopViewController:)
                               withObject:topViewController];
     
     STAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
     
-    [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
-    
-    STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
-    
-    NSUInteger test = UIInterfaceOrientationMaskPortrait;
-    NSValue *testValue = [NSValue valueWithBytes:&test objCType:@encode(NSUInteger)];
-    
-    [[[topViewController stub] andReturnValue:testValue] supportedInterfaceOrientations];
-    
-    STAssertTrue([self.flowController supportedInterfaceOrientations] == UIInterfaceOrientationMaskPortrait, @"没有调用默认的方法");
+    if (self.isiOS6) {
+        NSUInteger test = UIInterfaceOrientationMaskPortrait;
+        NSValue *testValue = [NSValue valueWithBytes:&test objCType:@encode(NSUInteger)];
+        
+        [[[topViewController stub] andReturnValue:testValue] supportedInterfaceOrientations];
+        
+        STAssertTrue([self.flowController supportedInterfaceOrientations] == UIInterfaceOrientationMaskPortrait, @"没有调用默认的方法");
+    } else {
+        [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
+        
+        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
+    }
 }
 
 @end
