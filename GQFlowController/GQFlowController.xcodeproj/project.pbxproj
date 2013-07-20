@@ -23,6 +23,8 @@
 		E34A642916FEB8DD0053A496 /* GQFlowControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */; };
 		E35CEF24179AB46C00352379 /* Demo3BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35CEF22179AB46C00352379 /* Demo3BViewController.m */; };
 		E35CEF25179AB46C00352379 /* Demo3BViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E35CEF23179AB46C00352379 /* Demo3BViewController.xib */; };
+		E35CEF29179ABA8300352379 /* Demo3CViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35CEF27179ABA8300352379 /* Demo3CViewController.m */; };
+		E35CEF2A179ABA8300352379 /* Demo3CViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E35CEF28179ABA8300352379 /* Demo3CViewController.xib */; };
 		E35D6078175280CA00398CCD /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35D6074175280CA00398CCD /* GQFlowController.m */; };
 		E36D9977177E794F004B9B64 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36D9976177E794F004B9B64 /* QuartzCore.framework */; };
 		E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E372229C173FFEAA001907BE /* libOCMock.a */; };
@@ -77,6 +79,9 @@
 		E35CEF21179AB46C00352379 /* Demo3BViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo3BViewController.h; sourceTree = "<group>"; };
 		E35CEF22179AB46C00352379 /* Demo3BViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo3BViewController.m; sourceTree = "<group>"; };
 		E35CEF23179AB46C00352379 /* Demo3BViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo3BViewController.xib; sourceTree = "<group>"; };
+		E35CEF26179ABA8300352379 /* Demo3CViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo3CViewController.h; sourceTree = "<group>"; };
+		E35CEF27179ABA8300352379 /* Demo3CViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo3CViewController.m; sourceTree = "<group>"; };
+		E35CEF28179ABA8300352379 /* Demo3CViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo3CViewController.xib; sourceTree = "<group>"; };
 		E35D6073175280CA00398CCD /* GQFlowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQFlowController.h; sourceTree = "<group>"; };
 		E35D6074175280CA00398CCD /* GQFlowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQFlowController.m; sourceTree = "<group>"; };
 		E36D9976177E794F004B9B64 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -254,6 +259,9 @@
 				E35CEF21179AB46C00352379 /* Demo3BViewController.h */,
 				E35CEF22179AB46C00352379 /* Demo3BViewController.m */,
 				E35CEF23179AB46C00352379 /* Demo3BViewController.xib */,
+				E35CEF26179ABA8300352379 /* Demo3CViewController.h */,
+				E35CEF27179ABA8300352379 /* Demo3CViewController.m */,
+				E35CEF28179ABA8300352379 /* Demo3CViewController.xib */,
 			);
 			name = Demo3;
 			sourceTree = "<group>";
@@ -375,6 +383,7 @@
 				E38CCDD717961821001E4064 /* Demo3ViewController.xib in Resources */,
 				E38CCDDD17976C27001E4064 /* Demo3AViewController.xib in Resources */,
 				E35CEF25179AB46C00352379 /* Demo3BViewController.xib in Resources */,
+				E35CEF2A179ABA8300352379 /* Demo3CViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +430,7 @@
 				E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */,
 				E38CCDDC17976C27001E4064 /* Demo3AViewController.m in Sources */,
 				E35CEF24179AB46C00352379 /* Demo3BViewController.m in Sources */,
+				E35CEF29179ABA8300352379 /* Demo3CViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

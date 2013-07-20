@@ -7,6 +7,7 @@
 //
 
 #import "Demo3AViewController.h"
+#import "Demo3CViewController.h"
 
 @interface Demo3AViewController ()
 
@@ -40,6 +41,15 @@
 }
 
 #pragma mark - GQFlowControllerDelegate
+
+- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+{
+    if (direction == GQFlowDirectionLeft) {
+        return [[Demo3CViewController alloc] initWithNibName:@"Demo3CViewController" bundle:nil];
+    } else {
+        return self;
+    }
+}
 
 - (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
 {
