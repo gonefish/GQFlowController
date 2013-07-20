@@ -11,6 +11,7 @@
 #import "Demo1LeftViewController.h"
 #import "Demo1RightViewController.h"
 #import "Demo2ViewController.h"
+#import "Demo3ViewController.h"
 
 @implementation GQAppDelegate
 
@@ -30,13 +31,24 @@
     return @[d1];
 }
 
+- (NSArray *)demo3ViewControllers
+{
+    Demo3ViewController *d1 = [[Demo3ViewController alloc] init];
+    
+    return @[d1];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     
-    self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+    } else {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
+    }
     
     self.window.rootViewController = self.flowController;
     

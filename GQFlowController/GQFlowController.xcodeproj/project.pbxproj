@@ -21,11 +21,17 @@
 		E34A641E16FEB8DD0053A496 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FF16FEB8DD0053A496 /* Foundation.framework */; };
 		E34A642616FEB8DD0053A496 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E34A642416FEB8DD0053A496 /* InfoPlist.strings */; };
 		E34A642916FEB8DD0053A496 /* GQFlowControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */; };
+		E35CEF24179AB46C00352379 /* Demo3BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35CEF22179AB46C00352379 /* Demo3BViewController.m */; };
+		E35CEF25179AB46C00352379 /* Demo3BViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E35CEF23179AB46C00352379 /* Demo3BViewController.xib */; };
 		E35D6078175280CA00398CCD /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35D6074175280CA00398CCD /* GQFlowController.m */; };
 		E36D9977177E794F004B9B64 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36D9976177E794F004B9B64 /* QuartzCore.framework */; };
 		E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E372229C173FFEAA001907BE /* libOCMock.a */; };
 		E37222A81741493D001907BE /* Demo2AViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37222A61741493D001907BE /* Demo2AViewController.m */; };
 		E37222A91741493D001907BE /* Demo2AViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E37222A71741493D001907BE /* Demo2AViewController.xib */; };
+		E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E38CCDD417961821001E4064 /* Demo3ViewController.m */; };
+		E38CCDD717961821001E4064 /* Demo3ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E38CCDD517961821001E4064 /* Demo3ViewController.xib */; };
+		E38CCDDC17976C27001E4064 /* Demo3AViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E38CCDDA17976C27001E4064 /* Demo3AViewController.m */; };
+		E38CCDDD17976C27001E4064 /* Demo3AViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E38CCDDB17976C27001E4064 /* Demo3AViewController.xib */; };
 		E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3B7D4E5173E319100B82719 /* Demo2ViewController.m */; };
 		E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */; };
 		E3CEF5661723B7C400A33CFE /* Demo1TopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5641723B7C400A33CFE /* Demo1TopViewController.m */; };
@@ -68,6 +74,9 @@
 		E34A642516FEB8DD0053A496 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E34A642716FEB8DD0053A496 /* GQFlowControllerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GQFlowControllerTests.h; sourceTree = "<group>"; };
 		E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GQFlowControllerTests.m; sourceTree = "<group>"; };
+		E35CEF21179AB46C00352379 /* Demo3BViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo3BViewController.h; sourceTree = "<group>"; };
+		E35CEF22179AB46C00352379 /* Demo3BViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo3BViewController.m; sourceTree = "<group>"; };
+		E35CEF23179AB46C00352379 /* Demo3BViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo3BViewController.xib; sourceTree = "<group>"; };
 		E35D6073175280CA00398CCD /* GQFlowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQFlowController.h; sourceTree = "<group>"; };
 		E35D6074175280CA00398CCD /* GQFlowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQFlowController.m; sourceTree = "<group>"; };
 		E36D9976177E794F004B9B64 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -81,6 +90,12 @@
 		E37222A51741493D001907BE /* Demo2AViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2AViewController.h; sourceTree = "<group>"; };
 		E37222A61741493D001907BE /* Demo2AViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2AViewController.m; sourceTree = "<group>"; };
 		E37222A71741493D001907BE /* Demo2AViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2AViewController.xib; sourceTree = "<group>"; };
+		E38CCDD317961821001E4064 /* Demo3ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo3ViewController.h; sourceTree = "<group>"; };
+		E38CCDD417961821001E4064 /* Demo3ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo3ViewController.m; sourceTree = "<group>"; };
+		E38CCDD517961821001E4064 /* Demo3ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo3ViewController.xib; sourceTree = "<group>"; };
+		E38CCDD917976C27001E4064 /* Demo3AViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo3AViewController.h; sourceTree = "<group>"; };
+		E38CCDDA17976C27001E4064 /* Demo3AViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo3AViewController.m; sourceTree = "<group>"; };
+		E38CCDDB17976C27001E4064 /* Demo3AViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo3AViewController.xib; sourceTree = "<group>"; };
 		E3B7D4E4173E319100B82719 /* Demo2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2ViewController.h; sourceTree = "<group>"; };
 		E3B7D4E5173E319100B82719 /* Demo2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2ViewController.m; sourceTree = "<group>"; };
 		E3B7D4E6173E319100B82719 /* Demo2ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2ViewController.xib; sourceTree = "<group>"; };
@@ -164,6 +179,7 @@
 				E34A640D16FEB8DD0053A496 /* GQAppDelegate.m */,
 				E3B7D4E3173E185700B82719 /* Demo1 */,
 				E3B7D4EA173E319F00B82719 /* Demo2 */,
+				E38CCDD817961829001E4064 /* Demo3 */,
 			);
 			path = GQFlowController;
 			sourceTree = "<group>";
@@ -224,6 +240,22 @@
 				E37222A3173FFEAA001907BE /* OCMockRecorder.h */,
 			);
 			path = OCMock;
+			sourceTree = "<group>";
+		};
+		E38CCDD817961829001E4064 /* Demo3 */ = {
+			isa = PBXGroup;
+			children = (
+				E38CCDD317961821001E4064 /* Demo3ViewController.h */,
+				E38CCDD417961821001E4064 /* Demo3ViewController.m */,
+				E38CCDD517961821001E4064 /* Demo3ViewController.xib */,
+				E38CCDD917976C27001E4064 /* Demo3AViewController.h */,
+				E38CCDDA17976C27001E4064 /* Demo3AViewController.m */,
+				E38CCDDB17976C27001E4064 /* Demo3AViewController.xib */,
+				E35CEF21179AB46C00352379 /* Demo3BViewController.h */,
+				E35CEF22179AB46C00352379 /* Demo3BViewController.m */,
+				E35CEF23179AB46C00352379 /* Demo3BViewController.xib */,
+			);
+			name = Demo3;
 			sourceTree = "<group>";
 		};
 		E3B7D4E3173E185700B82719 /* Demo1 */ = {
@@ -340,6 +372,9 @@
 				E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */,
 				E37222A91741493D001907BE /* Demo2AViewController.xib in Resources */,
 				E3D757BD1747566100A56E83 /* Demo2BViewController.xib in Resources */,
+				E38CCDD717961821001E4064 /* Demo3ViewController.xib in Resources */,
+				E38CCDDD17976C27001E4064 /* Demo3AViewController.xib in Resources */,
+				E35CEF25179AB46C00352379 /* Demo3BViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +418,9 @@
 				E37222A81741493D001907BE /* Demo2AViewController.m in Sources */,
 				E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */,
 				E35D6078175280CA00398CCD /* GQFlowController.m in Sources */,
+				E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */,
+				E38CCDDC17976C27001E4064 /* Demo3AViewController.m in Sources */,
+				E35CEF24179AB46C00352379 /* Demo3BViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,7 +490,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -477,7 +515,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
