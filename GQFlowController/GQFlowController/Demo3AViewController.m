@@ -51,11 +51,20 @@
     }
 }
 
+- (CGFloat)flowingBoundary:(GQFlowController *)flowController
+{
+    return 0.15;
+}
+
 - (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
 {
-    CGFloat w = 300.0;
-    
-    return CGRectMake(w, .0, flowController.view.bounds.size.width - w, flowController.view.bounds.size.height);
+    if (direction == self.flowInDirection) {
+        CGFloat w = 300.0;
+        
+        return CGRectMake(w, .0, flowController.view.bounds.size.width - w, flowController.view.bounds.size.height);
+    } else {
+        return CGRectZero;
+    }
 }
 
 @end
