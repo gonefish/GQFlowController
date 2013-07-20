@@ -920,20 +920,26 @@
         
         BOOL cancelFlowing = NO; // 是否需要取消回退滑动
         
+        BOOL skipCancelFlowingCheck = NO; // 是否跳过没回的检测
+        
         if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
             // 自定义视图控制器最终停止移动的位置
             destinationFrame = [(id<GQViewControllerDelegate>)self.topViewController flowController:self
                                                          destinationRectForFlowDirection:self.flowingDirection];
             
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
-                cancelFlowing = YES;
-                
                 destinationFrame = self.originalFrame;
+            } else {
+                // delegate返回有效的值
+                skipCancelFlowingCheck = YES;
             }
-        } else {
+        }
+        
+        if (skipCancelFlowingCheck == NO) {
+            // delegate返回滑回的触发距离
             if ([self.topViewController respondsToSelector:@selector(flowingBoundary:)]) {
                 CGFloat boundary = [(id<GQViewControllerDelegate>)self.topViewController flowingBoundary:self];
-
+                
                 if (boundary > .0
                     && boundary < 1.0) {
                     CGFloat length = .0;
@@ -955,12 +961,12 @@
             }
             
             if (!cancelFlowing) {
-                if (self.flowingDirection == self.topViewController.flowInDirection) {                    
+                if (self.flowingDirection == self.topViewController.flowInDirection) {
                     destinationFrame = [self inDestinationRectForViewController:self.topViewController];
                 }
                 
                 // 如果in和out是同一方向，则以out为主
-                if (self.flowingDirection == self.topViewController.flowOutDirection) {         
+                if (self.flowingDirection == self.topViewController.flowOutDirection) {
                     destinationFrame = [self outDestinationRectForViewController:self.topViewController];
                 }
             }
@@ -979,17 +985,14 @@
                                  [(id <GQViewControllerDelegate>)self.topViewController didFlowToDestinationRect:self];
                              }
                              
-                             if (![self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
-
-                                 // 如果topViewController已经移出窗口，则进行删除操作
-                                 if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
-                                     [self.innerViewControllers removeLastObject];
-                                     
-                                     [self removeTopViewController];
-                                 }
+                             // 如果topViewController已经移出窗口，则进行删除操作
+                             if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
+                                 [self.innerViewControllers removeLastObject];
                                  
-                                 self.topViewController.overlayContent = NO;
+                                 [self removeTopViewController];
                              }
+                             
+                             self.topViewController.overlayContent = NO;
                              
                              // 重新添加top view的手势
                              [self addPressGestureRecognizerForTopView];
