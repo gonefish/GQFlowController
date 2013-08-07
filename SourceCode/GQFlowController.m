@@ -901,13 +901,22 @@
             // 对topViewController下面一层内容进行overlay
             NSUInteger vcCount = [self.viewControllers count];
             
+            UIViewController *controller = nil;
+            
             if (vcCount > 1) {
-                UIViewController *controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
+                controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
                 
                 controller.overlayContent = YES;
             }
             
             self.topViewController.view.frame = newFrame;
+            
+            // 更新缩放
+            float x = self.prevPoint.x - self.startPoint.x;
+            float scale = (x/6400)+0.95;
+            
+            NSLog(@"%f", scale);
+            [controller setShotViewScale:scale];
         }
         
         // 记住上一个点
@@ -1128,7 +1137,11 @@ static char kQGOverlayViewObjectKey;
         
         UIView *shotView = [overlayView.subviews objectAtIndex:0];
         
-        shotView.transform = CGAffineTransformMakeScale(scale, scale);
+        CGFloat offsetX = shotView.frame.size.width * (1.0 - scale) * 0.5;
+        
+        CGFloat sy = 1.0 - offsetX * 2.0 / shotView.frame.size.height;
+        
+        shotView.transform = CGAffineTransformMakeScale(scale, sy);
     }
 }
 

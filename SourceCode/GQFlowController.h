@@ -57,7 +57,8 @@ typedef enum {
 // .0 ~ 1.0
 - (CGFloat)flowingBoundary:(GQFlowController *)flowController;
 
-- (BOOL)shouldScale:(GQFlowController *)flowController;
+// 默认为YES
+- (BOOL)shouldScaleView:(GQFlowController *)flowController;
 
 @end
 
