@@ -415,8 +415,6 @@
 {
     [self addChildViewController:viewController];
     
-    viewController.view.frame = self.view.bounds;
-    
     [self.view addSubview:viewController.view];
     
     [viewController didMoveToParentViewController:self];
@@ -523,7 +521,7 @@
                      animations:^{
                          viewController.view.frame = destinationFrame;
                          
-                         [oldTopViewController setScale:0.96];
+                         [oldTopViewController setShotViewScale:0.95];
                      }
                      completion:^(BOOL finished){
                          block();
@@ -585,7 +583,7 @@
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
                              
-                             [lastController setScale:1.0];
+                             [lastController setShotViewScale:1.0];
                          }
                          completion:^(BOOL finished){
                              if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
@@ -1087,7 +1085,6 @@ static char kQGOverlayViewObjectKey;
         overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
         [(UIView *)overlayView setBackgroundColor:[UIColor blackColor]];
-//        [(UIView *)overlayView setAlpha:.5];
         
         objc_setAssociatedObject(self, &kQGOverlayViewObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
@@ -1122,24 +1119,14 @@ static char kQGOverlayViewObjectKey;
     return [(NSNumber *)objc_getAssociatedObject(self, &kQGOverlayContentObjectKey) boolValue];
 }
 
-- (void)setScale:(CGFloat)scale
+- (void)setShotViewScale:(CGFloat)scale
 {
     if ([self isOverlayContent] == YES) {
         UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
         
-        UIView *a = [overlayView.subviews objectAtIndex:0];
+        UIView *shotView = [overlayView.subviews objectAtIndex:0];
         
-        //a.transform = CGAffineTransformMakeScale(scale, scale);
-        
-        if (scale == 1.0) {
-            a.frame = CGRectMake(a.frame.origin.x - 10, a.frame.origin.y - 10,
-                                 a.frame.size.width, a.frame.size.height + 20);
-        } else {
-            a.frame = CGRectMake(a.frame.origin.x + 10, a.frame.origin.y + 10,
-                                 a.frame.size.width, a.frame.size.height - 20);
-        }
-        
-        
+        shotView.transform = CGAffineTransformMakeScale(scale, scale);
     }
 }
 

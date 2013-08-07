@@ -71,6 +71,6 @@ typedef enum {
 
 @property (nonatomic, getter=isOverlayContent) BOOL overlayContent;
 
-- (void)setScale:(CGFloat)scale;
+- (void)setShotViewScale:(CGFloat)scale;
 
 @end
