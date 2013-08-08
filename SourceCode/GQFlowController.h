@@ -57,6 +57,9 @@ typedef enum {
 // .0 ~ 1.0
 - (CGFloat)flowingBoundary:(GQFlowController *)flowController;
 
+// 默认为YES
+- (BOOL)shouldScaleView:(GQFlowController *)flowController;
+
 @end
 
 @interface UIViewController (GQViewController)
@@ -68,5 +71,7 @@ typedef enum {
 @property (nonatomic) GQFlowDirection flowOutDirection;
 
 @property (nonatomic, getter=isOverlayContent) BOOL overlayContent;
+
+- (void)setShotViewScale:(CGFloat)scale;
 
 @end

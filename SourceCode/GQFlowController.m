@@ -522,13 +522,15 @@
     [UIView animateWithDuration:duration
                      animations:^{
                          viewController.view.frame = destinationFrame;
+                         
+                         [oldTopViewController setShotViewScale:0.95];
                      }
                      completion:^(BOOL finished){
                          block();
                          
                          viewController.overlayContent = NO;
                          
-                         oldTopViewController.overlayContent = NO;
+                         //oldTopViewController.overlayContent = NO;
                      }];
 }
 
@@ -582,6 +584,8 @@
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
+                             
+                             [lastController setShotViewScale:1.0];
                          }
                          completion:^(BOOL finished){
                              if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
@@ -897,13 +901,30 @@
             // 对topViewController下面一层内容进行overlay
             NSUInteger vcCount = [self.viewControllers count];
             
+            UIViewController *controller = nil;
+            
             if (vcCount > 1) {
-                UIViewController *controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
+                controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
                 
                 controller.overlayContent = YES;
             }
             
             self.topViewController.view.frame = newFrame;
+            
+            // 更新缩放
+            float x = self.prevPoint.x - self.startPoint.x;
+            
+            float scale = .0;
+            
+            if (self.flowingDirection == self.topViewController.flowInDirection) {
+                scale = 1.0 - (ABS(x)/6400);
+            } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                scale = (ABS(x)/6400)+0.95;
+                
+            }
+            
+            NSLog(@"%f", scale);
+            [controller setShotViewScale:scale];
         }
         
         // 记住上一个点
@@ -922,7 +943,7 @@
         
         BOOL cancelFlowing = NO; // 是否需要取消回退滑动
         
-        BOOL skipCancelFlowingCheck = NO; // 是否跳过没回的检测
+        BOOL skipCancelFlowingCheck = NO; // 是否跳过回退的检测
         
         if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
             // 自定义视图控制器最终停止移动的位置
@@ -977,10 +998,24 @@
         CGFloat duration = [self durationForOriginalRect:self.topViewController.view.frame
                                          destinationRect:destinationFrame
                                         flowingDirection:self.flowingDirection];
+        
+        NSUInteger vcCount = [self.viewControllers count];
+        
+        UIViewController *controller = nil;
+        
+        if (vcCount > 1) {
+            controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
+        }
 
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = destinationFrame;
+                             
+                             if (self.flowingDirection == self.topViewController.flowInDirection) {
+                                 [controller setShotViewScale:0.95];
+                             } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                                 [controller setShotViewScale:1.0];
+                             }
                          }
                          completion:^(BOOL finished){
                              if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect:)]) {
@@ -1082,8 +1117,7 @@ static char kQGOverlayViewObjectKey;
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
-//        [(UIView *)overlayView setBackgroundColor:[UIColor redColor]];
-//        [(UIView *)overlayView setAlpha:.5];
+        [(UIView *)overlayView setBackgroundColor:[UIColor blackColor]];
         
         objc_setAssociatedObject(self, &kQGOverlayViewObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
@@ -1116,6 +1150,29 @@ static char kQGOverlayViewObjectKey;
 - (BOOL)isOverlayContent
 {
     return [(NSNumber *)objc_getAssociatedObject(self, &kQGOverlayContentObjectKey) boolValue];
+}
+
+- (void)setShotViewScale:(CGFloat)scale
+{
+    if ([self isOverlayContent] == YES) {
+        UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
+        
+        UIView *shotView = [overlayView.subviews objectAtIndex:0];
+        
+        CGFloat offsetX = shotView.frame.size.width * (1.0 - scale) * 0.5;
+        
+        CGFloat sy = 1.0 - offsetX * 2.0 / shotView.frame.size.height;
+        
+        shotView.transform = CGAffineTransformMakeScale(scale, sy);
+        
+        if (scale < 1.0) {
+            shotView.alpha = scale - 0.3;
+        } else {
+            shotView.alpha = scale;
+        }
+        
+        
+    }
 }
 
 @end
