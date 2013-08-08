@@ -36,7 +36,7 @@ typedef enum {
 /**
  实现这个协议来激活压住滑动功能
  */
-@protocol GQViewControllerDelegate <NSObject>
+@protocol GQEnhancementViewController <NSObject>
 
 @optional
 
