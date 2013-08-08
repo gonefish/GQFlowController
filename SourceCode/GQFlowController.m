@@ -913,7 +913,15 @@
             
             // 更新缩放
             float x = self.prevPoint.x - self.startPoint.x;
-            float scale = (x/6400)+0.95;
+            
+            float scale = .0;
+            
+            if (self.flowingDirection == self.topViewController.flowInDirection) {
+                scale = 1.0 - (ABS(x)/6400);
+            } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                scale = (ABS(x)/6400)+0.95;
+                
+            }
             
             NSLog(@"%f", scale);
             [controller setShotViewScale:scale];
