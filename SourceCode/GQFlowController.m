@@ -825,27 +825,27 @@
         self.startPoint = pressPoint;
         self.prevPoint = pressPoint;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        CGFloat offsetX = pressPoint.x - self.prevPoint.x;
+        CGFloat offsetY = pressPoint.y - self.prevPoint.y;
+        
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
-            // 判断移动的方向
-            CGFloat x = pressPoint.x - self.startPoint.x;
-            CGFloat y = pressPoint.y - self.startPoint.y;
-            
-            if (ABS(x) > ABS(y)) {
-                if (x > .0) {
+            // 判断移动的方向            
+            if (ABS(offsetX) > ABS(offsetY)) {
+                if (offsetX > .0) {
                     self.flowingDirection = GQFlowDirectionRight;
                 } else {
                     self.flowingDirection = GQFlowDirectionLeft;
                 }
             } else {
-                if (y > .0) {
+                if (offsetY > .0) {
                     self.flowingDirection = GQFlowDirectionDown;
                 } else {
                     self.flowingDirection = GQFlowDirectionUp;
                 }
             }
 
-            // 移动的View可能不是Top View
+            // 滑动的View可能不是Top View
             if ([self.topViewController respondsToSelector:@selector(flowController:viewControllerForFlowDirection:)]) {
                 UIViewController *controller = [(id<GQEnhancementViewController>)self.topViewController flowController:self
                                                                                      viewControllerForFlowDirection:self.flowingDirection];
@@ -871,13 +871,12 @@
         
         if (self.flowingDirection == GQFlowDirectionLeft
             || self.flowingDirection == GQFlowDirectionRight) {
-            CGFloat x = pressPoint.x - self.prevPoint.x;
             
-            newFrame = CGRectOffset(self.topViewController.view.frame, x, .0);
+            newFrame = CGRectOffset(self.topViewController.view.frame, offsetX, .0);
         } else if (self.flowingDirection == GQFlowDirectionUp
                    || self.flowingDirection == GQFlowDirectionDown) {
-            CGFloat y = pressPoint.y - self.prevPoint.y;
-            newFrame = CGRectOffset(self.topViewController.view.frame, .0, y);
+            
+            newFrame = CGRectOffset(self.topViewController.view.frame, .0, offsetY);
         }
         
         // 能否移动
@@ -888,6 +887,7 @@
             || self.flowingDirection == self.topViewController.flowOutDirection) {
             shouldMove = YES;
             
+            // 可通过实现GQEnhancementViewController来进一步的控制
             if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
                 shouldMove = [(id<GQEnhancementViewController>)self.topViewController flowController:self
                                                                                  shouldFlowToRect:newFrame];
@@ -898,33 +898,29 @@
             // 滑动时激活遮罩层
             self.topViewController.overlayContent = YES;
             
-            // 对topViewController下面一层内容进行overlay
-            NSUInteger vcCount = [self.viewControllers count];
-            
-            UIViewController *controller = nil;
-            
-            if (vcCount > 1) {
-                controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
-                
-                controller.overlayContent = YES;
-            }
-            
             self.topViewController.view.frame = newFrame;
             
-            // 更新缩放
-            float x = self.prevPoint.x - self.startPoint.x;
+            UIViewController *belowVC = [self belowTopViewController];
             
-            float scale = .0;
-            
-            if (self.flowingDirection == self.topViewController.flowInDirection) {
-                scale = 1.0 - (ABS(x)/6400);
-            } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                scale = (ABS(x)/6400)+0.95;
+            if (belowVC) {
+                // 对topViewController下面一层内容进行overlay
+                belowVC.overlayContent = YES;
                 
+                // 计算缩放
+                float x = ABS(self.prevPoint.x - self.startPoint.x);
+                
+                float scale = 1.0;
+                
+                float scaleFactor = self.topViewController.view.frame.size.width * 20.0;
+                
+                if (self.flowingDirection == self.topViewController.flowInDirection) {
+                    scale = 1.0 - x / scaleFactor;
+                } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                    scale = 0.95 + x / scaleFactor;
+                }
+                
+                [belowVC setShotViewScale:scale];
             }
-            
-            NSLog(@"%f", scale);
-            [controller setShotViewScale:scale];
         }
         
         // 记住上一个点
@@ -999,22 +995,16 @@
                                          destinationRect:destinationFrame
                                         flowingDirection:self.flowingDirection];
         
-        NSUInteger vcCount = [self.viewControllers count];
-        
-        UIViewController *controller = nil;
-        
-        if (vcCount > 1) {
-            controller = (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
-        }
+        UIViewController *belowVC = [self belowTopViewController];
 
         [UIView animateWithDuration:duration
                          animations:^{
                              self.topViewController.view.frame = destinationFrame;
                              
                              if (self.flowingDirection == self.topViewController.flowInDirection) {
-                                 [controller setShotViewScale:0.95];
+                                 [belowVC setShotViewScale:0.95];
                              } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                                 [controller setShotViewScale:1.0];
+                                 [belowVC setShotViewScale:1.0];
                              }
                          }
                          completion:^(BOOL finished){
@@ -1037,6 +1027,17 @@
                              // 重置长按状态信息
                              [self resetLongPressStatus];
                          }];
+    }
+}
+
+- (UIViewController *)belowTopViewController
+{
+    NSUInteger vcCount = [self.viewControllers count];
+    
+    if (vcCount > 1) {
+        return (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
+    } else {
+        return nil;
     }
 }
 
@@ -1159,19 +1160,14 @@ static char kQGOverlayViewObjectKey;
         
         UIView *shotView = [overlayView.subviews objectAtIndex:0];
         
+        // 保证缩放时的间隙相同
         CGFloat offsetX = shotView.frame.size.width * (1.0 - scale) * 0.5;
         
         CGFloat sy = 1.0 - offsetX * 2.0 / shotView.frame.size.height;
         
         shotView.transform = CGAffineTransformMakeScale(scale, sy);
         
-        if (scale < 1.0) {
-            shotView.alpha = scale - 0.3;
-        } else {
-            shotView.alpha = scale;
-        }
-        
-        
+        shotView.alpha = ABS((scale - 0.95) * 12 + 0.4);
     }
 }
 
