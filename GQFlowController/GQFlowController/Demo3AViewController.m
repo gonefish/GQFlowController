@@ -40,7 +40,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - GQFlowControllerDelegate
+#pragma mark - GQViewController
 
 - (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {

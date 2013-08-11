@@ -14,12 +14,12 @@ GQFlowController实现了一个多层的容器视图控制器，其目标是实�
 
 
 
-GQViewController Category
+GQViewControllerAdditions Category
 -------------------------
 通过Category的特性来扩展UIViewController的方法，这些方法可以让你在UIViewController中访问GQFlowController的实例和其它功能的设置。
 
 
-GQEnhancementViewController Protocol
+GQViewController Protocol
 ---------------------------------
 该协议定义了长按滑动手势的相关方法，可以在UIViewController的子类中实现该协议，来控制不同的长按滑动行为。
 

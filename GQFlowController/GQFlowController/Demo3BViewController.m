@@ -39,7 +39,7 @@
     [self.flowController flowOutViewControllerAnimated:YES];
 }
 
-#pragma mark - GQFlowControllerDelegate
+#pragma mark - GQViewController
 
 - (CGRect) destinationRectForFlowDirection:(GQFlowDirection)direction;
 {

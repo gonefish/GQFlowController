@@ -17,7 +17,7 @@
 
 @implementation Demo1TopViewController
 
-#pragma mark - GQFlowControllerDelegate
+#pragma mark - GQViewController
 
 - (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {

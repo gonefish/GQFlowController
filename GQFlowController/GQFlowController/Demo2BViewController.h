@@ -8,6 +8,6 @@
 
 #import "GQFlowController.h"
 
-@interface Demo2BViewController : UIViewController <GQEnhancementViewController>
+@interface Demo2BViewController : UIViewController <GQViewController>
 
 @end

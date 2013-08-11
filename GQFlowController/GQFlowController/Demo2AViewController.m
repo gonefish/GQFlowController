@@ -54,7 +54,7 @@
     return YES;
 }
 
-#pragma mark - GQFlowControllerDelegate
+#pragma mark - GQViewController
 
 - (CGFloat)flowingBoundary
 {

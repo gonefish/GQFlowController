@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "GQFlowController.h"
 
-@interface Demo3AViewController : UIViewController <GQEnhancementViewController>
+@interface Demo3AViewController : UIViewController <GQViewController>
 
 @end

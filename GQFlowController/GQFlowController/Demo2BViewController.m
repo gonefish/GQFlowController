@@ -46,7 +46,7 @@
     return YES;
 }
 
-#pragma mark - GQFlowControllerDelegate
+#pragma mark - GQViewController
 
 - (BOOL)shouldFlowToRect:(CGRect)frame
 {
