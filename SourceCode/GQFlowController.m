@@ -523,7 +523,9 @@
                      animations:^{
                          viewController.view.frame = destinationFrame;
                          
-                         [oldTopViewController setShotViewScale:0.95];
+                         if ([self shouldScaleView:oldTopViewController]) {
+                             [oldTopViewController setShotViewScale:0.95];
+                         }
                      }
                      completion:^(BOOL finished){
                          block();
@@ -533,6 +535,7 @@
                          //oldTopViewController.overlayContent = NO;
                      }];
 }
+
 
 
 - (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
@@ -585,7 +588,9 @@
                          animations:^{
                              self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
                              
-                             [lastController setShotViewScale:1.0];
+                             if ([self shouldScaleView:lastController]) {
+                                 [lastController setShotViewScale:1.0];
+                             }
                          }
                          completion:^(BOOL finished){
                              if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
@@ -906,20 +911,22 @@
                 // 对topViewController下面一层内容进行overlay
                 belowVC.overlayContent = YES;
                 
-                // 计算缩放
-                float x = ABS(self.prevPoint.x - self.startPoint.x);
-                
-                float scale = 1.0;
-                
-                float scaleFactor = self.topViewController.view.frame.size.width * 20.0;
-                
-                if (self.flowingDirection == self.topViewController.flowInDirection) {
-                    scale = 1.0 - x / scaleFactor;
-                } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                    scale = 0.95 + x / scaleFactor;
+                if ([self shouldScaleView:belowVC]) {
+                    // 计算缩放
+                    float x = ABS(self.prevPoint.x - self.startPoint.x);
+                    
+                    float scale = 1.0;
+                    
+                    float scaleFactor = self.topViewController.view.frame.size.width * 20.0;
+                    
+                    if (self.flowingDirection == self.topViewController.flowInDirection) {
+                        scale = 1.0 - x / scaleFactor;
+                    } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                        scale = 0.95 + x / scaleFactor;
+                    }
+                    
+                    [belowVC setShotViewScale:scale];
                 }
-                
-                [belowVC setShotViewScale:scale];
             }
         }
         
@@ -1001,10 +1008,12 @@
                          animations:^{
                              self.topViewController.view.frame = destinationFrame;
                              
-                             if (self.flowingDirection == self.topViewController.flowInDirection) {
-                                 [belowVC setShotViewScale:0.95];
-                             } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                                 [belowVC setShotViewScale:1.0];
+                             if ([self shouldScaleView:belowVC]) {
+                                 if (self.flowingDirection == self.topViewController.flowInDirection) {
+                                     [belowVC setShotViewScale:0.95];
+                                 } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                                     [belowVC setShotViewScale:1.0];
+                                 }
                              }
                          }
                          completion:^(BOOL finished){
@@ -1039,6 +1048,17 @@
     } else {
         return nil;
     }
+}
+
+- (BOOL)shouldScaleView:(UIViewController *)controller
+{
+    BOOL isScale = YES;
+    
+    if ([controller respondsToSelector:@selector(shouldScaleView)]) {
+        isScale = [(id<GQViewController>)controller shouldScaleView];
+    }
+    
+    return isScale;
 }
 
 @end
