@@ -41,13 +41,13 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
+- (CGRect) destinationRectForFlowDirection:(GQFlowDirection)direction;
 {
     CGFloat w = 400.0;
     CGFloat h = 300.0;
     
-    return CGRectMake((flowController.view.bounds.size.width - w) / 2.0,
-                      (flowController.view.bounds.size.height - h) / 2.0,
+    return CGRectMake((self.flowController.view.bounds.size.width - w) / 2.0,
+                      (self.flowController.view.bounds.size.height - h) / 2.0,
                       w,
                       h);
 }

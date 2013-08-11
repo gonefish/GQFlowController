@@ -39,7 +39,7 @@
     [self.flowController flowOutViewControllerAnimated:YES];
 }
 
-- (CGFloat)flowingBoundary:(GQFlowController *)flowController
+- (CGFloat)flowingBoundary
 {
     return 0.15;
 }

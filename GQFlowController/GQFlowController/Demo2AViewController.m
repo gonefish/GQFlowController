@@ -56,12 +56,12 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (CGFloat)flowingBoundary:(GQFlowController *)flowController
+- (CGFloat)flowingBoundary
 {
     return 0.15;
 }
 
-- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+- (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {
     if (direction == GQFlowDirectionLeft) {
         return [[Demo2BViewController alloc] initWithNibName:@"Demo2BViewController" bundle:nil];
@@ -70,7 +70,7 @@
     }
 }
 
-- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame
+- (BOOL)shouldFlowToRect:(CGRect)frame
 {
     if (frame.origin.x >= .0) {
         return YES;

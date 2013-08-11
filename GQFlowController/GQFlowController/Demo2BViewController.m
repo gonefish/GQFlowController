@@ -48,7 +48,7 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame
+- (BOOL)shouldFlowToRect:(CGRect)frame
 {
     if (frame.origin.x >= .0) {
         return YES;
@@ -57,7 +57,7 @@
     }
 }
 
-- (CGFloat)flowingBoundary:(GQFlowController *)flowController
+- (CGFloat)flowingBoundary
 {
     return 0.15;
 }

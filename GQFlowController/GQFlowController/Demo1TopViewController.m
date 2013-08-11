@@ -19,11 +19,11 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+- (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {
-    UIViewController *leftViewController = [[flowController viewControllers] objectAtIndex:0];
+    UIViewController *leftViewController = [[self.flowController viewControllers] objectAtIndex:0];
     leftViewController.overlayContent = YES;
-    UIViewController *rightViewController = [[flowController viewControllers] objectAtIndex:1];
+    UIViewController *rightViewController = [[self.flowController viewControllers] objectAtIndex:1];
     rightViewController.overlayContent = YES;
     
     if (direction == GQFlowDirectionLeft
@@ -39,19 +39,19 @@
     return self;
 }
 
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction
+- (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction
 {
     CGRect destinationFrect = CGRectZero;
     
     if (direction == GQFlowDirectionLeft) {
         // 右滑后，左滑回
-        if (self.view.frame.origin.x <= flowController.view.frame.size.width - OFFSET
-            && self.view.frame.origin.x > flowController.view.frame.size.width - OFFSET - OFFSET) {
-            destinationFrect = CGRectMake(flowController.view.frame.size.width - OFFSET,
+        if (self.view.frame.origin.x <= self.flowController.view.frame.size.width - OFFSET
+            && self.view.frame.origin.x > self.flowController.view.frame.size.width - OFFSET - OFFSET) {
+            destinationFrect = CGRectMake(self.flowController.view.frame.size.width - OFFSET,
                                           0,
                                           self.view.frame.size.width,
                                           self.view.frame.size.height);
-        } else if (self.view.frame.origin.x <= flowController.view.frame.size.width - OFFSET - OFFSET
+        } else if (self.view.frame.origin.x <= self.flowController.view.frame.size.width - OFFSET - OFFSET
                    && self.view.frame.origin.x > 0) {
             destinationFrect = CGRectMake(0,
                                           0,
@@ -65,8 +65,8 @@
                                           self.view.frame.size.width,
                                           self.view.frame.size.height);
         } else if (self.view.frame.origin.x <= -OFFSET
-                   && self.view.frame.origin.x >= -flowController.view.frame.size.width) {
-            destinationFrect = CGRectMake(-flowController.view.frame.size.width + OFFSET,
+                   && self.view.frame.origin.x >= -self.flowController.view.frame.size.width) {
+            destinationFrect = CGRectMake(-self.flowController.view.frame.size.width + OFFSET,
                                           0,
                                           self.view.frame.size.width,
                                           self.view.frame.size.height);
@@ -80,19 +80,19 @@
                                           self.view.frame.size.width,
                                           self.view.frame.size.height);
         } else if (self.view.frame.origin.x >= OFFSET
-               && self.view.frame.origin.x < flowController.view.frame.size.width) {
-            destinationFrect = CGRectMake(flowController.view.frame.size.width - OFFSET,
+               && self.view.frame.origin.x < self.flowController.view.frame.size.width) {
+            destinationFrect = CGRectMake(self.flowController.view.frame.size.width - OFFSET,
                                       0,
                                       self.view.frame.size.width,
                                       self.view.frame.size.height);
-        } else if (self.view.frame.origin.x > -flowController.view.frame.size.width + OFFSET
-                   && self.view.frame.origin.x < -flowController.view.frame.size.width + OFFSET + OFFSET) {
+        } else if (self.view.frame.origin.x > -self.flowController.view.frame.size.width + OFFSET
+                   && self.view.frame.origin.x < -self.flowController.view.frame.size.width + OFFSET + OFFSET) {
             // 左滑后，右滑回
-            destinationFrect = CGRectMake(-flowController.view.frame.size.width + OFFSET,
+            destinationFrect = CGRectMake(-self.flowController.view.frame.size.width + OFFSET,
                                           0,
                                           self.view.frame.size.width,
                                           self.view.frame.size.height);
-        } else if (self.view.frame.origin.x > -flowController.view.frame.size.width + OFFSET + OFFSET
+        } else if (self.view.frame.origin.x > -self.flowController.view.frame.size.width + OFFSET + OFFSET
                    && self.view.frame.origin.x < 0) {
             destinationFrect = CGRectMake(0,
                                           0,
@@ -104,11 +104,11 @@
     return destinationFrect;
 }
 
-- (void)didFlowToDestinationRect:(GQFlowController *)flowController
+- (void)didFlowToDestinationRect
 {
-    UIViewController *leftViewController = [[flowController viewControllers] objectAtIndex:0];
-    UIViewController *rightViewController = [[flowController viewControllers] objectAtIndex:1];
-    UIViewController *topViewController = [[flowController viewControllers] objectAtIndex:2];
+    UIViewController *leftViewController = [[self.flowController viewControllers] objectAtIndex:0];
+    UIViewController *rightViewController = [[self.flowController viewControllers] objectAtIndex:1];
+    UIViewController *topViewController = [[self.flowController viewControllers] objectAtIndex:2];
     
     if (self.view.frame.origin.x > 0) {
         rightViewController.overlayContent = NO;

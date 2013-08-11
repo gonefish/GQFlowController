@@ -618,8 +618,8 @@
     CGRect destinationFrame = self.view.bounds;
     
     // 允许自定义滑入时的最终frame
-    if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
-        destinationFrame = [(id <GQEnhancementViewController>)self.topViewController flowController:self
+    if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
+        destinationFrame = [(id <GQEnhancementViewController>)self.topViewController
                                                                  destinationRectForFlowDirection:viewController.flowInDirection];
     }
     
@@ -665,8 +665,8 @@
     CGRect destinationFrame = CGRectZero;
     
     // 允许自定义滑入时的最终frame
-    if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
-        destinationFrame = [(id <GQEnhancementViewController>)self.topViewController flowController:self
+    if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
+        destinationFrame = [(id <GQEnhancementViewController>)self.topViewController
                                                                  destinationRectForFlowDirection:viewController.flowInDirection];
     } else {
         // 默认的目标frame以容器为基准
@@ -846,8 +846,8 @@
             }
 
             // 滑动的View可能不是Top View
-            if ([self.topViewController respondsToSelector:@selector(flowController:viewControllerForFlowDirection:)]) {
-                UIViewController *controller = [(id<GQEnhancementViewController>)self.topViewController flowController:self
+            if ([self.topViewController respondsToSelector:@selector(viewControllerForFlowDirection:)]) {
+                UIViewController *controller = [(id<GQEnhancementViewController>)self.topViewController 
                                                                                      viewControllerForFlowDirection:self.flowingDirection];
                 
                 // 校验不是topViewController，并添加到容器中
@@ -888,8 +888,8 @@
             shouldMove = YES;
             
             // 可通过实现GQEnhancementViewController来进一步的控制
-            if ([self.topViewController respondsToSelector:@selector(flowController:shouldFlowToRect:)]) {
-                shouldMove = [(id<GQEnhancementViewController>)self.topViewController flowController:self
+            if ([self.topViewController respondsToSelector:@selector(shouldFlowToRect:)]) {
+                shouldMove = [(id<GQEnhancementViewController>)self.topViewController
                                                                                  shouldFlowToRect:newFrame];
             }
         }
@@ -941,9 +941,9 @@
         
         BOOL skipCancelFlowingCheck = NO; // 是否跳过回退的检测
         
-        if ([self.topViewController respondsToSelector:@selector(flowController:destinationRectForFlowDirection:)]) {
+        if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
             // 自定义视图控制器最终停止移动的位置
-            destinationFrame = [(id<GQEnhancementViewController>)self.topViewController flowController:self
+            destinationFrame = [(id<GQEnhancementViewController>)self.topViewController
                                                          destinationRectForFlowDirection:self.flowingDirection];
             
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
@@ -956,8 +956,8 @@
         
         if (skipCancelFlowingCheck == NO) {
             // delegate返回滑回的触发距离
-            if ([self.topViewController respondsToSelector:@selector(flowingBoundary:)]) {
-                CGFloat boundary = [(id<GQEnhancementViewController>)self.topViewController flowingBoundary:self];
+            if ([self.topViewController respondsToSelector:@selector(flowingBoundary)]) {
+                CGFloat boundary = [(id<GQEnhancementViewController>)self.topViewController flowingBoundary];
                 
                 if (boundary > .0
                     && boundary < 1.0) {
@@ -1008,8 +1008,8 @@
                              }
                          }
                          completion:^(BOOL finished){
-                             if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect:)]) {
-                                 [(id <GQEnhancementViewController>)self.topViewController didFlowToDestinationRect:self];
+                             if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect)]) {
+                                 [(id <GQEnhancementViewController>)self.topViewController didFlowToDestinationRect];
                              }
                              
                              // 如果topViewController已经移出窗口，则进行删除操作

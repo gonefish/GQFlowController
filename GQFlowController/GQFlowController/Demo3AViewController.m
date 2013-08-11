@@ -42,7 +42,7 @@
 
 #pragma mark - GQFlowControllerDelegate
 
-- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction
+- (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {
     if (direction == GQFlowDirectionLeft) {
         return [[Demo3CViewController alloc] initWithNibName:@"Demo3CViewController" bundle:nil];
@@ -51,17 +51,17 @@
     }
 }
 
-- (CGFloat)flowingBoundary:(GQFlowController *)flowController
+- (CGFloat)flowingBoundary
 {
     return 0.15;
 }
 
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
+- (CGRect) destinationRectForFlowDirection:(GQFlowDirection)direction;
 {
     if (direction == self.flowInDirection) {
         CGFloat w = 300.0;
         
-        return CGRectMake(w, .0, flowController.view.bounds.size.width - w, flowController.view.bounds.size.height);
+        return CGRectMake(w, .0, self.flowController.view.bounds.size.width - w, self.flowController.view.bounds.size.height);
     } else {
         return CGRectZero;
     }

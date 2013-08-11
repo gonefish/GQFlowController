@@ -41,24 +41,24 @@ typedef enum {
 @optional
 
 // 目标frame
-- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
+- (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction;
 
 
 // 滑动的UIViewController
-- (UIViewController *)flowController:(GQFlowController *)flowController viewControllerForFlowDirection:(GQFlowDirection)direction;
+- (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction;
 
 
 // 是否移动UIView
-- (BOOL)flowController:(GQFlowController *)flowController shouldFlowToRect:(CGRect)frame;
+- (BOOL)shouldFlowToRect:(CGRect)frame;
 
 // 移动到终点结束
-- (void)didFlowToDestinationRect:(GQFlowController *)flowController;
+- (void)didFlowToDestinationRect;
 
 // .0 ~ 1.0
-- (CGFloat)flowingBoundary:(GQFlowController *)flowController;
+- (CGFloat)flowingBoundary;
 
 // 默认为YES
-- (BOOL)shouldScaleView:(GQFlowController *)flowController;
+- (BOOL)shouldScaleView;
 
 @end
 
