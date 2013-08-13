@@ -62,7 +62,7 @@ typedef enum {
 
 @end
 
-@interface UIViewController (GQViewControllerAdditions)
+@interface UIViewController (GQFlowControllerAdditions)
 
 @property (nonatomic, strong, readonly) GQFlowController *flowController;
 

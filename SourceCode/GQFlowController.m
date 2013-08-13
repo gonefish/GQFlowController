@@ -1071,7 +1071,7 @@ static char kGQFlowOutDirectionObjectKey;
 static char kQGOverlayContentObjectKey;
 static char kQGOverlayViewObjectKey;
 
-@implementation UIViewController (GQViewControllerAdditions)
+@implementation UIViewController (GQFlowControllerAdditions)
 
 @dynamic flowController;
 @dynamic flowInDirection;
