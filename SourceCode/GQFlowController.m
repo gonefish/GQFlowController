@@ -196,9 +196,20 @@
 
 #pragma mark - Public Method
 
-- (id)initWithViewControllers:(NSArray *)viewControllers
+- (id)init
 {
     self = [super init];
+    
+    if (self) {
+        self.flowingSpeed = 640;
+    }
+    
+    return self;
+}
+
+- (id)initWithViewControllers:(NSArray *)viewControllers
+{
+    self = [self init];
     
     if (self) {
         self.viewControllers = viewControllers;
@@ -514,7 +525,8 @@
     if (animated) {
         duration = [self durationForOriginalRect:viewController.view.frame
                                  destinationRect:destinationFrame
-                                flowingDirection:self.topViewController.flowInDirection];
+                                flowingDirection:self.topViewController.flowInDirection
+                                    flowingSpeed:[self flowingSpeedWithViewController:viewController]];
     }
     
     viewController.overlayContent = YES;
@@ -568,7 +580,8 @@
         if (animated) {
             duration = [self durationForOriginalRect:self.topViewController.view.frame
                                      destinationRect:destinationFrame
-                                    flowingDirection:self.topViewController.flowOutDirection];
+                                    flowingDirection:self.topViewController.flowOutDirection
+                                        flowingSpeed:[self flowingSpeedWithViewController:self.topViewController]];
         }
         
         self.topViewController.overlayContent = YES;
@@ -769,8 +782,23 @@
     self.flowingDirection = GQFlowDirectionUnknow;
 }
 
-- (NSTimeInterval)durationForOriginalRect:(CGRect)originalFrame destinationRect:(CGRect)destinationFrame flowingDirection:(GQFlowDirection)flowingDirection
-{    
+- (CGFloat)flowingSpeedWithViewController:(UIViewController *)viewController
+{
+    CGFloat speed = self.flowingSpeed;
+    
+    if ([viewController respondsToSelector:@selector(flowingSpeed)]) {
+        speed = [(id <GQViewController>)viewController flowingSpeed];
+        
+        if (speed == 0) {
+            speed = self.flowingSpeed;
+        }
+    }
+    
+    return speed;
+}
+
+- (NSTimeInterval)durationForOriginalRect:(CGRect)originalFrame destinationRect:(CGRect)destinationFrame flowingDirection:(GQFlowDirection)flowingDirection flowingSpeed:(CGFloat)speed
+{
     CGFloat length = .0;
     
     if (flowingDirection == GQFlowDirectionLeft
@@ -781,8 +809,7 @@
         length = destinationFrame.origin.y - destinationFrame.origin.y;
     }
     
-    // 速度以0.5秒移动一屏为基准
-    return 0.00156 * ABS(length);
+    return ABS(length) / speed;
 }
 
 // 添加手势
@@ -1000,7 +1027,8 @@
         
         CGFloat duration = [self durationForOriginalRect:self.topViewController.view.frame
                                          destinationRect:destinationFrame
-                                        flowingDirection:self.flowingDirection];
+                                        flowingDirection:self.flowingDirection
+                                            flowingSpeed:[self flowingSpeedWithViewController:self.topViewController]];
         
         UIViewController *belowVC = [self belowTopViewController];
 

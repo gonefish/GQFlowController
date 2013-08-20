@@ -31,6 +31,11 @@ typedef enum {
 @property (nonatomic, copy) NSArray *viewControllers;
 @property (nonatomic, strong, readonly) UIViewController *topViewController;
 
+/**
+ 每秒的移动速度，默认为640 Point
+ */
+@property (nonatomic) NSUInteger flowingSpeed;
+
 @end
 
 /**
@@ -59,6 +64,9 @@ typedef enum {
 
 // 默认为YES
 - (BOOL)shouldScaleView;
+
+// 自定义的滑动的速度
+- (NSUInteger)flowingSpeed;
 
 @end
 
