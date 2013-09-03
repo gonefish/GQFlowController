@@ -17,7 +17,7 @@ typedef enum {
     GQFlowDirectionDown
 } GQFlowDirection;
 
-@interface GQFlowController : UIViewController
+@interface GQFlowController : UIViewController <UIGestureRecognizerDelegate>
 
 - (id)initWithRootViewController:(UIViewController *)rootViewController;
 - (id)initWithViewControllers:(NSArray *)viewControllers;
