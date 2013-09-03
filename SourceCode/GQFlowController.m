@@ -409,6 +409,11 @@
 
 #pragma mark - UIGestureRecognizerDelegate Protocol
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return ![touch.view isKindOfClass:[UITextField class]];
+}
+
 #pragma mark - UIViewController Container Method
 
 - (void)holdViewControllers:(NSArray *)viewControllers
@@ -828,7 +833,7 @@
     if (self.pressGestureRecognizer == nil) {
         self.pressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(pressMoveGesture)];
-//        self.pressGestureRecognizer.delegate = self;
+        self.pressGestureRecognizer.delegate = self;
         self.pressGestureRecognizer.minimumPressDuration = 0;
         self.pressGestureRecognizer.cancelsTouchesInView = NO;
     }
