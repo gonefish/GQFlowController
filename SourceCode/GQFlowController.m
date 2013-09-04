@@ -232,13 +232,6 @@
     }
     
     if ([self isViewLoaded]) {
-        if ([viewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-            [viewController beginAppearanceTransition:YES
-                                             animated:animated];
-        } else {
-            [viewController viewWillAppear:animated];
-        }
-        
         [self flowInViewController:viewController
                           animated:animated
                    completionBlock:^{
@@ -535,6 +528,13 @@
     }
     
     viewController.overlayContent = YES;
+    
+    if ([viewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
+        [viewController beginAppearanceTransition:YES
+                                         animated:animated];
+    } else {
+        [viewController viewWillAppear:animated];
+    }
     
     [UIView animateWithDuration:duration
                      animations:^{
