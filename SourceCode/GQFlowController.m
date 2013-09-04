@@ -14,7 +14,6 @@
 @property (nonatomic, strong) UIViewController *topViewController;
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
 
-@property (nonatomic) CGPoint prevPoint;
 @property (nonatomic) CGPoint startPoint;
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) GQFlowDirection flowingDirection;
@@ -774,10 +773,9 @@
     return destinationFrame;
 }
 
-- (void)resetLongPressStatus
+- (void)resetPressStatus
 {
     self.startPoint = CGPointZero;
-    self.prevPoint = CGPointZero;
     self.originalFrame = CGRectZero;
     self.flowingDirection = GQFlowDirectionUnknow;
 }
@@ -847,27 +845,23 @@
 
 - (void)pressMoveGesture
 {
-    CGPoint pressPoint = [self.pressGestureRecognizer locationInView:self.view];
+    CGPoint pressPoint = [self.pressGestureRecognizer translationInView:self.view];
     
     if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
         self.startPoint = pressPoint;
-        self.prevPoint = pressPoint;
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
-        CGFloat offsetX = pressPoint.x - self.prevPoint.x;
-        CGFloat offsetY = pressPoint.y - self.prevPoint.y;
-        
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
             // 判断移动的方向            
-            if (ABS(offsetX) > ABS(offsetY)) {
-                if (offsetX > .0) {
+            if (ABS(pressPoint.x) > ABS(pressPoint.y)) {
+                if (pressPoint.x > .0) {
                     self.flowingDirection = GQFlowDirectionRight;
                 } else {
                     self.flowingDirection = GQFlowDirectionLeft;
                 }
             } else {
-                if (offsetY > .0) {
+                if (pressPoint.y > .0) {
                     self.flowingDirection = GQFlowDirectionDown;
                 } else {
                     self.flowingDirection = GQFlowDirectionUp;
@@ -888,6 +882,8 @@
                         self.topViewController.overlayContent = YES;
                         
                         [self addTopViewController:controller];
+                        
+                        //TODO: viewWillAppear
                     }
                 }
             }
@@ -901,11 +897,13 @@
         if (self.flowingDirection == GQFlowDirectionLeft
             || self.flowingDirection == GQFlowDirectionRight) {
             
-            newFrame = CGRectOffset(self.topViewController.view.frame, offsetX, .0);
+            newFrame = CGRectOffset(self.originalFrame, pressPoint.x, .0);
+            
         } else if (self.flowingDirection == GQFlowDirectionUp
                    || self.flowingDirection == GQFlowDirectionDown) {
             
-            newFrame = CGRectOffset(self.topViewController.view.frame, .0, offsetY);
+            newFrame = CGRectOffset(self.originalFrame, .0, pressPoint.y);
+            
         }
         
         // 能否移动
@@ -937,7 +935,7 @@
                 
                 if ([self shouldScaleView:belowVC]) {
                     // 计算缩放
-                    float x = ABS(self.prevPoint.x - self.startPoint.x);
+                    float x = ABS(pressPoint.x - self.startPoint.x);
                     
                     float scale = 1.0;
                     
@@ -953,18 +951,7 @@
                 }
             }
         }
-        
-        // 记住上一个点
-        self.prevPoint = pressPoint;
-    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        // 如果没有发生移动就什么也不做
-        if (CGPointEqualToPoint(self.startPoint, self.prevPoint)) {
-            // 重置长按状态信息
-            [self resetLongPressStatus];
-
-            return;
-        }
-        
+    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {        
         // 默认为原始位置
         CGRect destinationFrame = self.originalFrame;
         
@@ -1059,8 +1046,10 @@
                              [self addPressGestureRecognizerForTopView];
                              
                              // 重置长按状态信息
-                             [self resetLongPressStatus];
+                             [self resetPressStatus];
                          }];
+    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
+        
     }
 }
 
