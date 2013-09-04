@@ -19,7 +19,7 @@
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) GQFlowDirection flowingDirection;
 
-@property (nonatomic, strong) UILongPressGestureRecognizer *pressGestureRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *pressGestureRecognizer;
 
 @end
 
@@ -401,11 +401,6 @@
 }
 
 #pragma mark - UIGestureRecognizerDelegate Protocol
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    return ![touch.view isKindOfClass:[UITextField class]];
-}
 
 #pragma mark - UIViewController Container Method
 
@@ -831,11 +826,8 @@
     }
     
     if (self.pressGestureRecognizer == nil) {
-        self.pressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
-                                                                                    action:@selector(pressMoveGesture)];
-        self.pressGestureRecognizer.delegate = self;
-        self.pressGestureRecognizer.minimumPressDuration = 0;
-        self.pressGestureRecognizer.cancelsTouchesInView = NO;
+        self.pressGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(pressMoveGesture)];
     }
     
     [self.topViewController.view addGestureRecognizer:self.pressGestureRecognizer];
