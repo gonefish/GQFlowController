@@ -31,8 +31,7 @@ typedef enum {
 @property (nonatomic, copy) NSArray *viewControllers;
 @property (nonatomic, strong, readonly) UIViewController *topViewController;
 
-/**
- 每秒的移动速度，默认为640 Point
+/** 每秒的移动速度，默认为640 Point
  */
 @property (nonatomic) NSUInteger flowingSpeed;
 
@@ -45,27 +44,49 @@ typedef enum {
 
 @optional
 
-// 目标frame
+/** 返回当前滑动方法的目标位置
+ 
+ @param direction 滑动方位
+ @return 目标位置
+ */
 - (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction;
 
 
-// 滑动的UIViewController
+/** 手势滑动时的UIViewController
+ 
+ @param direction 滑动方位
+ @return 滑动的视图控制器
+ */
 - (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction;
 
 
-// 是否移动UIView
+/** 滑动时是否移动到指定的位置
+ 
+ @param frame 目标位置
+ @return 是否应该滑动
+ */
 - (BOOL)shouldFlowToRect:(CGRect)frame;
 
-// 移动到终点结束
+/** 滑动手势结束
+ */
 - (void)didFlowToDestinationRect;
 
-// .0 ~ 1.0
+/** 触发滑动到目标位置的系数 
+ 
+ @return 返回值在.0 ~ 1.0之间
+ */
 - (CGFloat)flowingBoundary;
 
-// 默认为YES
+/** 当滑动时是否需要缩放下层的视图
+ 
+ @return 是否需要缩放，默认为YES
+ */
 - (BOOL)shouldScaleView;
 
-// 自定义的滑动的速度
+/** 自定义的滑动的速度，默认640
+ 
+ @return 滑动的速度，以每秒滑动多少点
+ */
 - (NSUInteger)flowingSpeed;
 
 @end
