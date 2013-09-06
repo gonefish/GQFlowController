@@ -231,6 +231,8 @@
     }
     
     if ([self isViewLoaded]) {
+        UIViewController *oldTopViewController = self.topViewController;
+        
         [self flowInViewController:viewController
                           animated:animated
                    completionBlock:^{
@@ -239,8 +241,12 @@
                        
                        if ([viewController respondsToSelector:@selector(endAppearanceTransition)]) {
                            [viewController endAppearanceTransition];
+                           
+                           [oldTopViewController endAppearanceTransition];
                        } else {
                            [viewController viewDidAppear:animated];
+                           
+                           [oldTopViewController viewDidAppear:animated];
                        }
                    }];
     } else {
@@ -526,8 +532,13 @@
     if ([viewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
         [viewController beginAppearanceTransition:YES
                                          animated:animated];
+        
+        [oldTopViewController beginAppearanceTransition:NO
+                                               animated:animated];
     } else {
         [viewController viewWillAppear:animated];
+        
+        [oldTopViewController viewWillDisappear:animated];
     }
     
     [UIView animateWithDuration:duration
@@ -592,8 +603,13 @@
         if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
             [self.topViewController beginAppearanceTransition:NO
                                                      animated:animated];
+            
+            [lastController beginAppearanceTransition:YES
+                                             animated:animated];
         } else {
             [self.topViewController viewWillDisappear:animated];
+            
+            [lastController viewWillAppear:animated];
         }
         
         [UIView animateWithDuration:duration
@@ -607,8 +623,12 @@
                          completion:^(BOOL finished){
                              if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
                                  [self.topViewController endAppearanceTransition];
+                                 
+                                 [lastController endAppearanceTransition];
                              } else {
                                  [self.topViewController viewDidDisappear:animated];
+                                 
+                                 [lastController viewDidAppear:animated];
                              }
                              
                              [self removeTopViewController];
