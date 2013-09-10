@@ -890,8 +890,7 @@
 
             // 滑动的View可能不是Top View
             if ([self.topViewController respondsToSelector:@selector(viewControllerForFlowDirection:)]) {
-                UIViewController *controller = [(id<GQViewController>)self.topViewController 
-                                                                                     viewControllerForFlowDirection:self.flowingDirection];
+                UIViewController *controller = [(id<GQViewController>)self.topViewController viewControllerForFlowDirection:self.flowingDirection];
                 
                 // 校验不是topViewController，并添加到容器中
                 if (controller != self.topViewController) {
@@ -936,8 +935,7 @@
             
             // 可通过实现GQEnhancementViewController来进一步的控制
             if ([self.topViewController respondsToSelector:@selector(shouldFlowToRect:)]) {
-                shouldMove = [(id<GQViewController>)self.topViewController
-                                                                                 shouldFlowToRect:newFrame];
+                shouldMove = [(id<GQViewController>)self.topViewController shouldFlowToRect:newFrame];
             }
         }
         
@@ -981,8 +979,7 @@
         
         if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
             // 自定义视图控制器最终停止移动的位置
-            destinationFrame = [(id<GQViewController>)self.topViewController
-                                                         destinationRectForFlowDirection:self.flowingDirection];
+            destinationFrame = [(id<GQViewController>)self.topViewController destinationRectForFlowDirection:self.flowingDirection];
             
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
                 destinationFrame = self.originalFrame;
