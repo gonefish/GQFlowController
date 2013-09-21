@@ -57,19 +57,15 @@
 {
     [super viewDidUnload];
     
-    for (UIViewController *vc in self.innerViewControllers) {
-        [self removeContentViewControler:vc];
-    }
+    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        [self removeContentViewControler:obj];
+    }];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-    
-    for (UIViewController *vc in self.innerViewControllers) {
-        [vc didReceiveMemoryWarning];
-    }
 }
 
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
