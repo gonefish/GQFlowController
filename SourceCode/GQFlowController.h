@@ -33,7 +33,7 @@ typedef enum {
 
 /** 每秒的移动速度，默认为640 Point
  */
-@property (nonatomic) NSUInteger flowingSpeed;
+@property (nonatomic) NSUInteger viewFlowingSpeed;
 
 @property (nonatomic) CGFloat viewFlowingBoundary;
 

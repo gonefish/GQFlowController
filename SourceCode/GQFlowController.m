@@ -200,7 +200,7 @@
     self = [super init];
     
     if (self) {
-        self.flowingSpeed = 640;
+        self.viewFlowingSpeed = 640;
 
         self.viewFlowingBoundary = 0.15;
     }
@@ -804,13 +804,13 @@
 
 - (CGFloat)flowingSpeedWithViewController:(UIViewController *)viewController
 {
-    CGFloat speed = self.flowingSpeed;
+    CGFloat speed = self.viewFlowingSpeed;
     
     if ([viewController respondsToSelector:@selector(flowingSpeed)]) {
         speed = [(id <GQViewController>)viewController flowingSpeed];
         
         if (speed == 0) {
-            speed = self.flowingSpeed;
+            speed = self.viewFlowingSpeed;
         }
     }
     
