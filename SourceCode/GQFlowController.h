@@ -35,6 +35,8 @@ typedef enum {
  */
 @property (nonatomic) NSUInteger flowingSpeed;
 
+@property (nonatomic) CGFloat viewFlowingBoundary;
+
 @end
 
 /**
@@ -71,7 +73,7 @@ typedef enum {
  */
 - (void)didFlowToDestinationRect;
 
-/** 触发滑动到目标位置的系数 
+/** 触发自动滑动到目标位置的系数 
  
  @return 返回值在.0 ~ 1.0之间
  */

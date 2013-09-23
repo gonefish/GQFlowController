@@ -201,6 +201,8 @@
     
     if (self) {
         self.flowingSpeed = 640;
+
+        self.viewFlowingBoundary = 0.15;
     }
     
     return self;
@@ -981,36 +983,39 @@
             // 自定义视图控制器最终停止移动的位置
             destinationFrame = [(id<GQViewController>)self.topViewController destinationRectForFlowDirection:self.flowingDirection];
             
+            // 对返回的结果进行验证
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
                 destinationFrame = self.originalFrame;
             } else {
-                // delegate返回有效的值
+                // delegate返回有效的值时，忽略viewFlowingBoundary
                 skipCancelFlowingCheck = YES;
             }
         }
         
         if (skipCancelFlowingCheck == NO) {
+            CGFloat boundary = self.viewFlowingBoundary;
+            
             // delegate返回滑回的触发距离
             if ([self.topViewController respondsToSelector:@selector(flowingBoundary)]) {
-                CGFloat boundary = [(id<GQViewController>)self.topViewController flowingBoundary];
+                boundary = [(id<GQViewController>)self.topViewController flowingBoundary];
+            }
+            
+            if (boundary > .0
+                && boundary < 1.0) {
+                CGFloat length = .0;
                 
-                if (boundary > .0
-                    && boundary < 1.0) {
-                    CGFloat length = .0;
-                    
-                    // 计算移动的距离
-                    if (self.flowingDirection == GQFlowDirectionLeft
-                        || self.flowingDirection == GQFlowDirectionRight) {
-                        length = pressPoint.x - self.startPoint.x;
-                    } else if (self.flowingDirection == GQFlowDirectionUp
-                               || self.flowingDirection == GQFlowDirectionDown) {
-                        length = pressPoint.y - self.startPoint.y;
-                    }
-                    
-                    // 如果移动的距离没有超过边界值，则回退到原始位置
-                    if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
-                        cancelFlowing = YES;
-                    }
+                // 计算移动的距离
+                if (self.flowingDirection == GQFlowDirectionLeft
+                    || self.flowingDirection == GQFlowDirectionRight) {
+                    length = pressPoint.x - self.startPoint.x;
+                } else if (self.flowingDirection == GQFlowDirectionUp
+                           || self.flowingDirection == GQFlowDirectionDown) {
+                    length = pressPoint.y - self.startPoint.y;
+                }
+                
+                // 如果移动的距离没有超过边界值，则回退到原始位置
+                if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
+                    cancelFlowing = YES;
                 }
             }
             

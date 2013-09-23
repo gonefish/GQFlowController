@@ -56,10 +56,6 @@
 
 #pragma mark - GQViewController
 
-- (CGFloat)flowingBoundary
-{
-    return 0.15;
-}
 
 - (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {

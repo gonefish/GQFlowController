@@ -57,11 +57,6 @@
     }
 }
 
-- (CGFloat)flowingBoundary
-{
-    return 0.15;
-}
-
 #pragma mark - UITableViewDataSource Protocol
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
