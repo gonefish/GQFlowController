@@ -20,6 +20,8 @@
 
 @property (nonatomic, strong) UIPanGestureRecognizer *pressGestureRecognizer;
 
+@property (nonatomic) BOOL isAnimating;
+
 @end
 
 @implementation GQFlowController
@@ -228,7 +230,8 @@
 {
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
-    if ([viewController isKindOfClass:[self class]]) {
+    if ([viewController isKindOfClass:[self class]]
+        || self.isAnimating == YES) {
         return;
     }
     
@@ -262,6 +265,10 @@
 {
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
+    if (self.isAnimating == YES) {
+        return nil;
+    }
+    
     if ([self.innerViewControllers count] > 1) {
         NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
                                                    animated:animated];
@@ -279,6 +286,10 @@
 {
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
+    if (self.isAnimating == YES) {
+        return nil;
+    }
+    
     if ([self.innerViewControllers count] > 1) {
         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [self.innerViewControllers count] - 1)];
         
@@ -292,6 +303,10 @@
 - (NSArray *)flowOutToViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
+    if (self.isAnimating == YES) {
+        return nil;
+    }
     
     __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
     
@@ -511,6 +526,8 @@
 
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
+    self.isAnimating = YES;
+    
     UIViewController *oldTopViewController = self.topViewController;
     
     oldTopViewController.overlayContent = YES;
@@ -557,6 +574,8 @@
                          viewController.overlayContent = NO;
                          
                          //oldTopViewController.overlayContent = NO;
+                         
+                         self.isAnimating = NO;
                      }];
 }
 
@@ -570,6 +589,8 @@
     [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
     if ([self isViewLoaded]) {
+        self.isAnimating = YES;
+        
         [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
             // 设置UIViewController的flowController属性为nil
             [obj performSelector:@selector(setFlowController:)
@@ -638,6 +659,8 @@
                              [self addPressGestureRecognizerForTopView];
                              
                              lastController.overlayContent = NO;
+                             
+                             self.isAnimating = NO;
                          }];
     } else {
         [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
