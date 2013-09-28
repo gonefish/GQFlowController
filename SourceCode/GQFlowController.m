@@ -422,6 +422,49 @@
     }
 }
 
+- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock
+{
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
+    if (![self.innerViewControllers containsObject:viewController]
+        || self.isAnimating) {
+        return;
+    }
+    
+    CGRect currentFrame = viewController.view.frame;
+    
+    CGFloat duration = [self durationForOriginalRect:currentFrame
+                                     destinationRect:toFrame
+                                    flowingDirection:[self flowDirectionWithPoint:currentFrame.origin otherPoint:toFrame.origin]
+                                        flowingSpeed:[self flowingSpeedWithViewController:viewController]];
+    
+    self.isAnimating = YES;
+    
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         if (animationsBlock) {
+                             animationsBlock();
+                         }
+                         
+                         viewController.view.frame = toFrame;
+                     }
+                     completion:^(BOOL finished){
+                         if (completionBlock) {
+                             completionBlock(finished);
+                         }
+                         
+                         self.isAnimating = NO;
+                     }];
+}
+
+- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame
+{
+    [self flowingViewController:viewController
+                        toFrame:toFrame
+                animationsBlock:nil
+                completionBlock:nil];
+}
+
 #pragma mark - UIGestureRecognizerDelegate Protocol
 
 #pragma mark - UIViewController Container Method
@@ -1118,6 +1161,27 @@
     }
     
     return isScale;
+}
+
+- (GQFlowDirection)flowDirectionWithPoint:(CGPoint)point otherPoint:(CGPoint)otherPoint
+{
+    GQFlowDirection flowingDirection = GQFlowDirectionUnknow;
+    
+    if (point.x == otherPoint.x) {
+        if (point.y < otherPoint.y) {
+            flowingDirection = GQFlowDirectionUp;
+        } else if (point.y > otherPoint.y) {
+            flowingDirection = GQFlowDirectionDown;
+        }
+    } else if (point.y == otherPoint.y) {
+        if (point.x > otherPoint.x) {
+            flowingDirection = GQFlowDirectionRight;
+        } else if (point.x < otherPoint.x) {
+            flowingDirection = GQFlowDirectionLeft;
+        }
+    }
+    
+    return flowingDirection;
 }
 
 @end

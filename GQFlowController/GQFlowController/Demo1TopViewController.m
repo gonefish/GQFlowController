@@ -132,7 +132,9 @@
     return self;
 }
 - (IBAction)clickAction:(id)sender {
-    NSLog(@"Click");
+    CGRect frame = self.view.frame;
+    
+    [self.flowController flowingViewController:self toFrame:CGRectOffset(frame, 50, 0)];
 }
 
 - (void)viewDidLoad
