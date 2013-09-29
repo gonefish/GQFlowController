@@ -9,6 +9,8 @@
 #import "GQFlowController.h"
 #import <objc/runtime.h>
 
+#define MASK_VIEW_ALPHA .4
+
 @interface GQFlowController ()
 
 @property (nonatomic, strong) UIViewController *topViewController;
@@ -573,7 +575,8 @@
     
     UIViewController *oldTopViewController = self.topViewController;
     
-    oldTopViewController.overlayContent = YES;
+    [oldTopViewController setOverlayContent:YES
+                            enabledShotView:YES];
     
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
@@ -1249,6 +1252,11 @@ static char kQGOverlayViewObjectKey;
 
 - (void)setOverlayContent:(BOOL)yesOrNo
 {
+    [self setOverlayContent:yesOrNo enabledShotView:NO];
+}
+
+- (void)setOverlayContent:(BOOL)yesOrNo enabledShotView:(BOOL)yesOrNoShotView
+{
     // 优化状态处理
     if (self.isOverlayContent == yesOrNo) {
         return;
@@ -1261,25 +1269,39 @@ static char kQGOverlayViewObjectKey;
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
-        [(UIView *)overlayView setBackgroundColor:[UIColor blackColor]];
-        
+
         objc_setAssociatedObject(self, &kQGOverlayViewObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     
     if (yesOrNo) {
-        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
-        
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        
-        [self.view.layer renderInContext:context];
-        
-        UIImage *contentShot = UIGraphicsGetImageFromCurrentImageContext();
-        
-        UIGraphicsEndImageContext();
-        
-        UIImageView *shotView = [[UIImageView alloc] initWithImage:contentShot];
-        
-        [overlayView addSubview:shotView];
+
+        if (yesOrNoShotView) {
+            [overlayView setBackgroundColor:[UIColor blackColor]];
+            
+            UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
+            
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            
+            [self.view.layer renderInContext:context];
+            
+            UIImage *contentShot = UIGraphicsGetImageFromCurrentImageContext();
+            
+            UIGraphicsEndImageContext();
+            
+            UIImageView *shotView = [[UIImageView alloc] initWithImage:contentShot];
+            
+            [overlayView addSubview:shotView];
+            
+            UIView *maskView = [[UIView alloc] initWithFrame:self.view.bounds];
+            
+            maskView.backgroundColor = [UIColor blackColor];
+            
+            maskView.alpha = MASK_VIEW_ALPHA;
+            
+            [overlayView addSubview:maskView];
+        } else {
+            [overlayView setBackgroundColor:[UIColor clearColor]];
+        }
         
         [self.view addSubview:overlayView];
     } else {
@@ -1301,16 +1323,20 @@ static char kQGOverlayViewObjectKey;
     if ([self isOverlayContent] == YES) {
         UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
         
-        UIView *shotView = [overlayView.subviews objectAtIndex:0];
-        
-        // 保证缩放时的间隙相同
-        CGFloat offsetX = shotView.frame.size.width * (1.0 - scale) * 0.5;
-        
-        CGFloat sy = 1.0 - offsetX * 2.0 / shotView.frame.size.height;
-        
-        shotView.transform = CGAffineTransformMakeScale(scale, sy);
-        
-        shotView.alpha = ABS((scale - 0.95) * 12 + 0.4);
+        if ([overlayView.subviews count] == 2) {
+            UIView *shotView = [overlayView.subviews objectAtIndex:0];
+            
+            UIView *maskView = [overlayView.subviews objectAtIndex:1];
+            
+            // 保证缩放时的间隙相同
+            CGFloat offsetX = shotView.frame.size.width * (1.0 - scale) * 0.5;
+            
+            CGFloat sy = 1.0 - offsetX * 2.0 / shotView.frame.size.height;
+            
+            shotView.transform = CGAffineTransformMakeScale(scale, sy);
+            
+            maskView.alpha = MASK_VIEW_ALPHA * (1.0 - scale);
+        }
     }
 }
 

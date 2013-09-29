@@ -196,17 +196,21 @@
 {
     UIViewController *vc = [[UIViewController alloc] init];
     
-    [vc setOverlayContent:NO];
-    
-    STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"");
-    
     [vc setOverlayContent:YES];
     
     STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"");
     
-    STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)1, @"截图已经添加");
+    STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)0, @"透明层已经添加");
     
     STAssertEquals(vc.isOverlayContent, YES, @"");
+    
+    [vc setOverlayContent:NO];
+    
+    STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"");
+    
+    [vc setOverlayContent:YES enabledShotView:YES];
+    
+    STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
 }
 
 - (void)testRotations

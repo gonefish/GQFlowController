@@ -113,4 +113,6 @@ typedef enum {
 
 - (void)setShotViewScale:(CGFloat)scale;
 
+- (void)setOverlayContent:(BOOL)yesOrNo enabledShotView:(BOOL)yesOrNoShotView;
+
 @end
