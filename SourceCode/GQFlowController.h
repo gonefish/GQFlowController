@@ -99,6 +99,10 @@ typedef enum {
  */
 - (NSUInteger)flowingSpeed;
 
+/** 覆盖层的Tap手势
+ */
+- (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer;
+
 @end
 
 @interface UIViewController (GQFlowControllerAdditions)

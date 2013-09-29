@@ -1269,12 +1269,17 @@ static char kQGOverlayViewObjectKey;
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
+        
+        if ([self respondsToSelector:@selector(overlayContentTapAction:)]) {
+            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                                   action:@selector(overlayContentTapAction:)];
+            [overlayView addGestureRecognizer:tapGestureRecognizer];
+        }
 
         objc_setAssociatedObject(self, &kQGOverlayViewObjectKey, overlayView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     
     if (yesOrNo) {
-
         if (yesOrNoShotView) {
             [overlayView setBackgroundColor:[UIColor blackColor]];
             
