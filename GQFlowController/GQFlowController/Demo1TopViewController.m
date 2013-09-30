@@ -104,7 +104,7 @@
     return destinationFrect;
 }
 
-- (void)didFlowToDestinationRect
+- (void)updateOverlayContent
 {
     UIViewController *leftViewController = [[self.flowController viewControllers] objectAtIndex:0];
     UIViewController *rightViewController = [[self.flowController viewControllers] objectAtIndex:1];
@@ -123,6 +123,11 @@
     }
 }
 
+- (void)didFlowToDestinationRect
+{
+    [self updateOverlayContent];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -132,9 +137,32 @@
     return self;
 }
 - (IBAction)clickAction:(id)sender {
-    CGRect frame = self.view.frame;
+    CGRect frame = CGRectMake(self.flowController.view.frame.size.width - OFFSET,
+                              0,
+                              self.view.frame.size.width,
+                              self.view.frame.size.height);
     
-    [self.flowController flowingViewController:self toFrame:CGRectOffset(frame, 50, 0)];
+    [self.flowController flowingViewController:self
+                                       toFrame:frame
+                               animationsBlock:nil
+                               completionBlock:^(BOOL finished){
+                                   [self updateOverlayContent];
+                               }];
+}
+
+- (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer
+{
+    CGRect frame = CGRectMake(0,
+                              0,
+                              self.view.frame.size.width,
+                              self.view.frame.size.height);
+    
+    [self.flowController flowingViewController:self
+                                       toFrame:frame
+                               animationsBlock:nil
+                               completionBlock:^(BOOL finished){
+                                   [self updateOverlayContent];
+                               }];
 }
 
 - (void)viewDidLoad

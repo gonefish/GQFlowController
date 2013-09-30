@@ -29,11 +29,12 @@ typedef enum {
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;
 
 
-/** 滑动已经添加的视图控制器到指定位置
- 
- */
+
 - (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)frame;
 
+/** 滑动已经添加的视图控制器到指定位置
+
+ */
 - (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock;
 
 @property (nonatomic, copy) NSArray *viewControllers;

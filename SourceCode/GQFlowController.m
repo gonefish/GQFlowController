@@ -444,18 +444,18 @@
     
     [UIView animateWithDuration:duration
                      animations:^{
+                         viewController.view.frame = toFrame;
+                         
                          if (animationsBlock) {
                              animationsBlock();
                          }
-                         
-                         viewController.view.frame = toFrame;
                      }
                      completion:^(BOOL finished){
+                         self.isAnimating = NO;
+                         
                          if (completionBlock) {
                              completionBlock(finished);
                          }
-                         
-                         self.isAnimating = NO;
                      }];
 }
 
