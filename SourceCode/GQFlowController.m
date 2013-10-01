@@ -704,6 +704,14 @@
         
         UIViewController *lastController = [self.innerViewControllers lastObject];
         
+        // 确保视图已经添加
+        if (lastController.view.superview == nil) {
+            lastController.view.frame = self.view.bounds;
+            
+            [self.view insertSubview:lastController.view
+                        belowSubview:self.topViewController.view];
+        }
+        
         lastController.overlayContent = YES;
         
         if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
@@ -978,6 +986,16 @@
     if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
         self.startPoint = pressPoint;
+        
+        // 确保下层视图是否已经添加
+        UIViewController *vc = [self belowTopViewController];
+        
+        if (vc.view.superview == nil) {
+            vc.view.frame = self.view.bounds;
+            
+            [self.view insertSubview:vc.view
+                        belowSubview:self.topViewController.view];
+        }
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
