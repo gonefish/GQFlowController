@@ -70,6 +70,43 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    // 安全释放已经不在显示的视图
+    __block BOOL safeReleaseView = NO;
+    
+    __block CGRect checkFrame = CGRectZero;
+    
+    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
+                                                usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop){
+                                                    if (safeReleaseView) {
+                                                        if (![obj isViewLoaded]) return;
+                                                        
+                                                        [obj.view removeFromSuperview];
+                                                        
+                                                        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+                                                            [obj viewWillUnload];
+                                                        }
+                                                        
+                                                        obj.view = nil;
+                                                        
+                                                        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+                                                            [obj viewDidUnload];
+                                                        }
+                                                    } else {
+                                                        CGRect viewFrame = [[(UIViewController *)obj view] frame];
+                                                        
+                                                        if (CGRectEqualToRect(checkFrame, CGRectZero)) {
+                                                            checkFrame = viewFrame;
+                                                        } else {
+                                                            checkFrame = CGRectIntersection(checkFrame, viewFrame);
+                                                        }
+                                                        
+                                                        // 检测是否遮盖住其它视图
+                                                        if (CGRectContainsRect(checkFrame, self.view.bounds)) {
+                                                            safeReleaseView = YES;
+                                                        }
+                                                    }
+                                                }];
 }
 
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
