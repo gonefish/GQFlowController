@@ -70,6 +70,43 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    // 安全释放已经不在显示的视图
+    __block BOOL safeReleaseView = NO;
+    
+    __block CGRect checkFrame = CGRectZero;
+    
+    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
+                                                usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop){
+                                                    if (safeReleaseView) {
+                                                        if (![obj isViewLoaded]) return;
+                                                        
+                                                        [obj.view removeFromSuperview];
+                                                        
+                                                        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+                                                            [obj viewWillUnload];
+                                                        }
+                                                        
+                                                        obj.view = nil;
+                                                        
+                                                        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+                                                            [obj viewDidUnload];
+                                                        }
+                                                    } else {
+                                                        CGRect viewFrame = [[(UIViewController *)obj view] frame];
+                                                        
+                                                        if (CGRectEqualToRect(checkFrame, CGRectZero)) {
+                                                            checkFrame = viewFrame;
+                                                        } else {
+                                                            checkFrame = CGRectIntersection(checkFrame, viewFrame);
+                                                        }
+                                                        
+                                                        // 检测是否遮盖住其它视图
+                                                        if (CGRectContainsRect(checkFrame, self.view.bounds)) {
+                                                            safeReleaseView = YES;
+                                                        }
+                                                    }
+                                                }];
 }
 
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
@@ -667,6 +704,14 @@
         
         UIViewController *lastController = [self.innerViewControllers lastObject];
         
+        // 确保视图已经添加
+        if (lastController.view.superview == nil) {
+            lastController.view.frame = self.view.bounds;
+            
+            [self.view insertSubview:lastController.view
+                        belowSubview:self.topViewController.view];
+        }
+        
         lastController.overlayContent = YES;
         
         if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
@@ -941,6 +986,16 @@
     if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
         self.startPoint = pressPoint;
+        
+        // 确保下层视图是否已经添加
+        UIViewController *vc = [self belowTopViewController];
+        
+        if (vc.view.superview == nil) {
+            vc.view.frame = self.view.bounds;
+            
+            [self.view insertSubview:vc.view
+                        belowSubview:self.topViewController.view];
+        }
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
