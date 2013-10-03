@@ -608,8 +608,6 @@
 
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
-    self.isAnimating = YES;
-    
     UIViewController *oldTopViewController = self.topViewController;
     
     [oldTopViewController setOverlayContent:YES
@@ -617,17 +615,6 @@
     
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
-    
-    CGRect destinationFrame = [self inDestinationRectForViewController:viewController];
-    
-    CGFloat duration = .0;
-    
-    if (animated) {
-        duration = [self durationForOriginalRect:viewController.view.frame
-                                 destinationRect:destinationFrame
-                                flowingDirection:self.topViewController.flowInDirection
-                                    flowingSpeed:[self flowingSpeedWithViewController:viewController]];
-    }
     
     viewController.overlayContent = YES;
     
@@ -643,23 +630,56 @@
         [oldTopViewController viewWillDisappear:animated];
     }
     
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         viewController.view.frame = destinationFrame;
-                         
-                         if ([self shouldScaleView:oldTopViewController]) {
-                             [oldTopViewController setShotViewScale:0.95];
-                         }
-                     }
-                     completion:^(BOOL finished){
-                         block();
-                         
-                         viewController.overlayContent = NO;
-                         
-                         //oldTopViewController.overlayContent = NO;
-                         
-                         self.isAnimating = NO;
-                     }];
+    if (animated) {
+        [self flowingViewController:viewController
+                            toFrame:[self inDestinationRectForViewController:viewController]
+                    animationsBlock:^{
+                        if ([self shouldScaleView:oldTopViewController]) {
+                            [oldTopViewController setShotViewScale:0.95];
+                        }
+                    }
+                    completionBlock:^(BOOL finished){
+                        block();
+                        
+                        viewController.overlayContent = NO;
+                    }];
+    } else {
+        block();
+        
+        viewController.overlayContent = NO;
+    }
+    
+    
+    
+    
+//    CGFloat duration = .0;
+//    
+//    if (animated) {
+//        duration = [self durationForOriginalRect:viewController.view.frame
+//                                 destinationRect:destinationFrame
+//                                flowingDirection:self.topViewController.flowInDirection
+//                                    flowingSpeed:[self flowingSpeedWithViewController:viewController]];
+//    }
+    
+    
+    
+//    [UIView animateWithDuration:duration
+//                     animations:^{
+//                         viewController.view.frame = destinationFrame;
+//                         
+//                         if ([self shouldScaleView:oldTopViewController]) {
+//                             [oldTopViewController setShotViewScale:0.95];
+//                         }
+//                     }
+//                     completion:^(BOOL finished){
+//                         block();
+//                         
+//                         viewController.overlayContent = NO;
+//                         
+//                         //oldTopViewController.overlayContent = NO;
+//                         
+//                         self.isAnimating = NO;
+//                     }];
 }
 
 
