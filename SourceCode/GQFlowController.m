@@ -524,8 +524,6 @@
                 completionBlock:nil];
 }
 
-#pragma mark - UIGestureRecognizerDelegate Protocol
-
 #pragma mark - UIViewController Container Method
 
 - (void)holdViewControllers:(NSArray *)viewControllers
@@ -982,6 +980,7 @@
     if (self.pressGestureRecognizer == nil) {
         self.pressGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
                                                                               action:@selector(pressMoveGesture)];
+        self.pressGestureRecognizer.delegate = (id <GQViewController>)self.topViewController;
     }
     
     [self.topViewController.view addGestureRecognizer:self.pressGestureRecognizer];
