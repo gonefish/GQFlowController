@@ -1007,6 +1007,9 @@
         // 设置初始点
         self.startPoint = pressPoint;
         
+        // 记录移动视图的原始位置
+        self.originalFrame = self.topViewController.view.frame;
+        
         // 确保下层视图是否已经添加
         UIViewController *vc = [self belowTopViewController];
         
@@ -1052,9 +1055,6 @@
                     }
                 }
             }
-            
-            // 记录移动视图的原始位置
-            self.originalFrame = self.topViewController.view.frame;
         }
 
         CGRect newFrame = CGRectZero;
