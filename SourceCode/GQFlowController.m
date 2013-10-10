@@ -170,6 +170,11 @@
     }
 }
 
+- (BOOL)shouldAutorotate
+{
+    return self.customShouldAutorotate;
+}
+
 - (NSUInteger)supportedInterfaceOrientations
 {
     return self.customSupportedInterfaceOrientations;

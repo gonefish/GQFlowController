@@ -48,6 +48,8 @@ typedef enum {
 
 @property (nonatomic) NSUInteger customSupportedInterfaceOrientations;
 
+@property (nonatomic) BOOL customShouldAutorotate;
+
 @end
 
 /**
