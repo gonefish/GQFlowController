@@ -172,11 +172,7 @@
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    if (self.topViewController) {
-        return [self.topViewController supportedInterfaceOrientations];
-    } else {
-        return [super supportedInterfaceOrientations];
-    }
+    return self.customSupportedInterfaceOrientations;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -262,6 +258,12 @@
         self.viewFlowingSpeed = 640;
 
         self.viewFlowingBoundary = 0.15;
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+        } else {
+            self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
+        }
     }
     
     return self;

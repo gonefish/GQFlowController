@@ -46,6 +46,8 @@ typedef enum {
 
 @property (nonatomic) CGFloat viewFlowingBoundary;
 
+@property (nonatomic) NSUInteger customSupportedInterfaceOrientations;
+
 @end
 
 /**
