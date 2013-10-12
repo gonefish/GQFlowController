@@ -38,7 +38,10 @@ typedef enum {
 - (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock;
 
 @property (nonatomic, copy) NSArray *viewControllers;
+
 @property (nonatomic, strong, readonly) UIViewController *topViewController;
+
+@property (nonatomic, strong, readonly) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
 /** 每秒的移动速度，默认为640 Point
  */

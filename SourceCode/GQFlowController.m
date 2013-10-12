@@ -984,10 +984,10 @@
     
     if (self.topViewPanGestureRecognizer == nil) {
         self.topViewPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(pressMoveGesture)];
-        self.topViewPanGestureRecognizer.delegate = (id <GQViewController>)self.topViewController;
+                                                                                   action:@selector(pressMoveGesture)];
     }
     
+    self.topViewPanGestureRecognizer.delegate = (id <GQViewController>)self.topViewController;
     [self.topViewController.view addGestureRecognizer:self.topViewPanGestureRecognizer];
 }
 
@@ -999,6 +999,7 @@
     }
     
     if (self.topViewPanGestureRecognizer) {
+        self.topViewPanGestureRecognizer.delegate = nil;
         [self.topViewController.view removeGestureRecognizer:self.topViewPanGestureRecognizer];
     }
 }
