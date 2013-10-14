@@ -465,7 +465,7 @@
 {
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
-    if (![self.innerViewControllers containsObject:viewController]
+    if (viewController.view.superview == nil
         || self.isAnimating) {
         return;
     }
@@ -488,11 +488,11 @@
                          }
                      }
                      completion:^(BOOL finished){
-                         self.isAnimating = NO;
-                         
                          if (completionBlock) {
                              completionBlock(finished);
                          }
+                         
+                         self.isAnimating = NO;
                      }];
 }
 
@@ -692,8 +692,6 @@
     [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
     if ([self isViewLoaded]) {
-        self.isAnimating = YES;
-        
         [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
             // 设置UIViewController的flowController属性为nil
             [obj performSelector:@selector(setFlowController:)
@@ -708,20 +706,7 @@
                 [obj removeFromParentViewController];
             }
         }];
-        
-        CGRect destinationFrame = [self outDestinationRectForViewController:self.topViewController];
-        
-        CGFloat duration = .0;
-        
-        if (animated) {
-            duration = [self durationForOriginalRect:self.topViewController.view.frame
-                                     destinationRect:destinationFrame
-                                    flowingDirection:self.topViewController.flowOutDirection
-                                        flowingSpeed:[self flowingSpeedWithViewController:self.topViewController]];
-        }
-        
-        self.topViewController.overlayContent = YES;
-        
+
         UIViewController *lastController = [self.innerViewControllers lastObject];
         
         // 确保视图已经添加
@@ -731,8 +716,6 @@
             [self.view insertSubview:lastController.view
                         belowSubview:self.topViewController.view];
         }
-        
-        lastController.overlayContent = YES;
         
         if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
             [self.topViewController beginAppearanceTransition:NO
@@ -746,39 +729,48 @@
             [lastController viewWillAppear:animated];
         }
         
-        [UIView animateWithDuration:duration
-                         animations:^{
-                             self.topViewController.view.frame = [self outDestinationRectForViewController:self.topViewController];
-                             
-                             if ([self shouldScaleView:lastController]) {
-                                 [lastController setShotViewScale:1.0];
-                             }
-                         }
-                         completion:^(BOOL finished){
-                             if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-                                 [self.topViewController endAppearanceTransition];
-                                 
-                                 [lastController endAppearanceTransition];
-                             } else {
-                                 [self.topViewController viewDidDisappear:animated];
-                                 
-                                 [lastController viewDidAppear:animated];
-                             }
-                             
-                             [self removeTopViewController];
-                             
-                             [self addPressGestureRecognizerForTopView];
-                             
-                             lastController.overlayContent = NO;
-                             
-                             self.isAnimating = NO;
-                         }];
+        self.topViewController.overlayContent = YES;
+        lastController.overlayContent = YES;
+
+        void (^animationsBlock)(void) = ^{
+            if ([self shouldScaleView:lastController]) {
+                [lastController setShotViewScale:1.0];
+            }
+        };
+        
+        void (^completionBlock)(BOOL) = ^(BOOL finished) {
+            if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
+                [self.topViewController endAppearanceTransition];
+                
+                [lastController endAppearanceTransition];
+            } else {
+                [self.topViewController viewDidDisappear:animated];
+                
+                [lastController viewDidAppear:animated];
+            }
+            
+            [self removeTopViewController];
+            
+            [self addPressGestureRecognizerForTopView];
+            
+            lastController.overlayContent = NO;
+        };
+        
+        if (animated) {
+            [self flowingViewController:self.topViewController
+                                toFrame:[self outDestinationRectForViewController:self.topViewController]
+                        animationsBlock:animationsBlock
+                        completionBlock:completionBlock];
+        } else {
+            animationsBlock();
+            completionBlock(YES);
+        }
+        
+        
     } else {
-        [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-            // 设置UIViewController的flowController属性为nil
-            [obj performSelector:@selector(setFlowController:)
-                      withObject:nil];
-        }];
+        // 设置UIViewController的flowController属性为nil
+        [popViewControllers makeObjectsPerformSelector:@selector(setFlowController:)
+                                            withObject:nil];
     }
     
     return popViewControllers;
