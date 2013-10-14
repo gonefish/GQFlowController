@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "GQFlowController.h"
 
-@interface GQAppDelegate : UIResponder <UIApplicationDelegate>
+@interface GQAppDelegate : UIResponder <
+UIApplicationDelegate,
+UIActionSheetDelegate
+>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) GQFlowController *flowController;
+
+- (void)showSelectDemoActionSheet;
 
 @end

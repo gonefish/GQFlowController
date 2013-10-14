@@ -12,6 +12,7 @@
 #import "Demo1RightViewController.h"
 #import "Demo2ViewController.h"
 #import "Demo3ViewController.h"
+#import "Demo4ViewController.h"
 
 @implementation GQAppDelegate
 
@@ -38,6 +39,15 @@
     return @[d1];
 }
 
+- (NSArray *)demo4ViewControllers
+{
+    Demo4ViewController *d1 = [[Demo4ViewController alloc] init];
+    
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:d1];
+    
+    return @[nc];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -45,7 +55,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo4ViewControllers]];
     } else {
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
     }
@@ -82,6 +92,37 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)showSelectDemoActionSheet
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Demo"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Demo1", @"Demo2", @"Demo3(iPad only)", @"Demo4", nil];
+    
+    [actionSheet showInView:self.flowController.view];
+}
+
+#pragma mark - UIActionSheetDelegate Protocol
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo1ViewControllers]];
+    } else if (buttonIndex == 1) {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+    } else if (buttonIndex == 2) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return;
+        }
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
+    } else if (buttonIndex == 3) {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo4ViewControllers]];
+    }
+    
+    self.window.rootViewController = self.flowController;
 }
 
 @end
