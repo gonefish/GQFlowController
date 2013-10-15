@@ -1185,7 +1185,7 @@
                         // 重置长按状态信息
                         [self resetPressStatus];
                     }];
-    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
+    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         
     }
 }
