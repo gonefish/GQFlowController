@@ -1166,9 +1166,7 @@
                         }
                     }
                     completionBlock:^(BOOL finished){
-                        if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect)]) {
-                            [(id <GQViewController>)self.topViewController didFlowToDestinationRect];
-                        }
+                        UIViewController *flowController = self.topViewController;
                         
                         // 如果topViewController已经移出窗口，则进行删除操作
                         if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
@@ -1184,6 +1182,10 @@
                         
                         // 重置长按状态信息
                         [self resetPressStatus];
+                        
+                        if ([flowController respondsToSelector:@selector(didFlowToDestinationRect)]) {
+                            [(id <GQViewController>)flowController didFlowToDestinationRect];
+                        }
                     }];
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         
