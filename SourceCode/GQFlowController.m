@@ -20,7 +20,7 @@
 @property (nonatomic) CGRect originalFrame;
 @property (nonatomic) GQFlowDirection flowingDirection;
 
-@property (nonatomic, strong) UIPanGestureRecognizer *pressGestureRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
 @property (nonatomic) BOOL isAnimating;
 
@@ -170,13 +170,14 @@
     }
 }
 
+- (BOOL)shouldAutorotate
+{
+    return self.customShouldAutorotate;
+}
+
 - (NSUInteger)supportedInterfaceOrientations
 {
-    if (self.topViewController) {
-        return [self.topViewController supportedInterfaceOrientations];
-    } else {
-        return [super supportedInterfaceOrientations];
-    }
+    return self.customSupportedInterfaceOrientations;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -234,6 +235,24 @@
     }
 }
 
+- (void)dismissModalViewControllerAnimated:(BOOL)animated
+{
+    for (UIViewController *vc in self.innerViewControllers) {
+        [vc performSelector:@selector(setFlowController:) withObject:nil];
+    }
+    
+    [super dismissModalViewControllerAnimated:animated];
+}
+
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
+{
+    for (UIViewController *vc in self.innerViewControllers) {
+        [vc performSelector:@selector(setFlowController:) withObject:nil];
+    }
+    
+    [super dismissViewControllerAnimated:flag completion:completion];
+}
+
 #pragma mark - Public Method
 
 - (id)init
@@ -244,6 +263,12 @@
         self.viewFlowingSpeed = 640;
 
         self.viewFlowingBoundary = 0.15;
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+        } else {
+            self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
+        }
     }
     
     return self;
@@ -481,8 +506,6 @@
                 animationsBlock:nil
                 completionBlock:nil];
 }
-
-#pragma mark - UIGestureRecognizerDelegate Protocol
 
 #pragma mark - UIViewController Container Method
 
@@ -931,12 +954,13 @@
         return;
     }
     
-    if (self.pressGestureRecognizer == nil) {
-        self.pressGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(pressMoveGesture)];
+    if (self.topViewPanGestureRecognizer == nil) {
+        self.topViewPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                   action:@selector(pressMoveGesture)];
     }
     
-    [self.topViewController.view addGestureRecognizer:self.pressGestureRecognizer];
+    self.topViewPanGestureRecognizer.delegate = (id <GQViewController>)self.topViewController;
+    [self.topViewController.view addGestureRecognizer:self.topViewPanGestureRecognizer];
 }
 
 - (void)removeTopViewPressGestureRecognizer
@@ -946,18 +970,22 @@
         return;
     }
     
-    if (self.pressGestureRecognizer) {
-        [self.topViewController.view removeGestureRecognizer:self.pressGestureRecognizer];
+    if (self.topViewPanGestureRecognizer) {
+        self.topViewPanGestureRecognizer.delegate = nil;
+        [self.topViewController.view removeGestureRecognizer:self.topViewPanGestureRecognizer];
     }
 }
 
 - (void)pressMoveGesture
 {
-    CGPoint pressPoint = [self.pressGestureRecognizer translationInView:self.view];
+    CGPoint pressPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
     
-    if (self.pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
+    if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
         self.startPoint = pressPoint;
+        
+        // 记录移动视图的原始位置
+        self.originalFrame = self.topViewController.view.frame;
         
         // 确保下层视图是否已经添加
         UIViewController *vc = [self belowTopViewController];
@@ -968,7 +996,7 @@
             [self.view insertSubview:vc.view
                         belowSubview:self.topViewController.view];
         }
-    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
             // 判断移动的方向            
@@ -1004,9 +1032,6 @@
                     }
                 }
             }
-            
-            // 记录移动视图的原始位置
-            self.originalFrame = self.topViewController.view.frame;
         }
 
         CGRect newFrame = CGRectZero;
@@ -1067,7 +1092,7 @@
                 }
             }
         }
-    } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateEnded) {        
+    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {        
         // 默认为原始位置
         CGRect destinationFrame = self.originalFrame;
         

@@ -237,12 +237,12 @@
     STAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
     
     if (self.isiOS6) {
-        NSUInteger test = UIInterfaceOrientationMaskPortrait;
-        NSValue *testValue = [NSValue valueWithBytes:&test objCType:@encode(NSUInteger)];
-        
-        [[[topViewController stub] andReturnValue:testValue] supportedInterfaceOrientations];
-        
-        STAssertTrue([self.flowController supportedInterfaceOrientations] == UIInterfaceOrientationMaskPortrait, @"没有调用默认的方法");
+//        NSUInteger test = UIInterfaceOrientationMaskPortrait;
+//        NSValue *testValue = [NSValue valueWithBytes:&test objCType:@encode(NSUInteger)];
+//        
+//        [[[topViewController stub] andReturnValue:testValue] supportedInterfaceOrientations];
+//        
+//        STAssertTrue([self.flowController supportedInterfaceOrientations] == UIInterfaceOrientationMaskPortrait, @"没有调用默认的方法");
     } else {
         [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
         

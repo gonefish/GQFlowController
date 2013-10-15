@@ -38,7 +38,10 @@ typedef enum {
 - (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock;
 
 @property (nonatomic, copy) NSArray *viewControllers;
+
 @property (nonatomic, strong, readonly) UIViewController *topViewController;
+
+@property (nonatomic, strong, readonly) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
 /** 每秒的移动速度，默认为640 Point
  */
@@ -46,12 +49,16 @@ typedef enum {
 
 @property (nonatomic) CGFloat viewFlowingBoundary;
 
+@property (nonatomic) NSUInteger customSupportedInterfaceOrientations;
+
+@property (nonatomic) BOOL customShouldAutorotate;
+
 @end
 
 /**
  实现这个协议来激活压住滑动功能
  */
-@protocol GQViewController <NSObject>
+@protocol GQViewController <UIGestureRecognizerDelegate>
 
 @optional
 
