@@ -275,24 +275,9 @@
     }
     
     if ([self isViewLoaded]) {
-        UIViewController *oldTopViewController = self.topViewController;
-        
         [self flowInViewController:viewController
                           animated:animated
-                   completionBlock:^{
-                       // 添加手势
-                       [self addPressGestureRecognizerForTopView];
-                       
-                       if ([viewController respondsToSelector:@selector(endAppearanceTransition)]) {
-                           [viewController endAppearanceTransition];
-                           
-                           [oldTopViewController endAppearanceTransition];
-                       } else {
-                           [viewController viewDidAppear:animated];
-                           
-                           [oldTopViewController viewDidAppear:animated];
-                       }
-                   }];
+                   completionBlock:nil];
     } else {
         [self.innerViewControllers addObject:viewController];
         
@@ -380,11 +365,16 @@
 {
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
-    // 如果不是UIViewController的子类，则过滤掉
-    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    if (self.isAnimating == YES) {
+        return;
+    }
     
+    // 如果不是UIViewController的子类或自己，则过滤掉
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+
     [viewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-        if (![obj isKindOfClass:[UIViewController class]]) {
+        if (![obj isKindOfClass:[UIViewController class]]
+            || [obj isKindOfClass:[self class]]) {
             [indexSet addIndex:idx];
         } else {
             [obj performSelector:@selector(setFlowController:)
@@ -419,31 +409,19 @@
                 }
             } else {
                 // Flow In
-                
-                // 保留最上层的视图控制器
-                UIViewController *topmostViewController = [self.innerViewControllers lastObject];
-                
-                [self holdViewControllers:@[topmostViewController]];
-                
                 // 重构层级中的视图控制器
                 UIViewController *flowInViewController = [newArray lastObject];
-                
-                [newArray removeLastObject];
-                
-                [newArray addObject:topmostViewController];
-                
-                [self updateChildViewControllers:newArray];
                 
                 [self flowInViewController:flowInViewController
                                   animated:animated
                            completionBlock:^(){
+                               // 同上面 No Animate
+                               [self holdViewControllers:@[[newArray lastObject]]];
+                               
+                               [self updateChildViewControllers:newArray];
+                               
                                // 添加手势
                                [self addPressGestureRecognizerForTopView];
-                               
-                               // 移除原最上层的视图控制器
-                               [self removeContentViewControler:topmostViewController];
-                               
-                               [self.innerViewControllers removeObject:topmostViewController];
                            }];
             }
         } else {
@@ -639,50 +617,32 @@
                         }
                     }
                     completionBlock:^(BOOL finished){
-                        block();
+                        if ([viewController respondsToSelector:@selector(endAppearanceTransition)]) {
+                            [viewController endAppearanceTransition];
+                            
+                            [oldTopViewController endAppearanceTransition];
+                        } else {
+                            [viewController viewDidAppear:animated];
+                            
+                            [oldTopViewController viewDidAppear:animated];
+                        }
                         
                         viewController.overlayContent = NO;
+                        
+                        [self addPressGestureRecognizerForTopView];
+                        
+                        if (block) {
+                            block();
+                        }
                     }];
     } else {
-        block();
+        if (block) {
+            block();
+        }
         
         viewController.overlayContent = NO;
     }
-    
-    
-    
-    
-//    CGFloat duration = .0;
-//    
-//    if (animated) {
-//        duration = [self durationForOriginalRect:viewController.view.frame
-//                                 destinationRect:destinationFrame
-//                                flowingDirection:self.topViewController.flowInDirection
-//                                    flowingSpeed:[self flowingSpeedWithViewController:viewController]];
-//    }
-    
-    
-    
-//    [UIView animateWithDuration:duration
-//                     animations:^{
-//                         viewController.view.frame = destinationFrame;
-//                         
-//                         if ([self shouldScaleView:oldTopViewController]) {
-//                             [oldTopViewController setShotViewScale:0.95];
-//                         }
-//                     }
-//                     completion:^(BOOL finished){
-//                         block();
-//                         
-//                         viewController.overlayContent = NO;
-//                         
-//                         //oldTopViewController.overlayContent = NO;
-//                         
-//                         self.isAnimating = NO;
-//                     }];
 }
-
-
 
 - (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
 {
@@ -1167,45 +1127,39 @@
             }
         }
         
-        CGFloat duration = [self durationForOriginalRect:self.topViewController.view.frame
-                                         destinationRect:destinationFrame
-                                        flowingDirection:self.flowingDirection
-                                            flowingSpeed:[self flowingSpeedWithViewController:self.topViewController]];
-        
         UIViewController *belowVC = [self belowTopViewController];
-
-        [UIView animateWithDuration:duration
-                         animations:^{
-                             self.topViewController.view.frame = destinationFrame;
-                             
-                             if ([self shouldScaleView:belowVC]) {
-                                 if (self.flowingDirection == self.topViewController.flowInDirection) {
-                                     [belowVC setShotViewScale:0.95];
-                                 } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                                     [belowVC setShotViewScale:1.0];
-                                 }
-                             }
-                         }
-                         completion:^(BOOL finished){
-                             if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect)]) {
-                                 [(id <GQViewController>)self.topViewController didFlowToDestinationRect];
-                             }
-                             
-                             // 如果topViewController已经移出窗口，则进行删除操作
-                             if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
-                                 [self.innerViewControllers removeLastObject];
-                                 
-                                 [self removeTopViewController];
-                             }
-                             
-                             self.topViewController.overlayContent = NO;
-                             
-                             // 重新添加top view的手势
-                             [self addPressGestureRecognizerForTopView];
-                             
-                             // 重置长按状态信息
-                             [self resetPressStatus];
-                         }];
+        
+        [self flowingViewController:self.topViewController
+                            toFrame:destinationFrame
+                    animationsBlock:^{
+                        if ([self shouldScaleView:belowVC]) {
+                            if (self.flowingDirection == self.topViewController.flowInDirection) {
+                                [belowVC setShotViewScale:0.95];
+                            } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                                [belowVC setShotViewScale:1.0];
+                            }
+                        }
+                    }
+                    completionBlock:^(BOOL finished){
+                        if ([self.topViewController respondsToSelector:@selector(didFlowToDestinationRect)]) {
+                            [(id <GQViewController>)self.topViewController didFlowToDestinationRect];
+                        }
+                        
+                        // 如果topViewController已经移出窗口，则进行删除操作
+                        if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
+                            [self.innerViewControllers removeLastObject];
+                            
+                            [self removeTopViewController];
+                        }
+                        
+                        self.topViewController.overlayContent = NO;
+                        
+                        // 重新添加top view的手势
+                        [self addPressGestureRecognizerForTopView];
+                        
+                        // 重置长按状态信息
+                        [self resetPressStatus];
+                    }];
     } else if (self.pressGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         
     }

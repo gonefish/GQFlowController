@@ -60,6 +60,14 @@
     for (UIViewController *controller in self.flowController.viewControllers) {
         STAssertEqualObjects(controller.flowController, self.flowController, @"子控制器访问不了");
     }
+    
+    NSArray *bViewControllers = @[[UIViewController new], [UIViewController new], [GQFlowController new]];
+    
+    self.flowController.viewControllers = bViewControllers;
+    
+    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
+    
+    // TODO: 添加更多的mock
 }
 
 - (void)testTopViewController
