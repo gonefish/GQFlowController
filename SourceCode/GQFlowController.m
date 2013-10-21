@@ -237,18 +237,16 @@
 
 - (void)dismissModalViewControllerAnimated:(BOOL)animated
 {
-    for (UIViewController *vc in self.innerViewControllers) {
-        [vc performSelector:@selector(setFlowController:) withObject:nil];
-    }
+    [self.innerViewControllers makeObjectsPerformSelector:@selector(setFlowController:)
+                                               withObject:nil];
     
     [super dismissModalViewControllerAnimated:animated];
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
 {
-    for (UIViewController *vc in self.innerViewControllers) {
-        [vc performSelector:@selector(setFlowController:) withObject:nil];
-    }
+    [self.innerViewControllers makeObjectsPerformSelector:@selector(setFlowController:)
+                                               withObject:nil];
     
     [super dismissViewControllerAnimated:flag completion:completion];
 }
