@@ -192,8 +192,8 @@
 				E34A640D16FEB8DD0053A496 /* GQAppDelegate.m */,
 				E3B7D4E3173E185700B82719 /* Demo1 */,
 				E3B7D4EA173E319F00B82719 /* Demo2 */,
-				E3DA9756180BD36B004B0697 /* Demo4 */,
 				E38CCDD817961829001E4064 /* Demo3 */,
+				E3DA9756180BD36B004B0697 /* Demo4 */,
 			);
 			path = GQFlowController;
 			sourceTree = "<group>";
