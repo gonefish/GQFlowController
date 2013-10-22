@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "GQFlowController.h"
+#import "GQNavigationController.h"
 
 @interface GQAppDelegate : UIResponder <
 UIApplicationDelegate,
@@ -16,6 +17,7 @@ UIActionSheetDelegate
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) GQFlowController *flowController;
+@property (strong, nonatomic) GQNavigationController *navigationController;
 
 - (void)showSelectDemoActionSheet;
 

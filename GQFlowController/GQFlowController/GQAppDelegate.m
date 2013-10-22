@@ -43,9 +43,7 @@
 {
     Demo4ViewController *d1 = [[Demo4ViewController alloc] init];
     
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:d1];
-    
-    return @[nc];
+    return @[d1];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -55,12 +53,14 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo4ViewControllers]];
     } else {
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
     }
     
-    self.window.rootViewController = self.flowController;
+    self.navigationController = [[GQNavigationController alloc] initWithViewControllers:[self demo4ViewControllers]];
+    
+    self.window.rootViewController = self.navigationController;
     
     [self.window makeKeyAndVisible];
     

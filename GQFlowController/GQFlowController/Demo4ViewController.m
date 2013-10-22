@@ -43,7 +43,8 @@
 
 - (IBAction)pushAction:(id)sender {
     UIViewController *vc = [[Demo4ViewController alloc] init];
-    [self.navigationController pushViewController:vc animated:YES];
+    
+    [self.flowController flowInViewController:vc animated:YES];
 }
 
 @end

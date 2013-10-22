@@ -42,6 +42,7 @@
 		E3CEF56C1723B7E400A33CFE /* Demo1LeftViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF56A1723B7E400A33CFE /* Demo1LeftViewController.xib */; };
 		E3CEF5751723BAB100A33CFE /* Demo1RightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3CEF5731723BAB000A33CFE /* Demo1RightViewController.m */; };
 		E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */; };
+		E3D3D8FE181524A5003E204B /* GQNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3D3D8FD181524A5003E204B /* GQNavigationController.m */; };
 		E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3D757BA1747566100A56E83 /* Demo2BViewController.m */; };
 		E3D757BD1747566100A56E83 /* Demo2BViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3D757BB1747566100A56E83 /* Demo2BViewController.xib */; };
 		E3DA975A180BD3CC004B0697 /* Demo4ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3DA9758180BD3CC004B0697 /* Demo4ViewController.m */; };
@@ -115,6 +116,8 @@
 		E3CEF5721723BAB000A33CFE /* Demo1RightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo1RightViewController.h; sourceTree = "<group>"; };
 		E3CEF5731723BAB000A33CFE /* Demo1RightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo1RightViewController.m; sourceTree = "<group>"; };
 		E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo1RightViewController.xib; sourceTree = "<group>"; };
+		E3D3D8FC181524A5003E204B /* GQNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQNavigationController.h; sourceTree = "<group>"; };
+		E3D3D8FD181524A5003E204B /* GQNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQNavigationController.m; sourceTree = "<group>"; };
 		E3D757B91747566100A56E83 /* Demo2BViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2BViewController.h; sourceTree = "<group>"; };
 		E3D757BA1747566100A56E83 /* Demo2BViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2BViewController.m; sourceTree = "<group>"; };
 		E3D757BB1747566100A56E83 /* Demo2BViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2BViewController.xib; sourceTree = "<group>"; };
@@ -235,6 +238,8 @@
 			children = (
 				E35D6073175280CA00398CCD /* GQFlowController.h */,
 				E35D6074175280CA00398CCD /* GQFlowController.m */,
+				E3D3D8FC181524A5003E204B /* GQNavigationController.h */,
+				E3D3D8FD181524A5003E204B /* GQNavigationController.m */,
 			);
 			name = SourceCode;
 			path = ../SourceCode;
@@ -442,6 +447,7 @@
 				E3CEF5751723BAB100A33CFE /* Demo1RightViewController.m in Sources */,
 				E3B7D4E7173E319100B82719 /* Demo2ViewController.m in Sources */,
 				E37222A81741493D001907BE /* Demo2AViewController.m in Sources */,
+				E3D3D8FE181524A5003E204B /* GQNavigationController.m in Sources */,
 				E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */,
 				E35D6078175280CA00398CCD /* GQFlowController.m in Sources */,
 				E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */,
