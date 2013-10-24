@@ -1088,7 +1088,12 @@
                 }
             }
         }
-    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {        
+    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        // 如果位置没有任何变化直接返回
+        if (CGRectEqualToRect(self.topViewController.view.frame, self.originalFrame)) {
+            return;
+        }
+        
         // 默认为原始位置
         CGRect destinationFrame = self.originalFrame;
         
