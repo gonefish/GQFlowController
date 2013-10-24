@@ -237,16 +237,14 @@
 
 - (void)dismissModalViewControllerAnimated:(BOOL)animated
 {
-    [self.innerViewControllers makeObjectsPerformSelector:@selector(setFlowController:)
-                                               withObject:nil];
+    [self safeDismissFlowController];
     
     [super dismissModalViewControllerAnimated:animated];
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
 {
-    [self.innerViewControllers makeObjectsPerformSelector:@selector(setFlowController:)
-                                               withObject:nil];
+    [self safeDismissFlowController];
     
     [super dismissViewControllerAnimated:flag completion:completion];
 }
@@ -1231,6 +1229,14 @@
     }
     
     return flowingDirection;
+}
+
+- (void)safeDismissFlowController
+{
+    if ([self.presentedViewController isKindOfClass:[GQFlowController class]]) {
+        [[(GQFlowController *)self.presentedViewController viewControllers] makeObjectsPerformSelector:@selector(setFlowController:)
+                                                                                            withObject:nil];
+    }
 }
 
 @end
