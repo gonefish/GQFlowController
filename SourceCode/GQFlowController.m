@@ -1238,9 +1238,14 @@
 
 - (void)safeDismissFlowController
 {
-    if ([self.presentedViewController isKindOfClass:[GQFlowController class]]) {
-        [[(GQFlowController *)self.presentedViewController viewControllers] makeObjectsPerformSelector:@selector(setFlowController:)
-                                                                                            withObject:nil];
+    if (self.presentedViewController == nil
+        && self.presentingViewController.presentedViewController == self) {
+        // 在Model视图控制器中调用dismiss
+        [self.viewControllers makeObjectsPerformSelector:@selector(setFlowController:) withObject:nil];
+    } else if ([self.presentedViewController isKindOfClass:[GQFlowController class]]) {
+        // 在presented的视图控制器调用dismiss
+        [[(GQFlowController *)self.presentedViewController viewControllers]
+         makeObjectsPerformSelector:@selector(setFlowController:) withObject:nil];
     }
 }
 
