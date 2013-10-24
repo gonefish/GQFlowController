@@ -8,6 +8,12 @@
       location = "group:SourceCode"
       name = "SourceCode">
       <FileRef
+         location = "group:GQNavigationController.h">
+      </FileRef>
+      <FileRef
+         location = "group:GQNavigationController.m">
+      </FileRef>
+      <FileRef
          location = "group:GQFlowController.h">
       </FileRef>
       <FileRef
