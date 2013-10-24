@@ -95,7 +95,7 @@ Demo3展示了iPad的使用例子。
 
 Requirements
 ------------
-GQFlowController requires Xcode 4.5 and iOS 6.0 or later SDK (LLVM Compiler 4.0)。
+GQFlowController requires Xcode 5 and iOS 7.0 or later SDK (LLVM Compiler 5.0)。
 
 [Objective-C Feature Availability Index](http://developer.apple.com/library/ios/#releasenotes/ObjectiveC/ObjCAvailabilityIndex/)
 
