@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GQFlowController.h"
 
-@interface Demo4ViewController : UIViewController
+@interface Demo4ViewController : UIViewController <GQViewController>
 
 @end

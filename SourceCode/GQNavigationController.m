@@ -24,8 +24,15 @@
         self = [super init];
         
         if (self) {
-            self.gqNavigationController = [[UINavigationController alloc] init];
-            self.gqNavigationController.viewControllers = viewControllers;
+            UINavigationController *navigationController = [[UINavigationController alloc] init];
+            
+            [viewControllers makeObjectsPerformSelector:@selector(setFlowController:) withObject:self];
+            
+            navigationController.viewControllers = viewControllers;
+            
+            [super setViewControllers:@[navigationController] animated:NO];
+            
+            self.gqNavigationController = navigationController;
         }
     }
     
@@ -49,6 +56,8 @@
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         [super flowInViewController:viewController animated:animated];
     } else {
+        [viewController performSelector:@selector(setFlowController:) withObject:self];
+        
         [self.gqNavigationController pushViewController:viewController animated:animated];
     }
 }
@@ -79,11 +88,7 @@
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-        [super setViewControllers:viewControllers];
-    } else {
-        [self.gqNavigationController setViewControllers:viewControllers];
-    }
+    [self setViewControllers:viewControllers animated:NO];
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
@@ -91,6 +96,8 @@
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         [super setViewControllers:viewControllers animated:animated];
     } else {
+        [viewControllers makeObjectsPerformSelector:@selector(setFlowController:) withObject:self];
+        
         [self.gqNavigationController setViewControllers:viewControllers animated:animated];
     }
 }
