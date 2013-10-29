@@ -1028,6 +1028,8 @@
                     }
                 }
             }
+            
+            
         }
 
         CGRect newFrame = CGRectZero;
@@ -1091,6 +1093,7 @@
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         // 如果位置没有任何变化直接返回
         if (CGRectEqualToRect(self.topViewController.view.frame, self.originalFrame)) {
+            [self resetPressStatus];
             return;
         }
         
