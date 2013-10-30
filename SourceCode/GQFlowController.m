@@ -1100,7 +1100,7 @@
         // 默认为原始位置
         CGRect destinationFrame = self.originalFrame;
         
-        BOOL cancelFlowing = NO; // 是否需要取消回退滑动
+        BOOL flowingOriginalFrame = NO; // 是否需要滑动到原始位置
         
         BOOL skipCancelFlowingCheck = NO; // 是否跳过回退的检测
         
@@ -1140,11 +1140,11 @@
                 
                 // 如果移动的距离没有超过边界值，则回退到原始位置
                 if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
-                    cancelFlowing = YES;
+                    flowingOriginalFrame = YES;
                 }
             }
             
-            if (!cancelFlowing) {
+            if (!flowingOriginalFrame) {
                 if (self.flowingDirection == self.topViewController.flowInDirection) {
                     destinationFrame = [self inDestinationRectForViewController:self.topViewController];
                 }
