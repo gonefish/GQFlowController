@@ -128,46 +128,30 @@
 {
     [super viewWillAppear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-        [self.topViewController beginAppearanceTransition:YES
-                                                 animated:animated];
-    } else {
-        [self.topViewController viewWillAppear:animated];
-    }
+    [self.topViewController beginAppearanceTransition:YES
+                                             animated:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-        [self.topViewController endAppearanceTransition];
-    } else {
-        [self.topViewController viewDidAppear:animated];
-    }
+    [self.topViewController endAppearanceTransition];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-        [self.topViewController beginAppearanceTransition:NO
-                                                 animated:animated];
-    } else {
-        [self.topViewController viewWillDisappear:animated];
-    }
+    [self.topViewController beginAppearanceTransition:NO
+                                             animated:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-        [self.topViewController endAppearanceTransition];
-    } else {
-        [self.topViewController viewDidDisappear:animated];
-    }
+    [self.topViewController endAppearanceTransition];
 }
 
 - (BOOL)shouldAutorotate
@@ -615,17 +599,11 @@
     
     viewController.overlayContent = YES;
     
-    if ([viewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-        [viewController beginAppearanceTransition:YES
-                                         animated:animated];
+    [viewController beginAppearanceTransition:YES
+                                     animated:animated];
         
-        [oldTopViewController beginAppearanceTransition:NO
-                                               animated:animated];
-    } else {
-        [viewController viewWillAppear:animated];
-        
-        [oldTopViewController viewWillDisappear:animated];
-    }
+    [oldTopViewController beginAppearanceTransition:NO
+                                           animated:animated];
     
     if (animated) {
         [self flowingViewController:viewController
@@ -636,15 +614,9 @@
                         }
                     }
                     completionBlock:^(BOOL finished){
-                        if ([viewController respondsToSelector:@selector(endAppearanceTransition)]) {
-                            [viewController endAppearanceTransition];
-                            
-                            [oldTopViewController endAppearanceTransition];
-                        } else {
-                            [viewController viewDidAppear:animated];
-                            
-                            [oldTopViewController viewDidAppear:animated];
-                        }
+                        [viewController endAppearanceTransition];
+                        
+                        [oldTopViewController endAppearanceTransition];
                         
                         viewController.overlayContent = NO;
                         
@@ -696,17 +668,11 @@
                         belowSubview:self.topViewController.view];
         }
         
-        if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-            [self.topViewController beginAppearanceTransition:NO
-                                                     animated:animated];
+        [self.topViewController beginAppearanceTransition:NO
+                                                 animated:animated];
             
-            [lastController beginAppearanceTransition:YES
-                                             animated:animated];
-        } else {
-            [self.topViewController viewWillDisappear:animated];
-            
-            [lastController viewWillAppear:animated];
-        }
+        [lastController beginAppearanceTransition:YES
+                                         animated:animated];
         
         self.topViewController.overlayContent = YES;
         lastController.overlayContent = YES;
@@ -718,15 +684,9 @@
         };
         
         void (^completionBlock)(BOOL) = ^(BOOL finished) {
-            if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-                [self.topViewController endAppearanceTransition];
+            [self.topViewController endAppearanceTransition];
                 
-                [lastController endAppearanceTransition];
-            } else {
-                [self.topViewController viewDidDisappear:animated];
-                
-                [lastController viewDidAppear:animated];
-            }
+            [lastController endAppearanceTransition];
             
             [self removeTopViewController];
             
