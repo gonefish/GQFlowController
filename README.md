@@ -11,7 +11,7 @@ GQFlowController实现了一个多层的容器视图控制器，其目标是实�
 * 滑动手势
 * 完整的ARC支持
 * 支持iPad和iPhone
-
+* iOS 7 UINavigationController兼容模式
 
 
 GQFlowControllerAdditions Category
@@ -82,6 +82,10 @@ GQViewController Protocol
     <td>setViewControllers:animated:</td>
   </tr>
 </table>
+
+iOS 7 UINavigationController兼容模式
+----------------------------------
+GQNavigationController子类提供了针对UINavigationController(iOS 7 only)的适配。允许在不修改GQFlowController的调用方法的情况下，转发到UINavigationController的对应方法。iOS 7以前的设备依然调用GQFlowController的方法。
 
 Demo说明
 -------

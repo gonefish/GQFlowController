@@ -30,8 +30,6 @@ typedef enum {
 
 
 
-- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)frame;
-
 /** 滑动已经添加的视图控制器到指定位置
 
  */

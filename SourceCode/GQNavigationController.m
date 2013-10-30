@@ -16,6 +16,16 @@
 
 @implementation GQNavigationController
 
+- (NSArray *)flowViewControllers
+{
+    return [super viewControllers];
+}
+
+- (void)setFlowViewControllers:(NSArray *)viewControllers
+{
+    [super setViewControllers:viewControllers animated:NO];
+}
+
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
@@ -30,7 +40,7 @@
             
             navigationController.viewControllers = viewControllers;
             
-            [super setViewControllers:@[navigationController] animated:NO];
+            [self setFlowViewControllers:@[navigationController]];
             
             self.gqNavigationController = navigationController;
         }
@@ -86,9 +96,13 @@
     }
 }
 
-- (void)setViewControllers:(NSArray *)viewControllers
+- (NSArray *)viewControllers
 {
-    [self setViewControllers:viewControllers animated:NO];
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        return [super viewControllers];
+    } else {
+        return self.gqNavigationController.viewControllers;
+    }
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated
