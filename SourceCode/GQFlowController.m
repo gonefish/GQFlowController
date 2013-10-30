@@ -480,13 +480,6 @@
                      }];
 }
 
-- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame
-{
-    [self flowingViewController:viewController
-                        toFrame:toFrame
-                animationsBlock:nil
-                completionBlock:nil];
-}
 
 #pragma mark - UIViewController Container Method
 
