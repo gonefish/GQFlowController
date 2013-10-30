@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
 @property (nonatomic) BOOL isAnimating;
+@property (nonatomic) BOOL isPanFlowingIn;
 
 @end
 
@@ -912,7 +913,7 @@
     
     if (self.topViewPanGestureRecognizer == nil) {
         self.topViewPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                                   action:@selector(pressMoveGesture)];
+                                                                                   action:@selector(panGestureAction)];
     }
     
     self.topViewPanGestureRecognizer.delegate = (id <GQViewController>)self.topViewController;
@@ -932,7 +933,7 @@
     }
 }
 
-- (void)pressMoveGesture
+- (void)panGestureAction
 {
     CGPoint pressPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
     
@@ -969,6 +970,8 @@
                     self.flowingDirection = GQFlowDirectionUp;
                 }
             }
+            
+            self.isPanFlowingIn = NO;
 
             // 滑动的View可能不是Top View
             if ([self.topViewController respondsToSelector:@selector(viewControllerForFlowDirection:)]) {
@@ -984,12 +987,23 @@
                         
                         [self addTopViewController:controller];
                         
-                        // TODO: viewWillAppear
+                        self.isPanFlowingIn = NO;
                     }
                 }
             }
             
+            UIViewController *belowVC = [self belowTopViewController];
             
+            // Customizing Appearance
+            if (self.isPanFlowingIn) {
+                // 手势滑入
+                [belowVC beginAppearanceTransition:NO animated:YES];
+                [self.topViewController beginAppearanceTransition:YES animated:YES];
+            } else {
+                // 手势滑出
+                [self.topViewController beginAppearanceTransition:NO animated:YES];
+                [belowVC beginAppearanceTransition:YES animated:YES];
+            }
         }
 
         CGRect newFrame = CGRectZero;
@@ -1130,7 +1144,25 @@
                         }
                     }
                     completionBlock:^(BOOL finished){
-                        UIViewController *flowController = self.topViewController;
+                        self.topViewController.overlayContent = NO;
+                        
+                        if (self.isPanFlowingIn) {
+                            if (flowingOriginalFrame) {
+                                [self.topViewController beginAppearanceTransition:NO animated:YES];
+                                [belowVC beginAppearanceTransition:YES animated:YES];
+                            }
+                            
+                            [belowVC endAppearanceTransition];
+                            [self.topViewController endAppearanceTransition];
+                        } else {
+                            if (flowingOriginalFrame) {
+                                [self.topViewController beginAppearanceTransition:YES animated:YES];
+                                [belowVC beginAppearanceTransition:NO animated:YES];
+                            }
+                            
+                            [belowVC endAppearanceTransition];
+                            [self.topViewController endAppearanceTransition];
+                        }
                         
                         // 如果topViewController已经移出窗口，则进行删除操作
                         if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
@@ -1139,17 +1171,11 @@
                             [self removeTopViewController];
                         }
                         
-                        self.topViewController.overlayContent = NO;
-                        
                         // 重新添加top view的手势
                         [self addPressGestureRecognizerForTopView];
                         
                         // 重置长按状态信息
                         [self resetPressStatus];
-                        
-                        if ([flowController respondsToSelector:@selector(didFlowToDestinationRect)]) {
-                            [(id <GQViewController>)flowController didFlowToDestinationRect];
-                        }
                     }];
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         
