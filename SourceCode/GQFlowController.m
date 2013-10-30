@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
 @property (nonatomic) BOOL isAnimating;
+@property (nonatomic) BOOL isPanFlowingIn;
 
 @end
 
@@ -128,46 +129,30 @@
 {
     [super viewWillAppear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-        [self.topViewController beginAppearanceTransition:YES
-                                                 animated:animated];
-    } else {
-        [self.topViewController viewWillAppear:animated];
-    }
+    [self.topViewController beginAppearanceTransition:YES
+                                             animated:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-        [self.topViewController endAppearanceTransition];
-    } else {
-        [self.topViewController viewDidAppear:animated];
-    }
+    [self.topViewController endAppearanceTransition];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-        [self.topViewController beginAppearanceTransition:NO
-                                                 animated:animated];
-    } else {
-        [self.topViewController viewWillDisappear:animated];
-    }
+    [self.topViewController beginAppearanceTransition:NO
+                                             animated:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     
-    if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-        [self.topViewController endAppearanceTransition];
-    } else {
-        [self.topViewController viewDidDisappear:animated];
-    }
+    [self.topViewController endAppearanceTransition];
 }
 
 - (BOOL)shouldAutorotate
@@ -615,17 +600,11 @@
     
     viewController.overlayContent = YES;
     
-    if ([viewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-        [viewController beginAppearanceTransition:YES
-                                         animated:animated];
+    [viewController beginAppearanceTransition:YES
+                                     animated:animated];
         
-        [oldTopViewController beginAppearanceTransition:NO
-                                               animated:animated];
-    } else {
-        [viewController viewWillAppear:animated];
-        
-        [oldTopViewController viewWillDisappear:animated];
-    }
+    [oldTopViewController beginAppearanceTransition:NO
+                                           animated:animated];
     
     if (animated) {
         [self flowingViewController:viewController
@@ -636,15 +615,9 @@
                         }
                     }
                     completionBlock:^(BOOL finished){
-                        if ([viewController respondsToSelector:@selector(endAppearanceTransition)]) {
-                            [viewController endAppearanceTransition];
-                            
-                            [oldTopViewController endAppearanceTransition];
-                        } else {
-                            [viewController viewDidAppear:animated];
-                            
-                            [oldTopViewController viewDidAppear:animated];
-                        }
+                        [viewController endAppearanceTransition];
+                        
+                        [oldTopViewController endAppearanceTransition];
                         
                         viewController.overlayContent = NO;
                         
@@ -696,17 +669,11 @@
                         belowSubview:self.topViewController.view];
         }
         
-        if ([self.topViewController respondsToSelector:@selector(beginAppearanceTransition:animated:)]) {
-            [self.topViewController beginAppearanceTransition:NO
-                                                     animated:animated];
+        [self.topViewController beginAppearanceTransition:NO
+                                                 animated:animated];
             
-            [lastController beginAppearanceTransition:YES
-                                             animated:animated];
-        } else {
-            [self.topViewController viewWillDisappear:animated];
-            
-            [lastController viewWillAppear:animated];
-        }
+        [lastController beginAppearanceTransition:YES
+                                         animated:animated];
         
         self.topViewController.overlayContent = YES;
         lastController.overlayContent = YES;
@@ -718,15 +685,9 @@
         };
         
         void (^completionBlock)(BOOL) = ^(BOOL finished) {
-            if ([self.topViewController respondsToSelector:@selector(endAppearanceTransition)]) {
-                [self.topViewController endAppearanceTransition];
+            [self.topViewController endAppearanceTransition];
                 
-                [lastController endAppearanceTransition];
-            } else {
-                [self.topViewController viewDidDisappear:animated];
-                
-                [lastController viewDidAppear:animated];
-            }
+            [lastController endAppearanceTransition];
             
             [self removeTopViewController];
             
@@ -952,7 +913,7 @@
     
     if (self.topViewPanGestureRecognizer == nil) {
         self.topViewPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                                   action:@selector(pressMoveGesture)];
+                                                                                   action:@selector(panGestureAction)];
     }
     
     self.topViewPanGestureRecognizer.delegate = (id <GQViewController>)self.topViewController;
@@ -972,7 +933,7 @@
     }
 }
 
-- (void)pressMoveGesture
+- (void)panGestureAction
 {
     CGPoint pressPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
     
@@ -1009,6 +970,8 @@
                     self.flowingDirection = GQFlowDirectionUp;
                 }
             }
+            
+            self.isPanFlowingIn = NO;
 
             // 滑动的View可能不是Top View
             if ([self.topViewController respondsToSelector:@selector(viewControllerForFlowDirection:)]) {
@@ -1024,12 +987,23 @@
                         
                         [self addTopViewController:controller];
                         
-                        // TODO: viewWillAppear
+                        self.isPanFlowingIn = NO;
                     }
                 }
             }
             
+            UIViewController *belowVC = [self belowTopViewController];
             
+            // Customizing Appearance
+            if (self.isPanFlowingIn) {
+                // 手势滑入
+                [belowVC beginAppearanceTransition:NO animated:YES];
+                [self.topViewController beginAppearanceTransition:YES animated:YES];
+            } else {
+                // 手势滑出
+                [self.topViewController beginAppearanceTransition:NO animated:YES];
+                [belowVC beginAppearanceTransition:YES animated:YES];
+            }
         }
 
         CGRect newFrame = CGRectZero;
@@ -1100,7 +1074,7 @@
         // 默认为原始位置
         CGRect destinationFrame = self.originalFrame;
         
-        BOOL cancelFlowing = NO; // 是否需要取消回退滑动
+        BOOL flowingOriginalFrame = NO; // 是否需要滑动到原始位置
         
         BOOL skipCancelFlowingCheck = NO; // 是否跳过回退的检测
         
@@ -1140,11 +1114,11 @@
                 
                 // 如果移动的距离没有超过边界值，则回退到原始位置
                 if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
-                    cancelFlowing = YES;
+                    flowingOriginalFrame = YES;
                 }
             }
             
-            if (!cancelFlowing) {
+            if (!flowingOriginalFrame) {
                 if (self.flowingDirection == self.topViewController.flowInDirection) {
                     destinationFrame = [self inDestinationRectForViewController:self.topViewController];
                 }
@@ -1170,7 +1144,25 @@
                         }
                     }
                     completionBlock:^(BOOL finished){
-                        UIViewController *flowController = self.topViewController;
+                        self.topViewController.overlayContent = NO;
+                        
+                        if (self.isPanFlowingIn) {
+                            if (flowingOriginalFrame) {
+                                [self.topViewController beginAppearanceTransition:NO animated:YES];
+                                [belowVC beginAppearanceTransition:YES animated:YES];
+                            }
+                            
+                            [belowVC endAppearanceTransition];
+                            [self.topViewController endAppearanceTransition];
+                        } else {
+                            if (flowingOriginalFrame) {
+                                [self.topViewController beginAppearanceTransition:YES animated:YES];
+                                [belowVC beginAppearanceTransition:NO animated:YES];
+                            }
+                            
+                            [belowVC endAppearanceTransition];
+                            [self.topViewController endAppearanceTransition];
+                        }
                         
                         // 如果topViewController已经移出窗口，则进行删除操作
                         if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
@@ -1179,17 +1171,11 @@
                             [self removeTopViewController];
                         }
                         
-                        self.topViewController.overlayContent = NO;
-                        
                         // 重新添加top view的手势
                         [self addPressGestureRecognizerForTopView];
                         
                         // 重置长按状态信息
                         [self resetPressStatus];
-                        
-                        if ([flowController respondsToSelector:@selector(didFlowToDestinationRect)]) {
-                            [(id <GQViewController>)flowController didFlowToDestinationRect];
-                        }
                     }];
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         
