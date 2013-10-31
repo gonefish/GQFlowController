@@ -16,31 +16,78 @@
 
 @implementation GQNavigationController
 
-- (NSArray *)flowViewControllers
+- (void)setGqNavigationController:(UINavigationController *)gqNavigationController
 {
-    return [super viewControllers];
+    [gqNavigationController.viewControllers makeObjectsPerformSelector:@selector(setFlowController:)
+                                                            withObject:self];
+    
+    _gqNavigationController = gqNavigationController;
 }
 
-- (void)setFlowViewControllers:(NSArray *)viewControllers
-{
-    [super setViewControllers:viewControllers animated:NO];
-}
 
 - (id)initWithViewControllers:(NSArray *)viewControllers
 {
+    return [self initWithNavigationControllers:viewControllers belowViewControllers:nil];
+}
+
+- (id)initWithNavigationControllers:(NSArray *)viewControllers belowViewControllers:(NSArray *)belowViewControllers
+{
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-        self = [super initWithViewControllers:viewControllers];
+        NSArray *newViewController = viewControllers;
+        
+        if (belowViewControllers) {
+            newViewController = [belowViewControllers arrayByAddingObjectsFromArray:viewControllers];
+        }
+        
+        self = [super initWithViewControllers:newViewController];
     } else {
         self = [super init];
         
         if (self) {
             UINavigationController *navigationController = [[UINavigationController alloc] init];
             
-            [viewControllers makeObjectsPerformSelector:@selector(setFlowController:) withObject:self];
-            
             navigationController.viewControllers = viewControllers;
             
-            [self setFlowViewControllers:@[navigationController]];
+            self.gqNavigationController = navigationController;
+            
+            NSArray *newViewControllers = @[navigationController];
+            
+            if (belowViewControllers) {
+                newViewControllers = [belowViewControllers arrayByAddingObject:navigationController];
+            }
+            
+            [super setViewControllers:newViewControllers animated:NO];
+        }
+    }
+    
+    return self;
+}
+
+- (id)initWithNavigationController:(UINavigationController *)navigationController belowViewControllers:(NSArray *)viewControllers
+{
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        NSArray *newViewController = nil;
+        
+        if (viewControllers) {
+            newViewController = [viewControllers arrayByAddingObject:navigationController.viewControllers];
+        } else {
+            newViewController = navigationController.viewControllers;
+        }
+        
+        self = [super initWithViewControllers:newViewController];
+    } else {
+        self = [super init];
+        
+        if (self) {
+            NSArray *newViewControllers = nil;
+            
+            if (viewControllers) {
+                newViewControllers = [viewControllers arrayByAddingObject:navigationController];
+            } else {
+                newViewControllers = @[navigationController];
+            }
+            
+            [super setViewControllers:newViewControllers animated:NO];
             
             self.gqNavigationController = navigationController;
         }

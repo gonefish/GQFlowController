@@ -12,8 +12,6 @@
 
 @property (nonatomic, strong, readonly) UINavigationController *gqNavigationController;
 
-- (NSArray *)flowViewControllers;
-
-- (void)setFlowViewControllers:(NSArray *)viewControllers;
+- (id)initWithNavigationControllers:(NSArray *)viewControllers belowViewControllers:(NSArray *)belowViewControllers;
 
 @end
