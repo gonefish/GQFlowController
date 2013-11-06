@@ -12,6 +12,43 @@
 #define MASK_VIEW_ALPHA .4
 #define BELOW_VIEW_OFFSET_SCALE .6
 
+
+
+
+static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoint endPoint, GQFlowDirection direction) {
+    
+    // originalFrame 下层视图的原始位置；toFrame 当前视图将要移动到的位置
+    CGFloat belowVCOffset = .0;
+    
+    if (direction == GQFlowDirectionLeft
+        || direction == GQFlowDirectionRight) {
+        belowVCOffset = ABS(startPoint.x - endPoint.x) * BELOW_VIEW_OFFSET_SCALE;
+    } else {
+        belowVCOffset = ABS(startPoint.y - endPoint.y) * BELOW_VIEW_OFFSET_SCALE;
+    }
+    
+    CGRect newBelowVCFrame = CGRectZero;
+    
+    switch (direction) {
+        case GQFlowDirectionLeft:
+            newBelowVCFrame = CGRectOffset(belowRect, -belowVCOffset, .0);
+            break;
+        case GQFlowDirectionRight:
+            newBelowVCFrame = CGRectOffset(belowRect, belowVCOffset, .0);
+            break;
+        case GQFlowDirectionUp:
+            newBelowVCFrame = CGRectOffset(belowRect, .0, -belowVCOffset);
+            break;
+        case GQFlowDirectionDown:
+            newBelowVCFrame = CGRectOffset(belowRect, .0, belowVCOffset);
+            break;
+        default:
+            break;
+    }
+    
+    return newBelowVCFrame;
+}
+
 @interface GQFlowController ()
 
 @property (nonatomic, strong) UIViewController *topViewController;
@@ -605,6 +642,10 @@
     
     CGRect toFrame = [self inDestinationRectForViewController:viewController];
     
+                        CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVCFrame,
+                                                                       viewController.view.frame.origin,
+                                                                       toFrame.origin,
+                                                                       viewController.flowInDirection);
     if (animated) {
         [self flowingViewController:viewController
                             toFrame:toFrame
@@ -613,33 +654,6 @@
                             [belowVC setShotViewScale:0.95];
                         }
                         
-                        CGFloat belowVCOffset = .0;
-                        
-                        if (viewController.flowInDirection == GQFlowDirectionLeft
-                            || viewController.flowInDirection == GQFlowDirectionRight) {
-                            belowVCOffset = toFrame.size.width * BELOW_VIEW_OFFSET_SCALE;
-                        } else {
-                            belowVCOffset = toFrame.size.height * BELOW_VIEW_OFFSET_SCALE;
-                        }
-                        
-                        CGRect newBelowVCFrame = CGRectZero;
-                        
-                        switch (viewController.flowInDirection) {
-                            case GQFlowDirectionLeft:
-                                newBelowVCFrame = CGRectOffset(belowVCFrame, -belowVCOffset, .0);
-                                break;
-                            case GQFlowDirectionRight:
-                                newBelowVCFrame = CGRectOffset(belowVCFrame, belowVCOffset, .0);
-                                break;
-                            case GQFlowDirectionUp:
-                                newBelowVCFrame = CGRectOffset(belowVCFrame, .0, -belowVCOffset);
-                                break;
-                            case GQFlowDirectionDown:
-                                newBelowVCFrame = CGRectOffset(belowVCFrame, .0, belowVCOffset);
-                                break;
-                            default:
-                                break;
-                        }
                         
                         if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
                             belowVC.view.frame = newBelowVCFrame;
@@ -711,39 +725,18 @@
         
         CGRect toFrame = [self outDestinationRectForViewController:self.topViewController];
         CGRect belowVCFrame = belowVC.view.frame;
+        
+        CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVCFrame,
+                                                       self.topViewController.view.frame.origin,
+                                                       toFrame.origin,
+                                                       self.topViewController.flowOutDirection);
 
         void (^animationsBlock)(void) = ^{
             if ([self shouldScaleView:belowVC]) {
                 [belowVC setShotViewScale:1.0];
             }
             
-            CGFloat belowVCOffset = .0;
             
-            if (self.topViewController.flowOutDirection == GQFlowDirectionLeft
-                || self.topViewController.flowOutDirection == GQFlowDirectionRight) {
-                belowVCOffset = toFrame.size.width * BELOW_VIEW_OFFSET_SCALE;
-            } else {
-                belowVCOffset = toFrame.size.height * BELOW_VIEW_OFFSET_SCALE;
-            }
-            
-            CGRect newBelowVCFrame = CGRectZero;
-            
-            switch (self.topViewController.flowOutDirection) {
-                case GQFlowDirectionLeft:
-                    newBelowVCFrame = CGRectOffset(belowVCFrame, -belowVCOffset, .0);
-                    break;
-                case GQFlowDirectionRight:
-                    newBelowVCFrame = CGRectOffset(belowVCFrame, belowVCOffset, .0);
-                    break;
-                case GQFlowDirectionUp:
-                    newBelowVCFrame = CGRectOffset(belowVCFrame, .0, -belowVCOffset);
-                    break;
-                case GQFlowDirectionDown:
-                    newBelowVCFrame = CGRectOffset(belowVCFrame, .0, belowVCOffset);
-                    break;
-                default:
-                    break;
-            }
             
             if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
                 belowVC.view.frame = newBelowVCFrame;
@@ -1130,6 +1123,15 @@
                     
                     [belowVC setShotViewScale:scale];
                 }
+                
+                //
+                CGRect belowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
+                                                            self.topViewOriginalFrame.origin,
+                                                            offsetPoint,
+                                                            self.flowingDirection);
+                
+                belowVC.view.frame = belowVCFrame;
+                
             }
         }
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
@@ -1200,6 +1202,29 @@
         
         UIViewController *belowVC = [self belowTopViewController];
         
+        GQFlowDirection testFlowDirection = self.flowingDirection;
+        
+        if (flowingOriginalFrame) {
+            switch (self.flowingDirection) {
+                case GQFlowDirectionLeft:
+                    testFlowDirection = GQFlowDirectionRight;
+                    break;
+                case GQFlowDirectionRight:
+                    testFlowDirection = GQFlowDirectionLeft;
+                case GQFlowDirectionUp:
+                    testFlowDirection = GQFlowDirectionDown;
+                case GQFlowDirectionDown:
+                    testFlowDirection = GQFlowDirectionUp;
+                default:
+                    break;
+            }
+        }
+        
+        CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVC.view.frame,
+                                                       self.topViewController.view.frame.origin,
+                                                       destinationFrame.origin,
+                                                       testFlowDirection);
+        
         [self flowingViewController:self.topViewController
                             toFrame:destinationFrame
                     animationsBlock:^{
@@ -1210,9 +1235,12 @@
                                 [belowVC setShotViewScale:1.0];
                             }
                         }
+                        
+                        belowVC.view.frame = newBelowVCFrame;
                     }
                     completionBlock:^(BOOL finished){
                         self.topViewController.overlayContent = NO;
+                        belowVC.overlayContent = NO;
                         
                         if (self.isPanFlowingIn) {
                             if (flowingOriginalFrame) {
