@@ -583,10 +583,10 @@
 
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
-    UIViewController *oldTopViewController = self.topViewController;
+    UIViewController *belowVC = self.topViewController;
     
-    [oldTopViewController setOverlayContent:YES
-                            enabledShotView:YES];
+//    [belowVC setOverlayContent:YES enabledShotView:YES];
+    belowVC.overlayContent = YES;
     
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
@@ -596,21 +596,21 @@
     [viewController beginAppearanceTransition:YES
                                      animated:animated];
         
-    [oldTopViewController beginAppearanceTransition:NO
+    [belowVC beginAppearanceTransition:NO
                                            animated:animated];
     
     if (animated) {
         [self flowingViewController:viewController
                             toFrame:[self inDestinationRectForViewController:viewController]
                     animationsBlock:^{
-                        if ([self shouldScaleView:oldTopViewController]) {
-                            [oldTopViewController setShotViewScale:0.95];
+                        if ([self shouldScaleView:belowVC]) {
+                            [belowVC setShotViewScale:0.95];
                         }
                     }
                     completionBlock:^(BOOL finished){
                         [viewController endAppearanceTransition];
                         
-                        [oldTopViewController endAppearanceTransition];
+                        [belowVC endAppearanceTransition];
                         
                         viewController.overlayContent = NO;
                         
@@ -1188,7 +1188,7 @@
 
 - (BOOL)shouldScaleView:(UIViewController *)controller
 {
-    BOOL isScale = YES;
+    BOOL isScale = NO;
     
     if ([controller respondsToSelector:@selector(shouldScaleView)]) {
         isScale = [(id<GQViewController>)controller shouldScaleView];
@@ -1343,9 +1343,9 @@ static char kQGOverlayViewObjectKey;
             
             UIView *maskView = [[UIView alloc] initWithFrame:self.view.bounds];
             
-            maskView.backgroundColor = [UIColor blackColor];
+            maskView.backgroundColor = [UIColor clearColor];
             
-            maskView.alpha = MASK_VIEW_ALPHA;
+//            maskView.alpha = MASK_VIEW_ALPHA;
             
             [overlayView addSubview:maskView];
         } else {
