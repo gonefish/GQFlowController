@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 
 #define MASK_VIEW_ALPHA .4
+#define BELOW_VIEW_OFFSET_SCALE .6
 
 @interface GQFlowController ()
 
@@ -17,7 +18,8 @@
 @property (nonatomic, strong) NSMutableArray *innerViewControllers;
 
 @property (nonatomic) CGPoint startPoint;
-@property (nonatomic) CGRect originalFrame;
+@property (nonatomic) CGRect topViewOriginalFrame;
+@property (nonatomic) CGRect belowViewOriginalFrame;
 @property (nonatomic) GQFlowDirection flowingDirection;
 
 @property (nonatomic, strong) UIPanGestureRecognizer *topViewPanGestureRecognizer;
@@ -458,7 +460,7 @@
     
     CGFloat duration = [self durationForOriginalRect:currentFrame
                                      destinationRect:toFrame
-                                    flowingDirection:[self flowDirectionWithPoint:currentFrame.origin otherPoint:toFrame.origin]
+                                    flowingDirection:viewController.flowInDirection
                                         flowingSpeed:[self flowingSpeedWithViewController:viewController]];
     
     self.isAnimating = YES;
@@ -584,6 +586,7 @@
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
     UIViewController *belowVC = self.topViewController;
+    CGRect belowVCFrame = belowVC.view.frame;
     
 //    [belowVC setOverlayContent:YES enabledShotView:YES];
     belowVC.overlayContent = YES;
@@ -599,12 +602,47 @@
     [belowVC beginAppearanceTransition:NO
                                            animated:animated];
     
+    
+    CGRect toFrame = [self inDestinationRectForViewController:viewController];
+    
     if (animated) {
         [self flowingViewController:viewController
-                            toFrame:[self inDestinationRectForViewController:viewController]
+                            toFrame:toFrame
                     animationsBlock:^{
                         if ([self shouldScaleView:belowVC]) {
                             [belowVC setShotViewScale:0.95];
+                        }
+                        
+                        CGFloat belowVCOffset = .0;
+                        
+                        if (viewController.flowInDirection == GQFlowDirectionLeft
+                            || viewController.flowInDirection == GQFlowDirectionRight) {
+                            belowVCOffset = toFrame.size.width * BELOW_VIEW_OFFSET_SCALE;
+                        } else {
+                            belowVCOffset = toFrame.size.height * BELOW_VIEW_OFFSET_SCALE;
+                        }
+                        
+                        CGRect newBelowVCFrame = CGRectZero;
+                        
+                        switch (viewController.flowInDirection) {
+                            case GQFlowDirectionLeft:
+                                newBelowVCFrame = CGRectOffset(belowVCFrame, -belowVCOffset, .0);
+                                break;
+                            case GQFlowDirectionRight:
+                                newBelowVCFrame = CGRectOffset(belowVCFrame, belowVCOffset, .0);
+                                break;
+                            case GQFlowDirectionUp:
+                                newBelowVCFrame = CGRectOffset(belowVCFrame, .0, -belowVCOffset);
+                                break;
+                            case GQFlowDirectionDown:
+                                newBelowVCFrame = CGRectOffset(belowVCFrame, .0, belowVCOffset);
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                        if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
+                            belowVC.view.frame = newBelowVCFrame;
                         }
                     }
                     completionBlock:^(BOOL finished){
@@ -652,46 +690,81 @@
             }
         }];
 
-        UIViewController *lastController = [self.innerViewControllers lastObject];
+        UIViewController *belowVC = [self.innerViewControllers lastObject];
         
         // 确保视图已经添加
-        if (lastController.view.superview == nil) {
-            lastController.view.frame = self.view.bounds;
+        if (belowVC.view.superview == nil) {
+            belowVC.view.frame = self.view.bounds;
             
-            [self.view insertSubview:lastController.view
+            [self.view insertSubview:belowVC.view
                         belowSubview:self.topViewController.view];
         }
         
         [self.topViewController beginAppearanceTransition:NO
                                                  animated:animated];
             
-        [lastController beginAppearanceTransition:YES
+        [belowVC beginAppearanceTransition:YES
                                          animated:animated];
         
         self.topViewController.overlayContent = YES;
-        lastController.overlayContent = YES;
+        belowVC.overlayContent = YES;
+        
+        CGRect toFrame = [self outDestinationRectForViewController:self.topViewController];
+        CGRect belowVCFrame = belowVC.view.frame;
 
         void (^animationsBlock)(void) = ^{
-            if ([self shouldScaleView:lastController]) {
-                [lastController setShotViewScale:1.0];
+            if ([self shouldScaleView:belowVC]) {
+                [belowVC setShotViewScale:1.0];
+            }
+            
+            CGFloat belowVCOffset = .0;
+            
+            if (self.topViewController.flowOutDirection == GQFlowDirectionLeft
+                || self.topViewController.flowOutDirection == GQFlowDirectionRight) {
+                belowVCOffset = toFrame.size.width * BELOW_VIEW_OFFSET_SCALE;
+            } else {
+                belowVCOffset = toFrame.size.height * BELOW_VIEW_OFFSET_SCALE;
+            }
+            
+            CGRect newBelowVCFrame = CGRectZero;
+            
+            switch (self.topViewController.flowOutDirection) {
+                case GQFlowDirectionLeft:
+                    newBelowVCFrame = CGRectOffset(belowVCFrame, -belowVCOffset, .0);
+                    break;
+                case GQFlowDirectionRight:
+                    newBelowVCFrame = CGRectOffset(belowVCFrame, belowVCOffset, .0);
+                    break;
+                case GQFlowDirectionUp:
+                    newBelowVCFrame = CGRectOffset(belowVCFrame, .0, -belowVCOffset);
+                    break;
+                case GQFlowDirectionDown:
+                    newBelowVCFrame = CGRectOffset(belowVCFrame, .0, belowVCOffset);
+                    break;
+                default:
+                    break;
+            }
+            
+            if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
+                belowVC.view.frame = newBelowVCFrame;
             }
         };
         
         void (^completionBlock)(BOOL) = ^(BOOL finished) {
             [self.topViewController endAppearanceTransition];
-                
-            [lastController endAppearanceTransition];
+            
+            [belowVC endAppearanceTransition];
             
             [self removeTopViewController];
             
             [self addPressGestureRecognizerForTopView];
             
-            lastController.overlayContent = NO;
+            belowVC.overlayContent = NO;
         };
         
         if (animated) {
             [self flowingViewController:self.topViewController
-                                toFrame:[self outDestinationRectForViewController:self.topViewController]
+                                toFrame:toFrame
                         animationsBlock:animationsBlock
                         completionBlock:completionBlock];
         } else {
@@ -857,7 +930,7 @@
 - (void)resetPressStatus
 {
     self.startPoint = CGPointZero;
-    self.originalFrame = CGRectZero;
+    self.topViewOriginalFrame = CGRectZero;
     self.flowingDirection = GQFlowDirectionUnknow;
 }
 
@@ -928,36 +1001,38 @@
 
 - (void)panGestureAction
 {
-    CGPoint pressPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
+    CGPoint offsetPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
     
     if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
-        self.startPoint = pressPoint;
+        self.startPoint = offsetPoint;
         
         // 记录移动视图的原始位置
-        self.originalFrame = self.topViewController.view.frame;
+        self.topViewOriginalFrame = self.topViewController.view.frame;
         
         // 确保下层视图是否已经添加
-        UIViewController *vc = [self belowTopViewController];
+        UIViewController *belowVC = [self belowTopViewController];
         
-        if (vc.view.superview == nil) {
-            vc.view.frame = self.view.bounds;
+        if (belowVC.view.superview == nil) {
+            belowVC.view.frame = self.view.bounds;
             
-            [self.view insertSubview:vc.view
+            [self.view insertSubview:belowVC.view
                         belowSubview:self.topViewController.view];
         }
+        
+        self.belowViewOriginalFrame = belowVC.view.frame;
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
             // 判断移动的方向            
-            if (ABS(pressPoint.x) > ABS(pressPoint.y)) {
-                if (pressPoint.x > .0) {
+            if (ABS(offsetPoint.x) > ABS(offsetPoint.y)) {
+                if (offsetPoint.x > .0) {
                     self.flowingDirection = GQFlowDirectionRight;
                 } else {
                     self.flowingDirection = GQFlowDirectionLeft;
                 }
             } else {
-                if (pressPoint.y > .0) {
+                if (offsetPoint.y > .0) {
                     self.flowingDirection = GQFlowDirectionDown;
                 } else {
                     self.flowingDirection = GQFlowDirectionUp;
@@ -1004,12 +1079,12 @@
         if (self.flowingDirection == GQFlowDirectionLeft
             || self.flowingDirection == GQFlowDirectionRight) {
             
-            newFrame = CGRectOffset(self.originalFrame, pressPoint.x, .0);
+            newFrame = CGRectOffset(self.topViewOriginalFrame, offsetPoint.x, .0);
             
         } else if (self.flowingDirection == GQFlowDirectionUp
                    || self.flowingDirection == GQFlowDirectionDown) {
             
-            newFrame = CGRectOffset(self.originalFrame, .0, pressPoint.y);
+            newFrame = CGRectOffset(self.topViewOriginalFrame, .0, offsetPoint.y);
             
         }
         
@@ -1041,7 +1116,7 @@
                 
                 if ([self shouldScaleView:belowVC]) {
                     // 计算缩放
-                    float x = ABS(pressPoint.x - self.startPoint.x);
+                    float x = ABS(offsetPoint.x - self.startPoint.x);
                     
                     float scale = 1.0;
                     
@@ -1059,13 +1134,13 @@
         }
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         // 如果位置没有任何变化直接返回
-        if (CGRectEqualToRect(self.topViewController.view.frame, self.originalFrame)) {
+        if (CGRectEqualToRect(self.topViewController.view.frame, self.topViewOriginalFrame)) {
             [self resetPressStatus];
             return;
         }
         
         // 默认为原始位置
-        CGRect destinationFrame = self.originalFrame;
+        CGRect destinationFrame = self.topViewOriginalFrame;
         
         BOOL flowingOriginalFrame = NO; // 是否需要滑动到原始位置
         
@@ -1077,7 +1152,7 @@
             
             // 对返回的结果进行验证
             if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
-                destinationFrame = self.originalFrame;
+                destinationFrame = self.topViewOriginalFrame;
             } else {
                 // delegate返回有效的值时，忽略viewFlowingBoundary
                 skipCancelFlowingCheck = YES;
@@ -1099,10 +1174,10 @@
                 // 计算移动的距离
                 if (self.flowingDirection == GQFlowDirectionLeft
                     || self.flowingDirection == GQFlowDirectionRight) {
-                    length = pressPoint.x - self.startPoint.x;
+                    length = offsetPoint.x - self.startPoint.x;
                 } else if (self.flowingDirection == GQFlowDirectionUp
                            || self.flowingDirection == GQFlowDirectionDown) {
-                    length = pressPoint.y - self.startPoint.y;
+                    length = offsetPoint.y - self.startPoint.y;
                 }
                 
                 // 如果移动的距离没有超过边界值，则回退到原始位置
