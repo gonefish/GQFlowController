@@ -430,7 +430,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     if ([self isViewLoaded]) {
         if (animated) {
             if ([self.innerViewControllers containsObject:[newArray lastObject]]) {
-                if ([newArray lastObject] == [self.innerViewControllers lastObject]) {
+                UIViewController *lastViewController = [self.innerViewControllers lastObject];
+                
+                if ([newArray lastObject] == lastViewController) {
                     // No Animate
                     [self holdViewControllers:@[[newArray lastObject]]];
                     
@@ -440,11 +442,23 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 } else {
                     // Flow Out
                     // 保留最上面的视图控制器
-                    [self holdViewControllers:@[[self.innerViewControllers lastObject]]];
+                    [self holdViewControllers:@[lastViewController]];
                     
-                    [newArray addObject:[self.innerViewControllers lastObject]];
+                    [newArray addObject:lastViewController];
                     
                     [self updateChildViewControllers:newArray];
+                    
+                    CGRect originFrame = [self inOriginRectForViewController:self.topViewController];
+                    CGRect toFrame = [self inDestinationRectForViewController:self.topViewController];
+                    
+                    for (UIViewController *vc in newArray) {
+                        if (vc != lastViewController) {
+                            vc.view.frame = GQBelowViewRectOffset(vc.view.frame,
+                                                                  originFrame.origin,
+                                                                  toFrame.origin,
+                                                                  lastViewController.flowInDirection);
+                        }
+                    }
                     
                     [self flowOutViewControllerAnimated:YES];
                 }
