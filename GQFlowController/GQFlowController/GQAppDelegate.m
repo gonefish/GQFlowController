@@ -52,15 +52,15 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     
-//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-//        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
-//    } else {
-//        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
-//    }
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+    } else {
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
+    }
     
-    self.navigationController = [[GQNavigationController alloc] initWithViewControllers:[self demo4ViewControllers]];
+//    self.navigationController = [[GQNavigationController alloc] initWithViewControllers:[self demo4ViewControllers]];
     
-    self.window.rootViewController = self.navigationController;
+    self.window.rootViewController = self.flowController;
     
     [self.window makeKeyAndVisible];
     
