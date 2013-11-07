@@ -9,11 +9,7 @@
 #import "GQFlowController.h"
 #import <objc/runtime.h>
 
-#define MASK_VIEW_ALPHA .4
 #define BELOW_VIEW_OFFSET_SCALE .6
-
-
-
 
 static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoint endPoint, GQFlowDirection direction) {
     
@@ -650,11 +646,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         [self flowingViewController:viewController
                             toFrame:toFrame
                     animationsBlock:^{
-                        if ([self shouldScaleView:belowVC]) {
-                            [belowVC setShotViewScale:0.95];
-                        }
-                        
-                        
                         if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
                             belowVC.view.frame = newBelowVCFrame;
                         }
@@ -732,12 +723,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                                        self.topViewController.flowOutDirection);
 
         void (^animationsBlock)(void) = ^{
-            if ([self shouldScaleView:belowVC]) {
-                [belowVC setShotViewScale:1.0];
-            }
-            
-            
-            
             if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
                 belowVC.view.frame = newBelowVCFrame;
             }
@@ -1107,24 +1092,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 // 对topViewController下面一层内容进行overlay
                 belowVC.overlayContent = YES;
                 
-                if ([self shouldScaleView:belowVC]) {
-                    // 计算缩放
-                    float x = ABS(offsetPoint.x - self.startPoint.x);
-                    
-                    float scale = 1.0;
-                    
-                    float scaleFactor = self.topViewController.view.frame.size.width * 20.0;
-                    
-                    if (self.flowingDirection == self.topViewController.flowInDirection) {
-                        scale = 1.0 - x / scaleFactor;
-                    } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                        scale = 0.95 + x / scaleFactor;
-                    }
-                    
-                    [belowVC setShotViewScale:scale];
-                }
                 
-                //
                 CGRect belowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
                                                             self.topViewOriginalFrame.origin,
                                                             offsetPoint,
@@ -1228,13 +1196,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         [self flowingViewController:self.topViewController
                             toFrame:destinationFrame
                     animationsBlock:^{
-                        if ([self shouldScaleView:belowVC]) {
-                            if (self.flowingDirection == self.topViewController.flowInDirection) {
-                                [belowVC setShotViewScale:0.95];
-                            } else if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                                [belowVC setShotViewScale:1.0];
-                            }
-                        }
                         
                         belowVC.view.frame = newBelowVCFrame;
                     }
@@ -1289,16 +1250,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
-- (BOOL)shouldScaleView:(UIViewController *)controller
-{
-    BOOL isScale = NO;
-    
-    if ([controller respondsToSelector:@selector(shouldScaleView)]) {
-        isScale = [(id<GQViewController>)controller shouldScaleView];
-    }
-    
-    return isScale;
-}
 
 - (GQFlowDirection)flowDirectionWithPoint:(CGPoint)point otherPoint:(CGPoint)otherPoint
 {
@@ -1448,8 +1399,6 @@ static char kQGOverlayViewObjectKey;
             
             maskView.backgroundColor = [UIColor clearColor];
             
-//            maskView.alpha = MASK_VIEW_ALPHA;
-            
             [overlayView addSubview:maskView];
         } else {
             [overlayView setBackgroundColor:[UIColor clearColor]];
@@ -1470,27 +1419,4 @@ static char kQGOverlayViewObjectKey;
     return [(NSNumber *)objc_getAssociatedObject(self, &kQGOverlayContentObjectKey) boolValue];
 }
 
-- (void)setShotViewScale:(CGFloat)scale
-{
-    if ([self isOverlayContent] == YES) {
-        UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
-        
-        if ([overlayView.subviews count] == 2) {
-            UIView *shotView = [overlayView.subviews objectAtIndex:0];
-            
-            UIView *maskView = [overlayView.subviews objectAtIndex:1];
-            
-            // 保证缩放时的间隙相同
-            CGFloat offsetX = shotView.frame.size.width * (1.0 - scale) * 0.5;
-            
-            CGFloat sy = 1.0 - offsetX * 2.0 / shotView.frame.size.height;
-            
-            shotView.transform = CGAffineTransformMakeScale(scale, sy);
-            
-            maskView.alpha = MASK_VIEW_ALPHA * (1.0 - scale);
-        }
-    }
-}
-
 @end
-

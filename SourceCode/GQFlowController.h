@@ -93,12 +93,6 @@ typedef enum {
  */
 - (CGFloat)flowingBoundary;
 
-/** 当滑动时是否需要缩放下层的视图
- 
- @return 是否需要缩放，默认为YES
- */
-- (BOOL)shouldScaleView;
-
 /** 自定义的滑动的速度，默认640
  
  @return 滑动的速度，以每秒滑动多少点
@@ -120,8 +114,6 @@ typedef enum {
 @property (nonatomic) GQFlowDirection flowOutDirection;
 
 @property (nonatomic, getter=isOverlayContent) BOOL overlayContent;
-
-- (void)setShotViewScale:(CGFloat)scale;
 
 - (void)setOverlayContent:(BOOL)yesOrNo enabledShotView:(BOOL)yesOrNoShotView;
 
