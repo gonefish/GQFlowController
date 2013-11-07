@@ -23,26 +23,26 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         belowVCOffset = ABS(startPoint.y - endPoint.y) * BELOW_VIEW_OFFSET_SCALE;
     }
     
-    CGRect newBelowVCFrame = CGRectZero;
+    CGRect belowVCFrame = CGRectZero;
     
     switch (direction) {
         case GQFlowDirectionLeft:
-            newBelowVCFrame = CGRectOffset(belowRect, -belowVCOffset, .0);
+            belowVCFrame = CGRectOffset(belowRect, -belowVCOffset, .0);
             break;
         case GQFlowDirectionRight:
-            newBelowVCFrame = CGRectOffset(belowRect, belowVCOffset, .0);
+            belowVCFrame = CGRectOffset(belowRect, belowVCOffset, .0);
             break;
         case GQFlowDirectionUp:
-            newBelowVCFrame = CGRectOffset(belowRect, .0, -belowVCOffset);
+            belowVCFrame = CGRectOffset(belowRect, .0, -belowVCOffset);
             break;
         case GQFlowDirectionDown:
-            newBelowVCFrame = CGRectOffset(belowRect, .0, belowVCOffset);
+            belowVCFrame = CGRectOffset(belowRect, .0, belowVCOffset);
             break;
         default:
             break;
     }
     
-    return newBelowVCFrame;
+    return belowVCFrame;
 }
 
 @interface GQFlowController ()
@@ -619,7 +619,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
     UIViewController *belowVC = self.topViewController;
-    CGRect belowVCFrame = belowVC.view.frame;
     
     belowVC.overlayContent = YES;
     
@@ -636,17 +635,17 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     CGRect toFrame = [self inDestinationRectForViewController:viewController];
     
-    CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVCFrame,
-                                                   viewController.view.frame.origin,
-                                                   toFrame.origin,
-                                                   viewController.flowInDirection);
+    CGRect belowVCFrame = GQBelowViewRectOffset(belowVC.view.frame,
+                                                viewController.view.frame.origin,
+                                                toFrame.origin,
+                                                viewController.flowInDirection);
 
     if (animated) {
         [self flowingViewController:viewController
                             toFrame:toFrame
                     animationsBlock:^{
-                        if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
-                            belowVC.view.frame = newBelowVCFrame;
+                        if (!CGRectEqualToRect(belowVCFrame, CGRectZero)) {
+                            belowVC.view.frame = belowVCFrame;
                         }
                     }
                     completionBlock:^(BOOL finished){
@@ -714,16 +713,15 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         belowVC.overlayContent = YES;
         
         CGRect toFrame = [self outDestinationRectForViewController:self.topViewController];
-        CGRect belowVCFrame = belowVC.view.frame;
         
-        CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVCFrame,
-                                                       self.topViewController.view.frame.origin,
-                                                       toFrame.origin,
-                                                       self.topViewController.flowOutDirection);
+        CGRect belowVCFrame = GQBelowViewRectOffset(belowVC.view.frame,
+                                                    self.topViewController.view.frame.origin,
+                                                    toFrame.origin,
+                                                    self.topViewController.flowOutDirection);
 
         void (^animationsBlock)(void) = ^{
-            if (!CGRectEqualToRect(newBelowVCFrame, CGRectZero)) {
-                belowVC.view.frame = newBelowVCFrame;
+            if (!CGRectEqualToRect(belowVCFrame, CGRectZero)) {
+                belowVC.view.frame = belowVCFrame;
             }
         };
         
