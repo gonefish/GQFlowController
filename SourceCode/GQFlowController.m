@@ -90,7 +90,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     [self layoutViewControllers];
     
-    [self addPressGestureRecognizerForTopView];
+    [self addPanGestureRecognizer];
 }
 
 - (void)viewDidUnload
@@ -436,7 +436,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     
                     [self updateChildViewControllers:newArray];
                     
-                    [self addPressGestureRecognizerForTopView];
+                    [self addPanGestureRecognizer];
                 } else {
                     // Flow Out
                     // 保留最上面的视图控制器
@@ -462,7 +462,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                [self updateChildViewControllers:newArray];
                                
                                // 添加手势
-                               [self addPressGestureRecognizerForTopView];
+                               [self addPanGestureRecognizer];
                            }];
             }
         } else {
@@ -471,7 +471,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             
             [self updateChildViewControllers:newArray];
             
-            [self addPressGestureRecognizerForTopView];
+            [self addPanGestureRecognizer];
         }
     } else {
         self.innerViewControllers = newArray;
@@ -582,7 +582,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (void)removeTopViewController
 {
-    [self removeTopViewPressGestureRecognizer];
+    [self removePanGestureRecognizer];
     
     [self.topViewController willMoveToParentViewController:nil];
     
@@ -621,7 +621,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     UIViewController *belowVC = self.topViewController;
     CGRect belowVCFrame = belowVC.view.frame;
     
-//    [belowVC setOverlayContent:YES enabledShotView:YES];
     belowVC.overlayContent = YES;
     
     // 添加到容器中，并设置将要滑入的起始位置
@@ -633,15 +632,15 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                      animated:animated];
         
     [belowVC beginAppearanceTransition:NO
-                                           animated:animated];
-    
+                              animated:animated];
     
     CGRect toFrame = [self inDestinationRectForViewController:viewController];
     
-                        CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVCFrame,
-                                                                       viewController.view.frame.origin,
-                                                                       toFrame.origin,
-                                                                       viewController.flowInDirection);
+    CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVCFrame,
+                                                   viewController.view.frame.origin,
+                                                   toFrame.origin,
+                                                   viewController.flowInDirection);
+
     if (animated) {
         [self flowingViewController:viewController
                             toFrame:toFrame
@@ -657,7 +656,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         
                         viewController.overlayContent = NO;
                         
-                        [self addPressGestureRecognizerForTopView];
+                        [self addPanGestureRecognizer];
                         
                         if (block) {
                             block();
@@ -735,7 +734,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             
             [self removeTopViewController];
             
-            [self addPressGestureRecognizerForTopView];
+            [self addPanGestureRecognizer];
             
             belowVC.overlayContent = NO;
         };
@@ -909,6 +908,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 {
     self.startPoint = CGPointZero;
     self.topViewOriginalFrame = CGRectZero;
+    self.belowViewOriginalFrame = CGRectZero;
     self.flowingDirection = GQFlowDirectionUnknow;
 }
 
@@ -943,7 +943,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 }
 
 // 添加手势
-- (void)addPressGestureRecognizerForTopView
+- (void)addPanGestureRecognizer
 {
     // 判断是否实现GQViewController Protocol
     if (![self.topViewController conformsToProtocol:@protocol(GQViewController)]) {
@@ -964,7 +964,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [self.topViewController.view addGestureRecognizer:self.topViewPanGestureRecognizer];
 }
 
-- (void)removeTopViewPressGestureRecognizer
+- (void)removePanGestureRecognizer
 {
     // 判断是否实现GQViewControllerProtocol
     if (![self.topViewController conformsToProtocol:@protocol(GQViewController)]) {
@@ -979,11 +979,11 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (void)panGestureAction
 {
-    CGPoint offsetPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
+    CGPoint panPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
     
     if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // 设置初始点
-        self.startPoint = offsetPoint;
+        self.startPoint = panPoint;
         
         // 记录移动视图的原始位置
         self.topViewOriginalFrame = self.topViewController.view.frame;
@@ -992,6 +992,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         UIViewController *belowVC = [self belowTopViewController];
         
         if (belowVC.view.superview == nil) {
+            // TODO: 需要处理偏移后的位置
             belowVC.view.frame = self.view.bounds;
             
             [self.view insertSubview:belowVC.view
@@ -1003,14 +1004,14 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
             // 判断移动的方向            
-            if (ABS(offsetPoint.x) > ABS(offsetPoint.y)) {
-                if (offsetPoint.x > .0) {
+            if (ABS(panPoint.x) > ABS(panPoint.y)) {
+                if (panPoint.x > .0) {
                     self.flowingDirection = GQFlowDirectionRight;
                 } else {
                     self.flowingDirection = GQFlowDirectionLeft;
                 }
             } else {
-                if (offsetPoint.y > .0) {
+                if (panPoint.y > .0) {
                     self.flowingDirection = GQFlowDirectionDown;
                 } else {
                     self.flowingDirection = GQFlowDirectionUp;
@@ -1029,9 +1030,13 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     if (![controller conformsToProtocol:@protocol(GQViewController)]) {
                         NSLog(@"滑出其它的控制器必须实现GQViewController Protocol");
                     } else {
-                        self.topViewController.overlayContent = YES;
+                        self.belowViewOriginalFrame = self.topViewController.view.frame;
                         
                         [self addTopViewController:controller];
+                        
+                        self.topViewController.overlayContent = YES;
+                        
+                        self.topViewOriginalFrame = self.topViewController.view.frame;
                         
                         self.isPanFlowingIn = NO;
                     }
@@ -1057,12 +1062,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         if (self.flowingDirection == GQFlowDirectionLeft
             || self.flowingDirection == GQFlowDirectionRight) {
             
-            newFrame = CGRectOffset(self.topViewOriginalFrame, offsetPoint.x, .0);
+            newFrame = CGRectOffset(self.topViewOriginalFrame, panPoint.x, .0);
             
         } else if (self.flowingDirection == GQFlowDirectionUp
                    || self.flowingDirection == GQFlowDirectionDown) {
             
-            newFrame = CGRectOffset(self.topViewOriginalFrame, .0, offsetPoint.y);
+            newFrame = CGRectOffset(self.topViewOriginalFrame, .0, panPoint.y);
             
         }
         
@@ -1092,14 +1097,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 // 对topViewController下面一层内容进行overlay
                 belowVC.overlayContent = YES;
                 
-                
                 CGRect belowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
                                                             self.topViewOriginalFrame.origin,
-                                                            offsetPoint,
+                                                            newFrame.origin,
                                                             self.flowingDirection);
                 
                 belowVC.view.frame = belowVCFrame;
-                
             }
         }
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
@@ -1144,10 +1147,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 // 计算移动的距离
                 if (self.flowingDirection == GQFlowDirectionLeft
                     || self.flowingDirection == GQFlowDirectionRight) {
-                    length = offsetPoint.x - self.startPoint.x;
+                    length = panPoint.x - self.startPoint.x;
                 } else if (self.flowingDirection == GQFlowDirectionUp
                            || self.flowingDirection == GQFlowDirectionDown) {
-                    length = offsetPoint.y - self.startPoint.y;
+                    length = panPoint.y - self.startPoint.y;
                 }
                 
                 // 如果移动的距离没有超过边界值，则回退到原始位置
@@ -1188,8 +1191,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             }
         }
         
-        CGRect newBelowVCFrame = GQBelowViewRectOffset(belowVC.view.frame,
-                                                       self.topViewController.view.frame.origin,
+        CGRect newBelowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
+                                                       self.topViewOriginalFrame.origin,
                                                        destinationFrame.origin,
                                                        testFlowDirection);
         
@@ -1229,7 +1232,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         }
                         
                         // 重新添加top view的手势
-                        [self addPressGestureRecognizerForTopView];
+                        [self addPanGestureRecognizer];
                         
                         // 重置长按状态信息
                         [self resetPressStatus];
