@@ -989,7 +989,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         self.topViewOriginalFrame = self.topViewController.view.frame;
         
         // 确保下层视图是否已经添加
-        UIViewController *belowVC = [self belowTopViewController];
+        UIViewController *belowVC = [self belowViewController];
         
         if (belowVC.view.superview == nil) {
             // TODO: 需要处理偏移后的位置
@@ -1020,7 +1020,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             
             self.isPanFlowingIn = NO;
 
-            // 滑动的View可能不是Top View
+            // 响应滑动手势可以不是当前的Top View Controller
             if ([self.topViewController respondsToSelector:@selector(viewControllerForFlowDirection:)]) {
                 UIViewController *controller = [(id<GQViewController>)self.topViewController viewControllerForFlowDirection:self.flowingDirection];
                 
@@ -1030,11 +1030,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     if (![controller conformsToProtocol:@protocol(GQViewController)]) {
                         NSLog(@"滑出其它的控制器必须实现GQViewController Protocol");
                     } else {
+                        // 更新需要移动视图的原始位置
                         self.belowViewOriginalFrame = self.topViewController.view.frame;
                         
                         [self addTopViewController:controller];
-                        
-                        self.topViewController.overlayContent = YES;
                         
                         self.topViewOriginalFrame = self.topViewController.view.frame;
                         
@@ -1043,7 +1042,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 }
             }
             
-            UIViewController *belowVC = [self belowTopViewController];
+            UIViewController *belowVC = [self belowViewController];
             
             // Customizing Appearance
             if (self.isPanFlowingIn) {
@@ -1057,29 +1056,24 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             }
         }
 
+        // 计算新的移动位置
         CGRect newFrame = CGRectZero;
         
         if (self.flowingDirection == GQFlowDirectionLeft
             || self.flowingDirection == GQFlowDirectionRight) {
-            
             newFrame = CGRectOffset(self.topViewOriginalFrame, panPoint.x, .0);
-            
-        } else if (self.flowingDirection == GQFlowDirectionUp
-                   || self.flowingDirection == GQFlowDirectionDown) {
-            
+        } else {
             newFrame = CGRectOffset(self.topViewOriginalFrame, .0, panPoint.y);
-            
         }
         
-        // 能否移动
-        BOOL shouldMove = NO;
+        BOOL shouldMove = NO; // 是否需要移动
         
-        // 仅仅允许设置的移动方位
+        // 默认仅允许滑入和滑出的移动方位
         if (self.flowingDirection == self.topViewController.flowInDirection
             || self.flowingDirection == self.topViewController.flowOutDirection) {
             shouldMove = YES;
             
-            // 可通过实现GQEnhancementViewController来进一步的控制
+            // 可以实现GQViewController来进行控制
             if ([self.topViewController respondsToSelector:@selector(shouldFlowToRect:)]) {
                 shouldMove = [(id<GQViewController>)self.topViewController shouldFlowToRect:newFrame];
             }
@@ -1091,10 +1085,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             
             self.topViewController.view.frame = newFrame;
             
-            UIViewController *belowVC = [self belowTopViewController];
+            UIViewController *belowVC = [self belowViewController];
             
             if (belowVC) {
-                // 对topViewController下面一层内容进行overlay
                 belowVC.overlayContent = YES;
                 
                 CGRect belowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
@@ -1105,105 +1098,91 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 belowVC.view.frame = belowVCFrame;
             }
         }
-    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded
+               || self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         // 如果位置没有任何变化直接返回
         if (CGRectEqualToRect(self.topViewController.view.frame, self.topViewOriginalFrame)) {
             [self resetPressStatus];
             return;
         }
         
-        // 默认为原始位置
+        // 手势结束时需要自动对齐的位置，默认为原始位置
         CGRect destinationFrame = self.topViewOriginalFrame;
         
         BOOL flowingOriginalFrame = NO; // 是否需要滑动到原始位置
         
-        BOOL skipCancelFlowingCheck = NO; // 是否跳过回退的检测
+        BOOL skipAutoAlign = NO; // 是否跳过自动对齐的检测
         
-        if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
-            // 自定义视图控制器最终停止移动的位置
-            destinationFrame = [(id<GQViewController>)self.topViewController destinationRectForFlowDirection:self.flowingDirection];
+        if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+            // 判断是否支持自定义的对齐位置
+            if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
+                destinationFrame = [(id<GQViewController>)self.topViewController destinationRectForFlowDirection:self.flowingDirection];
+                
+                // 对返回的结果进行验证
+                if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
+                    destinationFrame = self.topViewOriginalFrame;
+                } else {
+                    // delegate返回有效的值时，采用自定义的对齐位置
+                    skipAutoAlign = YES;
+                }
+            }
             
-            // 对返回的结果进行验证
-            if (CGRectEqualToRect(CGRectZero, destinationFrame)) {
-                destinationFrame = self.topViewOriginalFrame;
-            } else {
-                // delegate返回有效的值时，忽略viewFlowingBoundary
-                skipCancelFlowingCheck = YES;
+            // 计算自动对齐的位置
+            if (skipAutoAlign == NO) {
+                CGFloat boundary = self.viewFlowingBoundary;
+                
+                // delegate返回滑回的触发距离
+                if ([self.topViewController respondsToSelector:@selector(flowingBoundary)]) {
+                    boundary = [(id<GQViewController>)self.topViewController flowingBoundary];
+                }
+                
+                if (boundary > .0
+                    && boundary < 1.0) {
+                    CGFloat length = .0;
+                    
+                    // 计算移动的距离
+                    if (self.flowingDirection == GQFlowDirectionLeft
+                        || self.flowingDirection == GQFlowDirectionRight) {
+                        length = panPoint.x - self.startPoint.x;
+                    } else if (self.flowingDirection == GQFlowDirectionUp
+                               || self.flowingDirection == GQFlowDirectionDown) {
+                        length = panPoint.y - self.startPoint.y;
+                    }
+                    
+                    // 如果移动的距离没有超过边界值，则回退到原始位置
+                    if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
+                        flowingOriginalFrame = YES;
+                    }
+                }
+                
+                if (!flowingOriginalFrame) {
+                    if (self.flowingDirection == self.topViewController.flowInDirection) {
+                        destinationFrame = [self inDestinationRectForViewController:self.topViewController];
+                    }
+                    
+                    // 如果in和out是同一方向，则以out为主
+                    if (self.flowingDirection == self.topViewController.flowOutDirection) {
+                        destinationFrame = [self outDestinationRectForViewController:self.topViewController];
+                    }
+                }
             }
         }
         
-        if (skipCancelFlowingCheck == NO) {
-            CGFloat boundary = self.viewFlowingBoundary;
-            
-            // delegate返回滑回的触发距离
-            if ([self.topViewController respondsToSelector:@selector(flowingBoundary)]) {
-                boundary = [(id<GQViewController>)self.topViewController flowingBoundary];
-            }
-            
-            if (boundary > .0
-                && boundary < 1.0) {
-                CGFloat length = .0;
-                
-                // 计算移动的距离
-                if (self.flowingDirection == GQFlowDirectionLeft
-                    || self.flowingDirection == GQFlowDirectionRight) {
-                    length = panPoint.x - self.startPoint.x;
-                } else if (self.flowingDirection == GQFlowDirectionUp
-                           || self.flowingDirection == GQFlowDirectionDown) {
-                    length = panPoint.y - self.startPoint.y;
-                }
-                
-                // 如果移动的距离没有超过边界值，则回退到原始位置
-                if (ABS(length) <= self.topViewController.view.frame.size.width * boundary) {
-                    flowingOriginalFrame = YES;
-                }
-            }
-            
-            if (!flowingOriginalFrame) {
-                if (self.flowingDirection == self.topViewController.flowInDirection) {
-                    destinationFrame = [self inDestinationRectForViewController:self.topViewController];
-                }
-                
-                // 如果in和out是同一方向，则以out为主
-                if (self.flowingDirection == self.topViewController.flowOutDirection) {
-                    destinationFrame = [self outDestinationRectForViewController:self.topViewController];
-                }
-            }
-        }
+        UIViewController *belowVC = [self belowViewController];
         
-        UIViewController *belowVC = [self belowTopViewController];
-        
-        GQFlowDirection testFlowDirection = self.flowingDirection;
-        
-        if (flowingOriginalFrame) {
-            switch (self.flowingDirection) {
-                case GQFlowDirectionLeft:
-                    testFlowDirection = GQFlowDirectionRight;
-                    break;
-                case GQFlowDirectionRight:
-                    testFlowDirection = GQFlowDirectionLeft;
-                case GQFlowDirectionUp:
-                    testFlowDirection = GQFlowDirectionDown;
-                case GQFlowDirectionDown:
-                    testFlowDirection = GQFlowDirectionUp;
-                default:
-                    break;
-            }
-        }
-        
-        CGRect newBelowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
-                                                       self.topViewOriginalFrame.origin,
-                                                       destinationFrame.origin,
-                                                       testFlowDirection);
+        CGRect belowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
+                                                    self.topViewOriginalFrame.origin,
+                                                    destinationFrame.origin,
+                                                    self.flowingDirection);
         
         [self flowingViewController:self.topViewController
                             toFrame:destinationFrame
                     animationsBlock:^{
-                        
-                        belowVC.view.frame = newBelowVCFrame;
+                        belowVC.view.frame = belowVCFrame;
                     }
                     completionBlock:^(BOOL finished){
                         self.topViewController.overlayContent = NO;
+                        
                         belowVC.overlayContent = NO;
                         
                         if (self.isPanFlowingIn) {
@@ -1242,7 +1221,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
-- (UIViewController *)belowTopViewController
+- (UIViewController *)belowViewController
 {
     NSUInteger vcCount = [self.viewControllers count];
     
@@ -1304,6 +1283,8 @@ static char kQGOverlayViewObjectKey;
 @dynamic flowInDirection;
 @dynamic flowOutDirection;
 @dynamic overlayContent;
+
+#pragma mark -
 
 - (GQFlowController *)flowController
 {    
