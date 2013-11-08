@@ -99,9 +99,13 @@ typedef enum {
  */
 - (NSUInteger)flowingSpeed;
 
-/** 覆盖层的Tap手势
+/** 覆盖层的Tap Gesture Recongnizer Action
  */
 - (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer;
+
+/** 是否跟随Top View滑动，默认值为YES
+ */
+- (BOOL)shouldFollowAboveViewFlowing;
 
 @end
 

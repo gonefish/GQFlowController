@@ -112,37 +112,38 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     __block CGRect checkFrame = CGRectZero;
     
-    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
-                                                usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop){
-                                                    if (safeReleaseView) {
-                                                        if (![obj isViewLoaded]) return;
-                                                        
-                                                        [obj.view removeFromSuperview];
-                                                        
-                                                        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
-                                                            [obj viewWillUnload];
-                                                        }
-                                                        
-                                                        obj.view = nil;
-                                                        
-                                                        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
-                                                            [obj viewDidUnload];
-                                                        }
-                                                    } else {
-                                                        CGRect viewFrame = [[(UIViewController *)obj view] frame];
-                                                        
-                                                        if (CGRectEqualToRect(checkFrame, CGRectZero)) {
-                                                            checkFrame = viewFrame;
-                                                        } else {
-                                                            checkFrame = CGRectIntersection(checkFrame, viewFrame);
-                                                        }
-                                                        
-                                                        // 检测是否遮盖住其它视图
-                                                        if (CGRectContainsRect(checkFrame, self.view.bounds)) {
-                                                            safeReleaseView = YES;
-                                                        }
-                                                    }
-                                                }];
+    [self.innerViewControllers
+     enumerateObjectsWithOptions:NSEnumerationReverse
+     usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+         if (safeReleaseView) {
+             if (![obj isViewLoaded]) return;
+            
+             [obj.view removeFromSuperview];
+            
+             if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+                 [obj viewWillUnload];
+             }
+            
+             obj.view = nil;
+            
+             if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+                 [obj viewDidUnload];
+             }
+         } else {
+             CGRect viewFrame = [[(UIViewController *)obj view] frame];
+            
+             if (CGRectEqualToRect(checkFrame, CGRectZero)) {
+                 checkFrame = viewFrame;
+             } else {
+                 checkFrame = CGRectIntersection(checkFrame, viewFrame);
+             }
+            
+             // 检测是否遮盖住其它视图
+             if (CGRectContainsRect(checkFrame, self.view.bounds)) {
+                 safeReleaseView = YES;
+             }
+         }
+     }];
 }
 
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
@@ -658,9 +659,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         [self flowingViewController:viewController
                             toFrame:toFrame
                     animationsBlock:^{
-                        if (!CGRectEqualToRect(belowVCFrame, CGRectZero)) {
-                            belowVC.view.frame = belowVCFrame;
-                        }
+                        [self flowingBelowViewController:belowVC toRect:belowVCFrame];
                     }
                     completionBlock:^(BOOL finished){
                         [viewController endAppearanceTransition];
@@ -734,9 +733,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                                     self.topViewController.flowOutDirection);
 
         void (^animationsBlock)(void) = ^{
-            if (!CGRectEqualToRect(belowVCFrame, CGRectZero)) {
-                belowVC.view.frame = belowVCFrame;
-            }
+            [self flowingBelowViewController:belowVC toRect:belowVCFrame];
         };
         
         void (^completionBlock)(BOOL) = ^(BOOL finished) {
@@ -1107,7 +1104,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                                             newFrame.origin,
                                                             self.flowingDirection);
                 
-                belowVC.view.frame = belowVCFrame;
+                [self flowingBelowViewController:belowVC toRect:belowVCFrame];
             }
         }
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateEnded
@@ -1190,7 +1187,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         [self flowingViewController:self.topViewController
                             toFrame:destinationFrame
                     animationsBlock:^{
-                        belowVC.view.frame = belowVCFrame;
+                        [self flowingBelowViewController:belowVC toRect:belowVCFrame];
                     }
                     completionBlock:^(BOOL finished){
                         self.topViewController.overlayContent = NO;
@@ -1276,6 +1273,20 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         // 在presented的视图控制器调用dismiss
         [[(GQFlowController *)self.presentedViewController viewControllers]
          makeObjectsPerformSelector:@selector(setFlowController:) withObject:nil];
+    }
+}
+
+- (void)flowingBelowViewController:(UIViewController *)viewController toRect:(CGRect)rect
+{
+    BOOL follow = YES;
+    
+    if ([viewController respondsToSelector:@selector(shouldFollowAboveViewFlowing)]) {
+        follow = [(id<GQViewController>)viewController shouldFollowAboveViewFlowing];
+    }
+    
+    if (follow
+        && !CGRectEqualToRect(rect, CGRectZero)) {
+        viewController.view.frame = rect;
     }
 }
 

@@ -103,6 +103,11 @@
     }
 }
 
+//- (BOOL)shouldFollowAboveViewFlowing
+//{
+//    return NO;
+//}
+
 //- (CGRect)flowController:(GQFlowController *)flowController destinationRectForFlowDirection:(GQFlowDirection)direction;
 //{
 //    if (direction == self.flowInDirection) {
