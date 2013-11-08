@@ -1232,8 +1232,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                             [(id<GQViewController>)topViewController didFlowToDestinationRect];
                         }
                     }];
-    } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
-        
     }
 }
 
