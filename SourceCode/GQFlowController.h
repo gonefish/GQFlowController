@@ -83,7 +83,7 @@ typedef enum {
  */
 - (BOOL)shouldFlowToRect:(CGRect)frame;
 
-/** 滑动手势结束
+/** 滑动手势移动结束
  */
 - (void)didFlowToDestinationRect;
 

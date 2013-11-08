@@ -1194,6 +1194,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         
                         belowVC.overlayContent = NO;
                         
+                        // Customizing Appearance
                         if (self.isPanFlowingIn) {
                             if (flowingOriginalFrame) {
                                 [self.topViewController beginAppearanceTransition:NO animated:YES];
@@ -1212,6 +1213,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                             [self.topViewController endAppearanceTransition];
                         }
                         
+                        UIViewController *topViewController = self.topViewController;
+                        
                         // 如果topViewController已经移出窗口，则进行删除操作
                         if (!CGRectIntersectsRect(self.view.frame, self.topViewController.view.frame)) {
                             [self.innerViewControllers removeLastObject];
@@ -1224,6 +1227,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         
                         // 重置长按状态信息
                         [self resetPressStatus];
+                        
+                        if ([topViewController respondsToSelector:@selector(didFlowToDestinationRect)]) {
+                            [(id<GQViewController>)topViewController didFlowToDestinationRect];
+                        }
                     }];
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateCancelled) {
         
