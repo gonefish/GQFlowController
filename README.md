@@ -82,7 +82,7 @@ GQViewController继承于UIGestureRecognizerDelegate，该协议定义了控制�
   </tr>
 </table>
 
---iOS 7 UINavigationController兼容模式-- (0.9的试验功能，最新版本中已经废弃。最新版本已经实现类似于iOS 7 UINavigationController的过渡效果)
+~~iOS 7 UINavigationController兼容模式~~ (0.9的试验功能，最新版本中已经废弃。最新版本已经实现类似于iOS 7 UINavigationController的过渡效果)
 ----------------------------------
 GQNavigationController子类提供了针对UINavigationController(iOS 7 only)的适配。允许在不修改GQFlowController的调用方法的情况下，转发到UINavigationController的对应方法。iOS 7以前的设备依然调用GQFlowController的方法。
 
