@@ -3,27 +3,26 @@ GQFlowController
 
 A multiple content layer container view controller.
 
-GQFlowController实现了一个多层的容器视图控制器，其目标是实现类似于[网易新闻客户端](https://itunes.apple.com/cn/app/wang-yi-xin-wen/id425349261?mt=8)iPhone的UI结构（主要是3.0之后的版本）。
+GQFlowController是一个多层次内容的容器视图控制器，其目标是实现类似于[网易新闻客户端](https://itunes.apple.com/cn/app/wang-yi-xin-wen/id425349261?mt=8)iPhone的UI结构（主要是3.0之后的版本）。
 
 特性：
-* 支持从4个不同方向滑入或滑出视图控制器界面
-* 多层视图控制器结构
+* 支持自定义的滑入或滑出视图控制器方位
+* 多层次内容视图容器结构
 * 滑动手势
 * 完整的ARC支持
 * 支持iPad和iPhone
-* iOS 7 UINavigationController兼容模式
+* 与iOS 7 UINavigationController相同的过渡动画效果
+* 支持iOS 5及更新的版本
 
 
 GQFlowControllerAdditions Category
 -------------------------
-通过Category的特性来扩展UIViewController的方法，这些方法可以让你在UIViewController中访问GQFlowController的实例和其它功能的设置。
+通过Category的特性来扩展UIViewController的方法，这些方法可以让你在UIViewController中访问GQFlowController的实例和其它方法。
 
 
 GQViewController Protocol
 ---------------------------------
-该协议定义了长按滑动手势的相关方法，可以在UIViewController的子类中实现该协议，来控制不同的长按滑动行为。
-
-在GQFlowController的设计中，提供对顶层内容视图控制器的长按手势支持，当顶层UIViewController实现该协议，则会激活GQFlowController中长按滑动手势功能。
+GQViewController继承于UIGestureRecognizerDelegate，该协议定义了控制滑动手势效果的各种方法，可以在UIViewController的子类中实现该协议，来激活UIPanGestureRecognizer。在GQFlowController的设计中，仅对顶层UIViewController提供滑动手势的支持。
 
 
 从UINavigationController移植到GQFlowController
@@ -83,7 +82,7 @@ GQViewController Protocol
   </tr>
 </table>
 
-iOS 7 UINavigationController兼容模式
+--iOS 7 UINavigationController兼容模式-- (0.9的试验功能，最新版本中已经废弃。最新版本已经实现类似于iOS 7 UINavigationController的过渡效果)
 ----------------------------------
 GQNavigationController子类提供了针对UINavigationController(iOS 7 only)的适配。允许在不修改GQFlowController的调用方法的情况下，转发到UINavigationController的对应方法。iOS 7以前的设备依然调用GQFlowController的方法。
 
@@ -99,7 +98,7 @@ Demo3展示了iPad的使用例子。
 
 Requirements
 ------------
-GQFlowController requires Xcode 5 and iOS 7.0 or later SDK (LLVM Compiler 5.0)。
+GQFlowController requires Xcode 4.5 and iOS 6.0 or later SDK (LLVM Compiler 4.0)。
 
 [Objective-C Feature Availability Index](http://developer.apple.com/library/ios/#releasenotes/ObjectiveC/ObjCAvailabilityIndex/)
 
