@@ -44,8 +44,6 @@
 		E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */; };
 		E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3D757BA1747566100A56E83 /* Demo2BViewController.m */; };
 		E3D757BD1747566100A56E83 /* Demo2BViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3D757BB1747566100A56E83 /* Demo2BViewController.xib */; };
-		E3DA975A180BD3CC004B0697 /* Demo4ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3DA9758180BD3CC004B0697 /* Demo4ViewController.m */; };
-		E3DA975B180BD3CC004B0697 /* Demo4ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3DA9759180BD3CC004B0697 /* Demo4ViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,9 +116,6 @@
 		E3D757B91747566100A56E83 /* Demo2BViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2BViewController.h; sourceTree = "<group>"; };
 		E3D757BA1747566100A56E83 /* Demo2BViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2BViewController.m; sourceTree = "<group>"; };
 		E3D757BB1747566100A56E83 /* Demo2BViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2BViewController.xib; sourceTree = "<group>"; };
-		E3DA9757180BD3CC004B0697 /* Demo4ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo4ViewController.h; sourceTree = "<group>"; };
-		E3DA9758180BD3CC004B0697 /* Demo4ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo4ViewController.m; sourceTree = "<group>"; };
-		E3DA9759180BD3CC004B0697 /* Demo4ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo4ViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,7 +185,6 @@
 				E3B7D4E3173E185700B82719 /* Demo1 */,
 				E3B7D4EA173E319F00B82719 /* Demo2 */,
 				E38CCDD817961829001E4064 /* Demo3 */,
-				E3DA9756180BD36B004B0697 /* Demo4 */,
 			);
 			path = GQFlowController;
 			sourceTree = "<group>";
@@ -304,16 +298,6 @@
 			name = Demo2;
 			sourceTree = "<group>";
 		};
-		E3DA9756180BD36B004B0697 /* Demo4 */ = {
-			isa = PBXGroup;
-			children = (
-				E3DA9757180BD3CC004B0697 /* Demo4ViewController.h */,
-				E3DA9758180BD3CC004B0697 /* Demo4ViewController.m */,
-				E3DA9759180BD3CC004B0697 /* Demo4ViewController.xib */,
-			);
-			name = Demo4;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -391,7 +375,6 @@
 				E34A641216FEB8DD0053A496 /* Default@2x.png in Resources */,
 				E34A641416FEB8DD0053A496 /* Default-568h@2x.png in Resources */,
 				E3CEF5671723B7C400A33CFE /* Demo1TopViewController.xib in Resources */,
-				E3DA975B180BD3CC004B0697 /* Demo4ViewController.xib in Resources */,
 				E3CEF56C1723B7E400A33CFE /* Demo1LeftViewController.xib in Resources */,
 				E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */,
 				E3B7D4E8173E319100B82719 /* Demo2ViewController.xib in Resources */,
@@ -445,7 +428,6 @@
 				E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */,
 				E35D6078175280CA00398CCD /* GQFlowController.m in Sources */,
 				E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */,
-				E3DA975A180BD3CC004B0697 /* Demo4ViewController.m in Sources */,
 				E38CCDDC17976C27001E4064 /* Demo3AViewController.m in Sources */,
 				E35CEF24179AB46C00352379 /* Demo3BViewController.m in Sources */,
 				E35CEF29179ABA8300352379 /* Demo3CViewController.m in Sources */,

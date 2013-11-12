@@ -12,7 +12,6 @@
 #import "Demo1RightViewController.h"
 #import "Demo2ViewController.h"
 #import "Demo3ViewController.h"
-#import "Demo4ViewController.h"
 
 @implementation GQAppDelegate
 
@@ -39,13 +38,6 @@
     return @[d1];
 }
 
-- (NSArray *)demo4ViewControllers
-{
-    Demo4ViewController *d1 = [[Demo4ViewController alloc] init];
-    
-    return @[d1];
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -57,8 +49,6 @@
     } else {
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
     }
-    
-//    self.navigationController = [[GQNavigationController alloc] initWithViewControllers:[self demo4ViewControllers]];
     
     self.window.rootViewController = self.flowController;
     
@@ -119,7 +109,7 @@
         }
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
     } else if (buttonIndex == 3) {
-        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo4ViewControllers]];
+        
     }
     
     self.window.rootViewController = self.flowController;
