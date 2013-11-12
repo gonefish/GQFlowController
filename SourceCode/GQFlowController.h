@@ -41,9 +41,7 @@ typedef enum {
 
 @property (nonatomic, strong, readonly) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
-/** 每秒的移动速度，默认为640 Point
- */
-@property (nonatomic) NSUInteger viewFlowingSpeed;
+@property (nonatomic) NSTimeInterval viewFlowingDuration;
 
 @property (nonatomic) CGFloat viewFlowingBoundary;
 
@@ -83,9 +81,11 @@ typedef enum {
  */
 - (BOOL)shouldFlowToRect:(CGRect)frame;
 
+
 /** 滑动手势移动结束
  */
 - (void)didFlowToDestinationRect;
+
 
 /** 触发自动滑动到目标位置的系数 
  
@@ -93,19 +93,22 @@ typedef enum {
  */
 - (CGFloat)flowingBoundary;
 
-/** 自定义的滑动的速度，默认640
- 
- @return 滑动的速度，以每秒滑动多少点
- */
-- (NSUInteger)flowingSpeed;
 
 /** 覆盖层的Tap Gesture Recongnizer Action
  */
 - (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer;
 
+
 /** 是否跟随Top View滑动，默认值为YES
  */
 - (BOOL)shouldFollowAboveViewFlowing;
+
+
+/** 滑动动画的持续时间
+ 
+ @return 单位为秒
+ */
+- (NSTimeInterval)flowingDuration;
 
 @end
 

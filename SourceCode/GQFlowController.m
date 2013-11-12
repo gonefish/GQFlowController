@@ -277,14 +277,14 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     self = [super init];
     
     if (self) {
-        self.viewFlowingSpeed = 640;
-
         self.viewFlowingBoundary = 0.15;
         
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+            self.viewFlowingDuration = 0.3;
         } else {
             self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
+            self.viewFlowingDuration = 1.0;
         }
     }
     
@@ -504,12 +504,11 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         return;
     }
     
-    CGRect currentFrame = viewController.view.frame;
+    NSTimeInterval duration = self.viewFlowingDuration;
     
-    CGFloat duration = [self durationForOriginalRect:currentFrame
-                                     destinationRect:toFrame
-                                    flowingDirection:viewController.flowInDirection
-                                        flowingSpeed:[self flowingSpeedWithViewController:viewController]];
+    if ([viewController respondsToSelector:@selector(flowingDuration)]) {
+        duration = [(id <GQViewController>)viewController flowingDuration];
+    }
     
     self.isAnimating = YES;
     
@@ -919,36 +918,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     self.topViewOriginalFrame = CGRectZero;
     self.belowViewOriginalFrame = CGRectZero;
     self.flowingDirection = GQFlowDirectionUnknow;
-}
-
-- (CGFloat)flowingSpeedWithViewController:(UIViewController *)viewController
-{
-    CGFloat speed = self.viewFlowingSpeed;
-    
-    if ([viewController respondsToSelector:@selector(flowingSpeed)]) {
-        speed = [(id <GQViewController>)viewController flowingSpeed];
-        
-        if (speed == 0) {
-            speed = self.viewFlowingSpeed;
-        }
-    }
-    
-    return speed;
-}
-
-- (NSTimeInterval)durationForOriginalRect:(CGRect)originalFrame destinationRect:(CGRect)destinationFrame flowingDirection:(GQFlowDirection)flowingDirection flowingSpeed:(CGFloat)speed
-{
-    CGFloat length = .0;
-    
-    if (flowingDirection == GQFlowDirectionLeft
-        || flowingDirection == GQFlowDirectionRight) {
-        length = destinationFrame.origin.x - originalFrame.origin.x;
-    } else if (flowingDirection == GQFlowDirectionUp
-               && flowingDirection == GQFlowDirectionDown){
-        length = destinationFrame.origin.y - destinationFrame.origin.y;
-    }
-    
-    return ABS(length) / speed;
 }
 
 // 添加手势
