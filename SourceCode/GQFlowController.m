@@ -68,13 +68,16 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (void)loadView
 {    
     CGRect initFrame = [[UIScreen mainScreen] bounds];
-
-    if (self.wantsFullScreenLayout == NO) {
-        CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-        initFrame = CGRectMake(.0,
-                               statusBarFrame.size.height,
-                               initFrame.size.width,
-                               initFrame.size.height - statusBarFrame.size.height);
+    
+    if ([[[UIDevice currentDevice] systemVersion] integerValue] < 7
+        && [self respondsToSelector:@selector(wantsFullScreenLayout)]) {
+        if (self.wantsFullScreenLayout == NO) {
+            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+            initFrame = CGRectMake(.0,
+                                   statusBarFrame.size.height,
+                                   initFrame.size.width,
+                                   initFrame.size.height - statusBarFrame.size.height);
+        }
     }
     
     self.view = [[UIView alloc] initWithFrame:initFrame];
