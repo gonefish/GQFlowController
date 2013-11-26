@@ -59,6 +59,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 @property (nonatomic) BOOL isAnimating;
 @property (nonatomic) BOOL isPanFlowingIn;
+@property (nonatomic) BOOL shouldBeginAppearance;
 
 @end
 
@@ -921,6 +922,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     self.topViewOriginalFrame = CGRectZero;
     self.belowViewOriginalFrame = CGRectZero;
     self.flowingDirection = GQFlowDirectionUnknow;
+    self.shouldBeginAppearance = NO;
 }
 
 // 添加手势
@@ -984,6 +986,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         // 判断移动的视图
         if (self.flowingDirection == GQFlowDirectionUnknow) {
+            self.shouldBeginAppearance = YES;
+            
             // 判断移动的方向            
             if (ABS(panPoint.x) > ABS(panPoint.y)) {
                 if (panPoint.x > .0) {
@@ -1022,19 +1026,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     }
                 }
             }
-            
-            UIViewController *belowVC = [self belowViewController];
-            
-            // Customizing Appearance
-            if (self.isPanFlowingIn) {
-                // 手势滑入
-                [belowVC beginAppearanceTransition:NO animated:YES];
-                [self.topViewController beginAppearanceTransition:YES animated:YES];
-            } else {
-                // 手势滑出
-                [self.topViewController beginAppearanceTransition:NO animated:YES];
-                [belowVC beginAppearanceTransition:YES animated:YES];
-            }
         }
 
         // 计算新的移动位置
@@ -1061,6 +1052,23 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         }
         
         if (shouldMove) {
+            if (self.shouldBeginAppearance) {
+                UIViewController *belowVC = [self belowViewController];
+                
+                // Customizing Appearance
+                if (self.isPanFlowingIn) {
+                    // 手势滑入
+                    [belowVC beginAppearanceTransition:NO animated:YES];
+                    [self.topViewController beginAppearanceTransition:YES animated:YES];
+                } else {
+                    // 手势滑出
+                    [self.topViewController beginAppearanceTransition:NO animated:YES];
+                    [belowVC beginAppearanceTransition:YES animated:YES];
+                }
+                
+                self.shouldBeginAppearance = NO;
+            }
+            
             // 滑动时激活遮罩层
             self.topViewController.overlayContent = YES;
             
