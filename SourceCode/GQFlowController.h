@@ -110,6 +110,13 @@ typedef enum {
  */
 - (NSTimeInterval)flowingDuration;
 
+
+/** 是否自动处理覆盖层
+ 
+ @return 默认为YES
+ */
+- (BOOL)shouldAutomaticallyOverlayContent;
+
 @end
 
 @interface UIViewController (GQFlowControllerAdditions)
