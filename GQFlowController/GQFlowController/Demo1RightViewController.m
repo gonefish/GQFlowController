@@ -35,4 +35,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - GQViewController Protocol
+
+- (BOOL)shouldFollowAboveViewFlowing
+{
+    return NO;
+}
 @end
