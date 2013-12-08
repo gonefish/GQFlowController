@@ -8,6 +8,7 @@
 
 #import "Demo1TopViewController.h"
 #import "GQFlowController.h"
+#import "GQAppDelegate.h"
 
 #define OFFSET 70.0
 
@@ -148,6 +149,9 @@
                                completionBlock:^(BOOL finished){
                                    [self updateOverlayContent];
                                }];
+}
+- (IBAction)selectDemos:(id)sender {
+    [(GQAppDelegate *)[[UIApplication sharedApplication] delegate] showSelectDemoActionSheet];
 }
 
 - (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer

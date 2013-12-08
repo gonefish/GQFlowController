@@ -86,13 +86,15 @@
 
 - (void)showSelectDemoActionSheet
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Demo"
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Demo1", @"Demo2", @"Demo3(iPad only)", @"Demo4", nil];
-    
-    [actionSheet showInView:self.flowController.view];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Select Demos"
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"Cancel"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"Demo1", @"Demo2", nil];
+        
+        [actionSheet showInView:self.flowController.view];
+    }
 }
 
 #pragma mark - UIActionSheetDelegate Protocol
@@ -103,13 +105,6 @@
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo1ViewControllers]];
     } else if (buttonIndex == 1) {
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
-    } else if (buttonIndex == 2) {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            return;
-        }
-        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
-    } else if (buttonIndex == 3) {
-        
     }
     
     self.window.rootViewController = self.flowController;
