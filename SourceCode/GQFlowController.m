@@ -634,16 +634,31 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     return _innerViewControllers;
 }
 
+- (BOOL)shouldAutomaticallyOverlayContentForViewController:(UIViewController *)viewController
+{
+    BOOL yesOrNo = YES;
+    
+    if ([viewController respondsToSelector:@selector(shouldAutomaticallyOverlayContent)]) {
+        yesOrNo = [(id <GQViewController>)viewController shouldAutomaticallyOverlayContent];
+    }
+    
+    return yesOrNo;
+}
+
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated completionBlock:(void (^)(void))block
 {
     UIViewController *belowVC = self.topViewController;
     
-    belowVC.overlayContent = YES;
+    if ([self shouldAutomaticallyOverlayContentForViewController:belowVC]) {
+        belowVC.overlayContent = YES;
+    }
     
     // 添加到容器中，并设置将要滑入的起始位置
     [self addTopViewController:viewController];
     
-    viewController.overlayContent = YES;
+    if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
+        viewController.overlayContent = YES;
+    }
     
     [viewController beginAppearanceTransition:YES
                                      animated:animated];
@@ -669,7 +684,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         
                         [belowVC endAppearanceTransition];
                         
-                        viewController.overlayContent = NO;
+                        if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
+                            viewController.overlayContent = NO;
+                        }
                         
                         [self addPanGestureRecognizer];
                         
@@ -682,7 +699,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             block();
         }
         
-        viewController.overlayContent = NO;
+        if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
+            viewController.overlayContent = NO;
+        }
     }
 }
 
@@ -725,8 +744,13 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         [belowVC beginAppearanceTransition:YES
                                          animated:animated];
         
-        self.topViewController.overlayContent = YES;
-        belowVC.overlayContent = YES;
+        if ([self shouldAutomaticallyOverlayContentForViewController:self.topViewController]) {
+            self.topViewController.overlayContent = YES;
+        }
+        
+        if ([self shouldAutomaticallyOverlayContentForViewController:belowVC]) {
+            belowVC.overlayContent = YES;
+        }
         
         CGRect toFrame = [self outDestinationRectForViewController:self.topViewController];
         
@@ -748,7 +772,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             
             [self addPanGestureRecognizer];
             
-            belowVC.overlayContent = NO;
+            if ([self shouldAutomaticallyOverlayContentForViewController:belowVC]) {
+                belowVC.overlayContent = NO;
+            }
         };
         
         if (animated) {
@@ -1070,14 +1096,18 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             }
             
             // 滑动时激活遮罩层
-            self.topViewController.overlayContent = YES;
+            if ([self shouldAutomaticallyOverlayContentForViewController:self.topViewController]) {
+                self.topViewController.overlayContent = YES;
+            }
             
             self.topViewController.view.frame = newFrame;
             
             UIViewController *belowVC = [self belowViewController];
             
             if (belowVC) {
-                belowVC.overlayContent = YES;
+                if ([self shouldAutomaticallyOverlayContentForViewController:belowVC]) {
+                    belowVC.overlayContent = YES;
+                }
                 
                 CGRect belowVCFrame = GQBelowViewRectOffset(self.belowViewOriginalFrame,
                                                             self.topViewOriginalFrame.origin,
@@ -1170,9 +1200,13 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         [self flowingBelowViewController:belowVC toRect:belowVCFrame];
                     }
                     completionBlock:^(BOOL finished){
-                        self.topViewController.overlayContent = NO;
+                        if ([self shouldAutomaticallyOverlayContentForViewController:self.topViewController]) {
+                            self.topViewController.overlayContent = NO;
+                        }
                         
-                        belowVC.overlayContent = NO;
+                        if ([self shouldAutomaticallyOverlayContentForViewController:belowVC]) {
+                            belowVC.overlayContent = NO;
+                        }
                         
                         // Customizing Appearance
                         if (self.isPanFlowingIn) {

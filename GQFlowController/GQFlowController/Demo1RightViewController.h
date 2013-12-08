@@ -6,6 +6,8 @@
 //  Copyright (c) 2013年 Qian GuoQiang. All rights reserved.
 //
 
-@interface Demo1RightViewController : UIViewController
+#import "GQFlowController.h"
+
+@interface Demo1RightViewController : UIViewController <GQViewController>
 
 @end

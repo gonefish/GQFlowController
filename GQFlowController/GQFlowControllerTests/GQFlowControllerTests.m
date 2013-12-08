@@ -250,4 +250,26 @@
     }
 }
 
+- (void)testShouldAutomaticallyOverlayContent
+{
+    UIViewController *vc = [[UIViewController alloc] init];
+    
+    STAssertTrue([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
+                                           withObject:vc], @"");
+    
+    id vc2 = [OCMockObject mockForProtocol:@protocol(GQViewController)];
+    
+    [[[vc2 stub] andReturnValue:@NO] shouldAutomaticallyOverlayContent];
+    
+    STAssertFalse([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
+                                           withObject:vc2], @"");
+    
+    id vc3 = [OCMockObject mockForProtocol:@protocol(GQViewController)];
+    
+    [[[vc3 stub] andReturnValue:@YES] shouldAutomaticallyOverlayContent];
+    
+    STAssertTrue([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
+                                           withObject:vc3], @"");
+}
+
 @end
