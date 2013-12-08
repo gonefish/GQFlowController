@@ -54,4 +54,11 @@
     [self.flowController flowInViewController:a animated:YES];
 }
 
+#pragma mark - GQViewController Protocol
+
+- (BOOL)shouldFollowAboveViewFlowing
+{
+    return NO;
+}
+
 @end

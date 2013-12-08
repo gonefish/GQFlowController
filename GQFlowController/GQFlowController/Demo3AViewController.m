@@ -51,6 +51,11 @@
     }
 }
 
+- (BOOL)shouldFollowAboveViewFlowing
+{
+    return NO;
+}
+
 - (CGFloat)flowingBoundary
 {
     return 0.15;
