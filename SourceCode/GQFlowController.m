@@ -61,7 +61,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 @property (nonatomic) BOOL isPanFlowingIn;
 @property (nonatomic) BOOL shouldBeginAppearance;
 
-@property (nonatomic, strong) NSMutableDictionary *viewFrames;
+// 保存在内存警告中释放视图的frame
+@property (nonatomic, strong) NSMutableDictionary *releaseViewFrames;
 
 @end
 
@@ -124,7 +125,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
          if (safeReleaseView) {
              if (![obj isViewLoaded]) return;
              
-             [self.viewFrames setObject:NSStringFromCGRect(obj.view.frame)
+             [self.releaseViewFrames setObject:NSStringFromCGRect(obj.view.frame)
                                  forKey:[NSString stringWithFormat:@"%u", [obj hash]]];
             
              [obj.view removeFromSuperview];
@@ -296,7 +297,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             self.viewFlowingDuration = 1.0;
         }
         
-        self.viewFrames = [NSMutableDictionary dictionary];
+        self.releaseViewFrames = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -994,12 +995,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 {
     NSString *belowVCKey = [NSString stringWithFormat:@"%u", [belowVC hash]];
     
-    NSString *rectString = [self.viewFrames objectForKey:belowVCKey];
+    NSString *rectString = [self.releaseViewFrames objectForKey:belowVCKey];
     
     if (rectString) {
         belowVC.view.frame = CGRectFromString(rectString);
         
-        [self.viewFrames removeObjectForKey:belowVCKey];
+        [self.releaseViewFrames removeObjectForKey:belowVCKey];
     }
     
     [self.view insertSubview:belowVC.view
