@@ -343,7 +343,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         NSArray *popViewControllers = [self flowOutIndexSet:[NSIndexSet indexSetWithIndex:[self.innerViewControllers count] -1]
                                                    animated:animated];
         if ([popViewControllers count] == 1) {
-            return [popViewControllers objectAtIndex:0];
+            return popViewControllers[0];
         } else {
             return nil;
         }
@@ -1254,7 +1254,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     NSUInteger vcCount = [self.viewControllers count];
     
     if (vcCount > 1) {
-        return (UIViewController *)[self.viewControllers objectAtIndex:vcCount - 2];
+        return (UIViewController *)(self.viewControllers)[vcCount - 2];
     } else {
         return nil;
     }
@@ -1345,7 +1345,7 @@ static char kQGOverlayViewObjectKey;
     if (direction == nil) {
         self.flowInDirection = GQFlowDirectionLeft;
         
-        direction = [NSNumber numberWithInt:GQFlowDirectionLeft];
+        direction = @(GQFlowDirectionLeft);
     }
     
     return [direction intValue];
@@ -1363,7 +1363,7 @@ static char kQGOverlayViewObjectKey;
     if (direction == nil) {
         self.flowOutDirection = GQFlowDirectionRight;
         
-        direction = [NSNumber numberWithInt:GQFlowDirectionRight];
+        direction = @(GQFlowDirectionRight);
     }
     
     return [direction intValue];

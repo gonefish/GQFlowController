@@ -76,7 +76,7 @@
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEqualObjects(self.flowController.topViewController, [aViewControllers objectAtIndex:1], @"");
+    STAssertEqualObjects(self.flowController.topViewController, aViewControllers[1], @"");
 }
 
 - (void)testInitWithViewControllers

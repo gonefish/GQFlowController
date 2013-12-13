@@ -22,9 +22,9 @@
 
 - (UIViewController *)viewControllerForFlowDirection:(GQFlowDirection)direction
 {
-    UIViewController *leftViewController = [[self.flowController viewControllers] objectAtIndex:0];
+    UIViewController *leftViewController = [self.flowController viewControllers][0];
     leftViewController.overlayContent = YES;
-    UIViewController *rightViewController = [[self.flowController viewControllers] objectAtIndex:1];
+    UIViewController *rightViewController = [self.flowController viewControllers][1];
     rightViewController.overlayContent = YES;
     
     if (direction == GQFlowDirectionLeft
@@ -107,9 +107,9 @@
 
 - (void)updateOverlayContent
 {
-    UIViewController *leftViewController = [[self.flowController viewControllers] objectAtIndex:0];
-    UIViewController *rightViewController = [[self.flowController viewControllers] objectAtIndex:1];
-    UIViewController *topViewController = [[self.flowController viewControllers] objectAtIndex:2];
+    UIViewController *leftViewController = [self.flowController viewControllers][0];
+    UIViewController *rightViewController = [self.flowController viewControllers][1];
+    UIViewController *topViewController = [self.flowController viewControllers][2];
     
     if (self.view.frame.origin.x > 0) {
         rightViewController.overlayContent = NO;
