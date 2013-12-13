@@ -1003,7 +1003,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
     
     [self.view insertSubview:belowVC.view
-                belowSubview:self.topViewController.view];
+                     atIndex:0];
 }
 
 - (void)panGestureAction
@@ -1017,12 +1017,31 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         // 记录移动视图的原始位置
         self.topViewOriginalFrame = self.topViewController.view.frame;
         
-        // 确保下层视图是否已经添加
-        UIViewController *belowVC = [self belowViewController];
+        __block CGRect checkFrame = CGRectZero;
         
-        if (belowVC.view.superview == nil) {
-            [self prepareBelowViewController:belowVC];
-        }
+        // 确保下层视图是否已经添加
+        [self.innerViewControllers
+         enumerateObjectsWithOptions:NSEnumerationReverse
+         usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+             if (self.topViewController != obj) {
+                 if (obj.view.superview == nil) {
+                     [self prepareBelowViewController:obj];
+                 }
+                 
+                 if (CGRectEqualToRect(checkFrame, CGRectZero)) {
+                     checkFrame = obj.view.frame;
+                 } else {
+                     checkFrame = CGRectIntersection(checkFrame, obj.view.frame);
+                 }
+                 
+                 // 检测是否遮盖住其它视图
+                 if (CGRectContainsRect(checkFrame, self.topViewController.view.bounds)) {
+                     *stop = YES;
+                 }
+             }
+         }];
+        
+        UIViewController *belowVC = [self belowViewController];
         
         self.belowViewOriginalFrame = belowVC.view.frame;
     } else if (self.topViewPanGestureRecognizer.state == UIGestureRecognizerStateChanged) {
