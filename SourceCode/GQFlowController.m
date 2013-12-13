@@ -61,6 +61,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 @property (nonatomic) BOOL isPanFlowingIn;
 @property (nonatomic) BOOL shouldBeginAppearance;
 
+@property (nonatomic, strong) NSMutableDictionary *viewFrames;
+
 @end
 
 @implementation GQFlowController
@@ -121,6 +123,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
      usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
          if (safeReleaseView) {
              if (![obj isViewLoaded]) return;
+             
+             [self.viewFrames setObject:NSStringFromCGRect(obj.view.frame)
+                                 forKey:[NSString stringWithFormat:@"%u", [obj hash]]];
             
              [obj.view removeFromSuperview];
              
@@ -290,6 +295,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             self.customSupportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
             self.viewFlowingDuration = 1.0;
         }
+        
+        self.viewFrames = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -732,10 +739,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         
         // 确保视图已经添加
         if (belowVC.view.superview == nil) {
-            belowVC.view.frame = self.view.bounds;
-            
-            [self.view insertSubview:belowVC.view
-                        belowSubview:self.topViewController.view];
+            [self prepareBelowViewController:belowVC];
         }
         
         [self.topViewController beginAppearanceTransition:NO
@@ -986,6 +990,22 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
+- (void)prepareBelowViewController:(UIViewController *)belowVC
+{
+    NSString *belowVCKey = [NSString stringWithFormat:@"%u", [belowVC hash]];
+    
+    NSString *rectString = [self.viewFrames objectForKey:belowVCKey];
+    
+    if (rectString) {
+        belowVC.view.frame = CGRectFromString(rectString);
+        
+        [self.viewFrames removeObjectForKey:belowVCKey];
+    }
+    
+    [self.view insertSubview:belowVC.view
+                belowSubview:self.topViewController.view];
+}
+
 - (void)panGestureAction
 {
     CGPoint panPoint = [self.topViewPanGestureRecognizer translationInView:self.view];
@@ -1001,11 +1021,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         UIViewController *belowVC = [self belowViewController];
         
         if (belowVC.view.superview == nil) {
-            // TODO: 需要处理偏移后的位置
-            belowVC.view.frame = self.view.bounds;
-            
-            [self.view insertSubview:belowVC.view
-                        belowSubview:self.topViewController.view];
+            [self prepareBelowViewController:belowVC];
         }
         
         self.belowViewOriginalFrame = belowVC.view.frame;
