@@ -123,23 +123,23 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              if (![obj isViewLoaded]) return;
             
              [obj.view removeFromSuperview];
+             
+             NSInteger systemVersion = [[[UIDevice currentDevice] systemVersion] integerValue];
             
-             if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+             if (systemVersion < 6) {
                  [obj viewWillUnload];
              }
             
              obj.view = nil;
             
-             if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+             if (systemVersion < 6) {
                  [obj viewDidUnload];
              }
          } else {
-             CGRect viewFrame = [[(UIViewController *)obj view] frame];
-            
              if (CGRectEqualToRect(checkFrame, CGRectZero)) {
-                 checkFrame = viewFrame;
+                 checkFrame = obj.view.frame;
              } else {
-                 checkFrame = CGRectIntersection(checkFrame, viewFrame);
+                 checkFrame = CGRectIntersection(checkFrame, obj.view.frame);
              }
             
              // 检测是否遮盖住其它视图
