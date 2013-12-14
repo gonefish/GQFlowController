@@ -66,8 +66,6 @@
     self.flowController.viewControllers = bViewControllers;
     
     STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
-    
-    // TODO: 添加更多的mock
 }
 
 - (void)testTopViewController
@@ -162,7 +160,29 @@
     STAssertEquals([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
 }
 
-#pragma mark - GQFlowController Category Test
+- (void)testRotations
+{    
+    id topViewController = [OCMockObject mockForClass:[UIViewController class]];
+    
+    if (self.isiOS6) {
+        STAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
+    } else {
+        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
+    }
+    
+    [self.flowController performSelector:@selector(setTopViewController:)
+                              withObject:topViewController];
+    
+    STAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
+    
+    if (!self.isiOS6) {
+        [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
+        
+        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
+    }
+}
+
+#pragma mark - GQFlowControllerAdditions
 
 - (void)testPrivateFlowControllerSetter
 {
@@ -221,34 +241,8 @@
     STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
 }
 
-- (void)testRotations
-{    
-    id topViewController = [OCMockObject mockForClass:[UIViewController class]];
-    
-    if (self.isiOS6) {
-        STAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
-    } else {
-        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
-    }
-    
-    [self.flowController performSelector:@selector(setTopViewController:)
-                              withObject:topViewController];
-    
-    STAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
-    
-    if (self.isiOS6) {
-//        NSUInteger test = UIInterfaceOrientationMaskPortrait;
-//        NSValue *testValue = [NSValue valueWithBytes:&test objCType:@encode(NSUInteger)];
-//        
-//        [[[topViewController stub] andReturnValue:testValue] supportedInterfaceOrientations];
-//        
-//        STAssertTrue([self.flowController supportedInterfaceOrientations] == UIInterfaceOrientationMaskPortrait, @"没有调用默认的方法");
-    } else {
-        [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
-        
-        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
-    }
-}
+
+#pragma mark - GQViewController Protocol
 
 - (void)testShouldAutomaticallyOverlayContent
 {

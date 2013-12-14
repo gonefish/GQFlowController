@@ -19,25 +19,49 @@ typedef enum {
 
 @interface GQFlowController : UIViewController
 
-- (id)initWithRootViewController:(UIViewController *)rootViewController;
-- (id)initWithViewControllers:(NSArray *)viewControllers;
+// Like UINavigationController methods
 
+/** Like initWithRootViewController:
+ */
+- (id)initWithRootViewController:(UIViewController *)rootViewController;
+
+/** Like pushViewController:animated:
+ */
 - (void)flowInViewController:(UIViewController *)viewController animated:(BOOL)animated;
+
+
+/** Like popViewControllerAnimated:
+ */
 - (UIViewController *)flowOutViewControllerAnimated:(BOOL)animated;
+
+
+/** Like popToRootViewControllerAnimated:
+ */
 - (NSArray *)flowOutToRootViewControllerAnimated:(BOOL)animated;
+
+
+/** Like popToViewController:animated:
+ */
 - (NSArray *)flowOutToViewController:(UIViewController *)viewController animated:(BOOL)animated;
+
+
+/** Like setViewControllers:animated:
+ */
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;
 
+@property (nonatomic, copy) NSArray *viewControllers;
 
+@property (nonatomic, strong, readonly) UIViewController *topViewController;
+
+/** 创建多个控制器的初始化方法
+ */
+- (id)initWithViewControllers:(NSArray *)viewControllers;
 
 /** 滑动已经添加的视图控制器到指定位置
 
  */
 - (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock;
 
-@property (nonatomic, copy) NSArray *viewControllers;
-
-@property (nonatomic, strong, readonly) UIViewController *topViewController;
 
 @property (nonatomic, strong, readonly) UIPanGestureRecognizer *topViewPanGestureRecognizer;
 
