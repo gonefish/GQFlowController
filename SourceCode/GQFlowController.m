@@ -739,9 +739,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         UIViewController *belowVC = [self.innerViewControllers lastObject];
         
         // 确保视图已经添加
-        if (belowVC.view.superview == nil) {
-            [self prepareBelowViewController:belowVC];
-        }
+        [self prepareBelowViewControllers];
         
         [self.topViewController beginAppearanceTransition:NO
                                                  animated:animated];
@@ -991,20 +989,43 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
-- (void)prepareBelowViewController:(UIViewController *)belowVC
+/** 确保下层视图是否已经添加
+ */
+- (void)prepareBelowViewControllers
 {
-    NSString *belowVCKey = [NSString stringWithFormat:@"%u", [belowVC hash]];
+    __block CGRect checkFrame = CGRectZero;
     
-    NSString *rectString = [self.releaseViewFrames objectForKey:belowVCKey];
-    
-    if (rectString) {
-        belowVC.view.frame = CGRectFromString(rectString);
-        
-        [self.releaseViewFrames removeObjectForKey:belowVCKey];
-    }
-    
-    [self.view insertSubview:belowVC.view
-                     atIndex:0];
+    [self.innerViewControllers
+     enumerateObjectsWithOptions:NSEnumerationReverse
+     usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+         if (self.topViewController != obj) {
+             if (obj.view.superview == nil) {
+                 NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
+                 
+                 NSString *rectString = [self.releaseViewFrames objectForKey:belowVCKey];
+                 
+                 if (rectString) {
+                     obj.view.frame = CGRectFromString(rectString);
+                     
+                     [self.releaseViewFrames removeObjectForKey:belowVCKey];
+                 }
+                 
+                 [self.view insertSubview:obj.view
+                                  atIndex:0];
+             }
+             
+             if (CGRectEqualToRect(checkFrame, CGRectZero)) {
+                 checkFrame = obj.view.frame;
+             } else {
+                 checkFrame = CGRectIntersection(checkFrame, obj.view.frame);
+             }
+             
+             // 检测是否遮盖住其它视图
+             if (CGRectContainsRect(checkFrame, self.topViewController.view.bounds)) {
+                 *stop = YES;
+             }
+         }
+     }];
 }
 
 - (void)panGestureAction
@@ -1018,29 +1039,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         // 记录移动视图的原始位置
         self.topViewOriginalFrame = self.topViewController.view.frame;
         
-        __block CGRect checkFrame = CGRectZero;
-        
-        // 确保下层视图是否已经添加
-        [self.innerViewControllers
-         enumerateObjectsWithOptions:NSEnumerationReverse
-         usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
-             if (self.topViewController != obj) {
-                 if (obj.view.superview == nil) {
-                     [self prepareBelowViewController:obj];
-                 }
-                 
-                 if (CGRectEqualToRect(checkFrame, CGRectZero)) {
-                     checkFrame = obj.view.frame;
-                 } else {
-                     checkFrame = CGRectIntersection(checkFrame, obj.view.frame);
-                 }
-                 
-                 // 检测是否遮盖住其它视图
-                 if (CGRectContainsRect(checkFrame, self.topViewController.view.bounds)) {
-                     *stop = YES;
-                 }
-             }
-         }];
+        [self prepareBelowViewControllers];
         
         UIViewController *belowVC = [self belowViewController];
         
