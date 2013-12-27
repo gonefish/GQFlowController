@@ -110,9 +110,13 @@
 {
     UIViewController *testController = [UIViewController new];
     
+    UIView *dummy = self.flowController.view;
+    
     [self.flowController flowInViewController:testController animated:NO];
     
     STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
+    
+    STAssertEquals(testController.view.frame.origin.x, (CGFloat).0, @"");
 }
 
 - (void)testFlowOutViewControllerAnimated

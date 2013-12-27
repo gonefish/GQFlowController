@@ -680,6 +680,22 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                                 viewController.view.frame.origin,
                                                 toFrame.origin,
                                                 viewController.flowInDirection);
+    
+    void (^completionBlock)(BOOL) = ^(BOOL finished) {
+        [viewController endAppearanceTransition];
+        
+        [belowVC endAppearanceTransition];
+        
+        if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
+            viewController.overlayContent = NO;
+        }
+        
+        [self addPanGestureRecognizer];
+        
+        if (block) {
+            block();
+        }
+    };
 
     if (animated) {
         [self flowingViewController:viewController
@@ -687,29 +703,11 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     animationsBlock:^{
                         [self flowingBelowViewController:belowVC toRect:belowVCFrame];
                     }
-                    completionBlock:^(BOOL finished){
-                        [viewController endAppearanceTransition];
-                        
-                        [belowVC endAppearanceTransition];
-                        
-                        if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
-                            viewController.overlayContent = NO;
-                        }
-                        
-                        [self addPanGestureRecognizer];
-                        
-                        if (block) {
-                            block();
-                        }
-                    }];
+                    completionBlock:completionBlock];
     } else {
-        if (block) {
-            block();
-        }
+        viewController.view.frame = toFrame;
         
-        if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
-            viewController.overlayContent = NO;
-        }
+        completionBlock(NO);
     }
 }
 
