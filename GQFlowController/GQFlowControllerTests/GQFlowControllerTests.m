@@ -7,6 +7,17 @@
 //
 
 #import "GQFlowControllerTests.h"
+#import <OCMock/OCMock.h>
+
+#import "GQFlowController.h"
+
+@interface GQFlowControllerTests ()
+
+@property (nonatomic, strong) GQFlowController *flowController;
+
+@property (nonatomic) BOOL isiOS6;
+
+@end
 
 @implementation GQFlowControllerTests
 

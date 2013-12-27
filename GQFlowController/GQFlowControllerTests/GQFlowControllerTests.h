@@ -7,13 +7,7 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import <OCMock/OCMock.h>
-
-#import "GQFlowController.h"
 
 @interface GQFlowControllerTests : SenTestCase
-
-@property (nonatomic, strong) GQFlowController *flowController;
-@property (nonatomic) BOOL isiOS6;
 
 @end
