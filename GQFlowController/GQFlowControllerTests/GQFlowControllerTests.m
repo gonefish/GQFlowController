@@ -43,21 +43,21 @@
 
 - (void)testFlowControllersIsViewLoaded
 {
-    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
     
     NSArray *viewControllers = @[[UIViewController new], [UIViewController new]];
     
     self.flowController.viewControllers = viewControllers;
     
-    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
     
     [self.flowController flowInViewController:[UIViewController new] animated:YES];
     
-    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
     
     [self.flowController flowOutToRootViewControllerAnimated:YES];
     
-    STAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
 }
 
 - (void)testSetViewControllersAnimated
@@ -66,17 +66,17 @@
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
     
     for (UIViewController *controller in self.flowController.viewControllers) {
-        STAssertEqualObjects(controller.flowController, self.flowController, @"子控制器访问不了");
+        XCTAssertEqualObjects(controller.flowController, self.flowController, @"子控制器访问不了");
     }
     
     NSArray *bViewControllers = @[[UIViewController new], [UIViewController new], [GQFlowController new]];
     
     self.flowController.viewControllers = bViewControllers;
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
 }
 
 - (void)testTopViewController
@@ -85,7 +85,7 @@
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEqualObjects(self.flowController.topViewController, aViewControllers[1], @"");
+    XCTAssertEqualObjects(self.flowController.topViewController, aViewControllers[1], @"");
 }
 
 - (void)testInitWithViewControllers
@@ -97,12 +97,12 @@
     
     GQFlowController *flowController =[[GQFlowController alloc] initWithViewControllers:aViewControllers];
     
-    STAssertEquals([flowController.viewControllers count], (NSUInteger)2, @"");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)2, @"");
     
-    STAssertEqualObjects(flowController.topViewController, v2, @"");
+    XCTAssertEqualObjects(flowController.topViewController, v2, @"");
     
-    STAssertEqualObjects(flowController, v1.flowController, @"");
-    STAssertEqualObjects(flowController, v2.flowController, @"");
+    XCTAssertEqualObjects(flowController, v1.flowController, @"");
+    XCTAssertEqualObjects(flowController, v2.flowController, @"");
 }
 
 - (void)testInitWithRootViewController
@@ -110,11 +110,11 @@
     UIViewController *testController = [UIViewController new];
     GQFlowController *flowController =[[GQFlowController alloc] initWithRootViewController:testController];
     
-    STAssertEquals([flowController.viewControllers count], (NSUInteger)1, @"");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)1, @"");
     
-    STAssertEqualObjects(flowController.topViewController, testController, @"");
+    XCTAssertEqualObjects(flowController.topViewController, testController, @"");
     
-    STAssertEqualObjects(flowController, testController.flowController, @"");
+    XCTAssertEqualObjects(flowController, testController.flowController, @"");
 }
 
 - (void)testFlowInViewControllerAnimated
@@ -125,9 +125,9 @@
     
     [self.flowController flowInViewController:testController animated:NO];
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"");
     
-    STAssertEquals(testController.view.frame.origin.x, (CGFloat).0, @"");
+    XCTAssertEqual(testController.view.frame.origin.x, (CGFloat).0, @"");
 }
 
 - (void)testFlowOutViewControllerAnimated
@@ -135,21 +135,21 @@
     UIViewController *a = [UIViewController new];
     UIViewController *b = [UIViewController new];
     
-    STAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"没有viewControllers时，应该nil");
+    XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"没有viewControllers时，应该nil");
     
     self.flowController.viewControllers = @[a, b];
     
-    STAssertEqualObjects(b.flowController, self.flowController, @"flowController属性没有被设置");
+    XCTAssertEqualObjects(b.flowController, self.flowController, @"flowController属性没有被设置");
     
     UIViewController *pop = [self.flowController flowOutViewControllerAnimated:NO];
     
-    STAssertEqualObjects(pop, b, @"滑出的对象不正确");
+    XCTAssertEqualObjects(pop, b, @"滑出的对象不正确");
     
-    STAssertNil(pop.flowController, @"滑出对象的flowController应该为空");
+    XCTAssertNil(pop.flowController, @"滑出对象的flowController应该为空");
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
     
-    STAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
+    XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
 }
 
 - (void)testFlowOutToRootViewControllerAnimated
@@ -158,9 +158,9 @@
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEquals([[self.flowController flowOutToRootViewControllerAnimated:NO] count], (NSUInteger)3, @"");
+    XCTAssertEqual([[self.flowController flowOutToRootViewControllerAnimated:NO] count], (NSUInteger)3, @"");
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
 }
 
 - (void)testFlowOutToViewControllerAnimated
@@ -170,9 +170,9 @@
     
     self.flowController.viewControllers = aViewControllers;
     
-    STAssertEquals([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
+    XCTAssertEqual([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
     
-    STAssertEquals([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
 }
 
 - (void)testRotations
@@ -180,20 +180,20 @@
     id topViewController = [OCMockObject mockForClass:[UIViewController class]];
     
     if (self.isiOS6) {
-        STAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
+        XCTAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
     } else {
-        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
+        XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
     }
     
     [self.flowController performSelector:@selector(setTopViewController:)
                               withObject:topViewController];
     
-    STAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
+    XCTAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
     
     if (!self.isiOS6) {
         [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
         
-        STAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
+        XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
     }
 }
 
@@ -203,36 +203,36 @@
 {
     UIViewController *vc = [[UIViewController alloc] init];
     
-    STAssertNil(vc.flowController, @"don't setting flowController");
+    XCTAssertNil(vc.flowController, @"don't setting flowController");
     
     GQFlowController *flowController = [[GQFlowController alloc] init];
     
     [vc performSelector:@selector(setFlowController:)
              withObject:flowController];
     
-    STAssertNotNil(vc.flowController, @"flowController settings");
+    XCTAssertNotNil(vc.flowController, @"flowController settings");
 }
 
 - (void)testFlowInDirection
 {
     UIViewController *vc = [[UIViewController alloc] init];
     
-    STAssertEquals(vc.flowInDirection, GQFlowDirectionLeft, @"默认值不正确");
+    XCTAssertEqual(vc.flowInDirection, GQFlowDirectionLeft, @"默认值不正确");
     
     vc.flowInDirection = GQFlowDirectionRight;
     
-    STAssertEquals(vc.flowInDirection, GQFlowDirectionRight, @"赋值不不正确");
+    XCTAssertEqual(vc.flowInDirection, GQFlowDirectionRight, @"赋值不不正确");
 }
 
 - (void)testFlowOutDirection
 {
     UIViewController *vc = [[UIViewController alloc] init];
     
-    STAssertEquals(vc.flowOutDirection, GQFlowDirectionRight, @"默认值不正确");
+    XCTAssertEqual(vc.flowOutDirection, GQFlowDirectionRight, @"默认值不正确");
     
     vc.flowOutDirection = GQFlowDirectionLeft;
     
-    STAssertEquals(vc.flowOutDirection, GQFlowDirectionLeft, @"赋值不不正确");
+    XCTAssertEqual(vc.flowOutDirection, GQFlowDirectionLeft, @"赋值不不正确");
 }
 
 - (void)testOverlayContent
@@ -241,19 +241,19 @@
     
     [vc setOverlayContent:YES];
     
-    STAssertEquals([[vc.view subviews] count], (NSUInteger)1, @"");
+    XCTAssertEqual([[vc.view subviews] count], (NSUInteger)1, @"");
     
-    STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)0, @"透明层已经添加");
+    XCTAssertEqual([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)0, @"透明层已经添加");
     
-    STAssertEquals(vc.isOverlayContent, YES, @"");
+    XCTAssertEqual(vc.isOverlayContent, YES, @"");
     
     [vc setOverlayContent:NO];
     
-    STAssertEquals([[vc.view subviews] count], (NSUInteger)0, @"");
+    XCTAssertEqual([[vc.view subviews] count], (NSUInteger)0, @"");
     
     [vc setOverlayContent:YES enabledShotView:YES];
     
-    STAssertEquals([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
+    XCTAssertEqual([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
 }
 
 
@@ -263,21 +263,21 @@
 {
     UIViewController *vc = [[UIViewController alloc] init];
     
-    STAssertTrue([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
+    XCTAssertTrue([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
                                            withObject:vc], @"");
     
     id vc2 = [OCMockObject mockForProtocol:@protocol(GQViewController)];
     
     [[[vc2 stub] andReturnValue:@NO] shouldAutomaticallyOverlayContent];
     
-    STAssertFalse([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
+    XCTAssertFalse([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
                                            withObject:vc2], @"");
     
     id vc3 = [OCMockObject mockForProtocol:@protocol(GQViewController)];
     
     [[[vc3 stub] andReturnValue:@YES] shouldAutomaticallyOverlayContent];
     
-    STAssertTrue([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
+    XCTAssertTrue([self.flowController performSelector:@selector(shouldAutomaticallyOverlayContentForViewController:)
                                            withObject:vc3], @"");
 }
 

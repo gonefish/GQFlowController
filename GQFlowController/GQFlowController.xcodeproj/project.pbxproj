@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E31FEF81186E65F200E2DC06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E31FEF80186E65F200E2DC06 /* XCTest.framework */; };
 		E34A63FE16FEB8DD0053A496 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FD16FEB8DD0053A496 /* UIKit.framework */; };
 		E34A640016FEB8DD0053A496 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FF16FEB8DD0053A496 /* Foundation.framework */; };
 		E34A640216FEB8DD0053A496 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A640116FEB8DD0053A496 /* CoreGraphics.framework */; };
@@ -16,7 +17,6 @@
 		E34A641016FEB8DD0053A496 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = E34A640F16FEB8DD0053A496 /* Default.png */; };
 		E34A641216FEB8DD0053A496 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E34A641116FEB8DD0053A496 /* Default@2x.png */; };
 		E34A641416FEB8DD0053A496 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E34A641316FEB8DD0053A496 /* Default-568h@2x.png */; };
-		E34A641C16FEB8DD0053A496 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A641B16FEB8DD0053A496 /* SenTestingKit.framework */; };
 		E34A641D16FEB8DD0053A496 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FD16FEB8DD0053A496 /* UIKit.framework */; };
 		E34A641E16FEB8DD0053A496 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FF16FEB8DD0053A496 /* Foundation.framework */; };
 		E34A642616FEB8DD0053A496 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E34A642416FEB8DD0053A496 /* InfoPlist.strings */; };
@@ -57,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E31FEF80186E65F200E2DC06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E34A63FA16FEB8DD0053A496 /* GQFlowController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GQFlowController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E34A63FD16FEB8DD0053A496 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E34A63FF16FEB8DD0053A496 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -70,8 +71,7 @@
 		E34A640F16FEB8DD0053A496 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		E34A641116FEB8DD0053A496 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		E34A641316FEB8DD0053A496 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GQFlowControllerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E34A641B16FEB8DD0053A496 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GQFlowControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E34A642316FEB8DD0053A496 /* GQFlowControllerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GQFlowControllerTests-Info.plist"; sourceTree = "<group>"; };
 		E34A642516FEB8DD0053A496 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E34A642716FEB8DD0053A496 /* GQFlowControllerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GQFlowControllerTests.h; sourceTree = "<group>"; };
@@ -134,7 +134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E34A641C16FEB8DD0053A496 /* SenTestingKit.framework in Frameworks */,
+				E31FEF81186E65F200E2DC06 /* XCTest.framework in Frameworks */,
 				E34A641D16FEB8DD0053A496 /* UIKit.framework in Frameworks */,
 				E34A641E16FEB8DD0053A496 /* Foundation.framework in Frameworks */,
 				E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */,
@@ -159,7 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				E34A63FA16FEB8DD0053A496 /* GQFlowController.app */,
-				E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.octest */,
+				E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -167,11 +167,11 @@
 		E34A63FC16FEB8DD0053A496 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E31FEF80186E65F200E2DC06 /* XCTest.framework */,
 				E36D9976177E794F004B9B64 /* QuartzCore.framework */,
 				E34A63FD16FEB8DD0053A496 /* UIKit.framework */,
 				E34A63FF16FEB8DD0053A496 /* Foundation.framework */,
 				E34A640116FEB8DD0053A496 /* CoreGraphics.framework */,
-				E34A641B16FEB8DD0053A496 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -334,8 +334,8 @@
 			);
 			name = GQFlowControllerTests;
 			productName = GQFlowControllerTests;
-			productReference = E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = E34A641A16FEB8DD0053A496 /* GQFlowControllerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -559,6 +559,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
@@ -574,7 +576,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -585,6 +586,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
@@ -600,7 +603,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

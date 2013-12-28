@@ -6,8 +6,8 @@
 //  Copyright (c) 2013年 Qian GuoQiang. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface GQFlowControllerTests : SenTestCase
+@interface GQFlowControllerTests : XCTestCase
 
 @end
