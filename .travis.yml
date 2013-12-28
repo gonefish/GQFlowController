@@ -1,3 +1,2 @@
 language: objective-c
-xcode_workspace: GQFlowController.xcworkspace
-xcode_scheme: GQFlowController
+script: xctool -workspace GQFlowController.xcworkspace -scheme GQFlowController -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO test
