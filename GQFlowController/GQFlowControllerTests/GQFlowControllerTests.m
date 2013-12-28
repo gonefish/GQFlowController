@@ -11,6 +11,14 @@
 
 #import "GQFlowController.h"
 
+@implementation UIViewController (XCTestHelper)
+
+- (void)addChildViewController:(UIViewController *)childController {
+    
+}
+
+@end
+
 @interface GQFlowControllerTests ()
 
 @property (nonatomic, strong) GQFlowController *flowController;
@@ -119,15 +127,35 @@
 
 - (void)testFlowInViewControllerAnimated
 {
-    UIViewController *testController = [UIViewController new];
+    UIViewController *partial0 = [UIViewController new];
+    
+    id vc0 = [OCMockObject partialMockForObject:partial0];
+    
+    self.flowController.viewControllers = @[vc0];
+    
+    UIViewController *partial1 = [UIViewController new];
+    
+    id vc1 = [OCMockObject partialMockForObject:partial1];
+    
+    [[vc1 expect] viewDidLoad];
     
     NSLog(@"dummy %@", self.flowController.view);
     
-    [self.flowController flowInViewController:testController animated:NO];
+    [[vc1 expect] viewWillAppear:NO];
     
-    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"");
+    [[vc0 expect] viewWillDisappear:NO];
     
-    XCTAssertEqual(testController.view.frame.origin.x, (CGFloat).0, @"");
+    [[vc1 expect] viewDidAppear:NO];
+    
+    [[vc0 expect] viewDidDisappear:NO];
+    
+    [self.flowController flowInViewController:vc1 animated:NO];
+    
+    [vc1 verify];
+    
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"");
+    
+    XCTAssertEqual([(UIViewController *)vc1 view].frame.origin.x, (CGFloat).0, @"");
 }
 
 - (void)testFlowOutViewControllerAnimated
@@ -275,6 +303,7 @@
     
     XCTAssertEqual([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
 }
+
 
 
 #pragma mark - GQViewController Protocol
