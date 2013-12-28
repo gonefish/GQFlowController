@@ -121,7 +121,7 @@
 {
     UIViewController *testController = [UIViewController new];
     
-    UIView *dummy = self.flowController.view;
+    NSLog(@"dummy %@", self.flowController.view);
     
     [self.flowController flowInViewController:testController animated:NO];
     
@@ -195,6 +195,26 @@
         
         XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
     }
+}
+
+- (void)testDidReceiveMemoryWarning
+{
+    UIViewController *a = [UIViewController new];
+    UIViewController *b = [UIViewController new];
+    
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b]];
+    
+    NSLog(@"dummy %@", flowController.view);
+    
+    [flowController didReceiveMemoryWarning];
+    
+    XCTAssertFalse([a isViewLoaded], @"安全释放");
+    
+    XCTAssertTrue([b isViewLoaded], @"正常显示");
+    
+    [flowController flowOutViewControllerAnimated:NO];
+    
+    XCTAssertTrue([a isViewLoaded], @"正常显示");
 }
 
 #pragma mark - GQFlowControllerAdditions

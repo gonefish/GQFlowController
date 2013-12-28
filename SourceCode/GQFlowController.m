@@ -62,7 +62,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 @property (nonatomic) BOOL shouldBeginAppearance;
 
 // 保存在内存警告中释放视图的frame
-@property (nonatomic, strong) NSMutableDictionary *releaseViewFrames;
+@property (nonatomic, strong) NSMutableDictionary *releaseViewInfos;
 
 @end
 
@@ -125,8 +125,13 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
          if (safeReleaseView) {
              if (![obj isViewLoaded]) return;
              
-             [self.releaseViewFrames setObject:NSStringFromCGRect(obj.view.frame)
-                                 forKey:[NSString stringWithFormat:@"%u", [obj hash]]];
+             NSDictionary *viewInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       NSStringFromCGRect(obj.view.frame), @"frame",
+                                       [NSNumber numberWithBool:obj.isOverlayContent], @"isOverlayContent",
+                                       nil];
+             NSString *viewKey = [NSString stringWithFormat:@"%u", [obj hash]];
+             
+             (self.releaseViewInfos)[viewKey] = viewInfo;
             
              [obj.view removeFromSuperview];
              
@@ -297,7 +302,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             self.viewFlowingDuration = 1.0;
         }
         
-        self.releaseViewFrames = [NSMutableDictionary dictionary];
+        self.releaseViewInfos = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -1000,12 +1005,22 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              if (obj.view.superview == nil) {
                  NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
                  
-                 NSString *rectString = [self.releaseViewFrames objectForKey:belowVCKey];
+                 NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
                  
-                 if (rectString) {
-                     obj.view.frame = CGRectFromString(rectString);
+                 if (viewInfo) {
+                     NSString *frameString = viewInfo[@"frame"];
                      
-                     [self.releaseViewFrames removeObjectForKey:belowVCKey];
+                     if (frameString) {
+                         obj.view.frame = CGRectFromString(frameString);
+                     }
+                     
+                     NSNumber *isOverlayContent = viewInfo[@"isOverlayContent"];
+                     
+                     if (isOverlayContent) {
+                         obj.overlayContent = [isOverlayContent boolValue];
+                     }
+                     
+                     [self.releaseViewInfos removeObjectForKey:belowVCKey];
                  }
                  
                  [self.view insertSubview:obj.view
