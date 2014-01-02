@@ -114,6 +114,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
     
+    if ([self isViewLoaded] == NO) return;
+    
     // 安全释放已经不在显示的视图
     __block BOOL safeReleaseView = NO;
     
