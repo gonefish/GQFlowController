@@ -243,6 +243,13 @@
     [flowController flowOutViewControllerAnimated:NO];
     
     XCTAssertTrue([a isViewLoaded], @"正常显示");
+    
+    [flowController flowInViewController:b animated:NO];
+    b.view.backgroundColor = [UIColor clearColor];
+    
+    [flowController didReceiveMemoryWarning];
+    
+    XCTAssertTrue([a isViewLoaded], @"不能被释放");
 }
 
 #pragma mark - GQFlowControllerAdditions

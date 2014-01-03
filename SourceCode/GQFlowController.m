@@ -124,9 +124,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [self.innerViewControllers
      enumerateObjectsWithOptions:NSEnumerationReverse
      usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+         if ([obj isViewLoaded] == NO) return;
+         
          if (safeReleaseView) {
-             if (![obj isViewLoaded]) return;
-             
              NSDictionary *viewInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                        NSStringFromCGRect(obj.view.frame), @"frame",
                                        [NSNumber numberWithBool:obj.isOverlayContent], @"isOverlayContent",
@@ -149,6 +149,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                  [obj viewDidUnload];
              }
          } else {
+             if ([obj.view.backgroundColor isEqual:[UIColor colorWithRed:.0 green:.0 blue:.0 alpha:.0]]
+                 || [obj.view.backgroundColor isEqual:[UIColor clearColor]]
+                 || obj.view.alpha < 1.0) {
+                 return;
+             }
+             
              if (CGRectEqualToRect(checkFrame, CGRectZero)) {
                  checkFrame = obj.view.frame;
              } else {
