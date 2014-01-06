@@ -200,14 +200,16 @@
     
     [[vc1 expect] viewWillAppear:NO];
     [[vc1 expect] viewDidAppear:NO];
-    [[vc2 expect] viewWillDisappear:NO];
-    [[vc2 expect] viewDidDisappear:NO];
     [[vc0 expect] viewWillAppear:NO];
     [[vc0 expect] viewDidAppear:NO];
+    [[vc2 expect] viewWillDisappear:NO];
+    [[vc2 expect] viewDidDisappear:NO];
     
-    [flowController flowInViewController:vc1 animated:NO];
+    [flowController flowOutViewControllerAnimated:NO];
     
     [vc1 verify];
+    [vc0 verify];
+    [vc2 verify];
 }
 
 - (void)testFlowOutToRootViewControllerAnimated
