@@ -158,7 +158,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              if (CGRectEqualToRect(checkFrame, CGRectZero)) {
                  checkFrame = obj.view.frame;
              } else {
-                 checkFrame = CGRectIntersection(checkFrame, obj.view.frame);
+                 checkFrame = CGRectUnion(checkFrame, obj.view.frame);
              }
             
              // 检测是否遮盖住其它视图
@@ -1038,7 +1038,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              if (CGRectEqualToRect(checkFrame, CGRectZero)) {
                  checkFrame = obj.view.frame;
              } else {
-                 checkFrame = CGRectIntersection(checkFrame, obj.view.frame);
+                 checkFrame = CGRectUnion(checkFrame, obj.view.frame);
              }
              
              // 检测是否遮盖住其它视图

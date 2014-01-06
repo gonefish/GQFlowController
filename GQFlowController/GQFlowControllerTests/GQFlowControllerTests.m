@@ -229,27 +229,63 @@
 {
     UIViewController *a = [UIViewController new];
     UIViewController *b = [UIViewController new];
+    UIViewController *c = [UIViewController new];
+    UIViewController *d = [UIViewController new];
     
-    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b]];
+    GQFlowController *flowController = nil;
     
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[a]];
     NSLog(@"dummy %@", flowController.view);
     
     [flowController didReceiveMemoryWarning];
     
-    XCTAssertFalse([a isViewLoaded], @"安全释放");
+    XCTAssertTrue([a isViewLoaded], @"不能释放");
     
-    XCTAssertTrue([b isViewLoaded], @"正常显示");
+    [flowController flowInViewController:b animated:NO];
+    
+    [flowController didReceiveMemoryWarning];
+    
+    XCTAssertFalse([a isViewLoaded], @"安全释放");
+    XCTAssertTrue([b isViewLoaded], @"不能释放");
     
     [flowController flowOutViewControllerAnimated:NO];
     
     XCTAssertTrue([a isViewLoaded], @"正常显示");
     
-    [flowController flowInViewController:b animated:NO];
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b]];
+    NSLog(@"dummy %@", flowController.view);
+    
     b.view.backgroundColor = [UIColor clearColor];
     
     [flowController didReceiveMemoryWarning];
     
-    XCTAssertTrue([a isViewLoaded], @"不能被释放");
+    XCTAssertTrue([a isViewLoaded], @"不能释放");
+    XCTAssertTrue([b isViewLoaded], @"不能释放");
+    
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d]];
+    NSLog(@"dummy %@", flowController.view);
+    
+    d.view.frame = CGRectOffset(d.view.frame, 100.0, .0);
+
+    [flowController didReceiveMemoryWarning];
+
+    XCTAssertFalse([a isViewLoaded], @"安全释放");
+    XCTAssertFalse([b isViewLoaded], @"安全释放");
+    XCTAssertTrue([c isViewLoaded], @"不能释放");
+    XCTAssertTrue([d isViewLoaded], @"不能释放");
+
+    UIViewController *e = [UIViewController new];
+    
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d, e]];
+    NSLog(@"dummy %@", flowController.view);
+
+    [flowController didReceiveMemoryWarning];
+
+    XCTAssertFalse([a isViewLoaded], @"安全释放");
+    XCTAssertFalse([b isViewLoaded], @"安全释放");
+    XCTAssertFalse([c isViewLoaded], @"安全释放");
+    XCTAssertFalse([d isViewLoaded], @"安全释放");
+    XCTAssertTrue([e isViewLoaded], @"不能释放");
 }
 
 #pragma mark - GQFlowControllerAdditions
