@@ -749,14 +749,16 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
         UIViewController *belowVC = [self.innerViewControllers lastObject];
         
-        // 确保视图已经添加
-        [self prepareBelowViewControllers];
-        
         [self.topViewController beginAppearanceTransition:NO
                                                  animated:animated];
-            
-        [belowVC beginAppearanceTransition:YES
-                                         animated:animated];
+        
+        // 确保视图已经添加
+        NSArray *appearanceBelowViewControllers = [self prepareBelowViewControllers];
+        
+        for (UIViewController *vc in appearanceBelowViewControllers) {
+            [vc beginAppearanceTransition:YES
+                                 animated:animated];
+        }
         
         if ([self shouldAutomaticallyOverlayContentForViewController:self.topViewController]) {
             self.topViewController.overlayContent = YES;
@@ -780,7 +782,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         void (^completionBlock)(BOOL) = ^(BOOL finished) {
             [self.topViewController endAppearanceTransition];
             
-            [belowVC endAppearanceTransition];
+            for (UIViewController *vc in appearanceBelowViewControllers) {
+                [vc endAppearanceTransition];
+            }
             
             [self removeTopViewController];
             
@@ -1002,13 +1006,16 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 /** 确保下层视图是否已经添加
  */
-- (void)prepareBelowViewControllers
+- (NSArray *)prepareBelowViewControllers
 {
     __block CGRect checkFrame = CGRectZero;
+    __block NSMutableArray *vcs = [NSMutableArray array];
     
     [self.innerViewControllers
      enumerateObjectsWithOptions:NSEnumerationReverse
      usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+         [vcs addObject:obj];
+         
          if (self.topViewController != obj) {
              if (obj.view.superview == nil) {
                  NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
@@ -1047,6 +1054,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              }
          }
      }];
+    
+    return [vcs copy];
 }
 
 - (void)panGestureAction
