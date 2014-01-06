@@ -178,6 +178,36 @@
     XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
     
     XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
+    
+
+    UIViewController *partial0 = [UIViewController new];
+    
+    id vc0 = [OCMockObject partialMockForObject:partial0];
+    
+    UIViewController *partial1 = [UIViewController new];
+    
+    id vc1 = [OCMockObject partialMockForObject:partial1];
+    
+    UIViewController *partial2 = [UIViewController new];
+    
+    id vc2 = [OCMockObject partialMockForObject:partial2];
+    
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2]];
+    
+    NSLog(@"dummy %@", flowController.view);
+    
+    [(UIViewController *)vc1 view].frame = CGRectOffset([(UIViewController *)vc1 view].frame, 100.0, .0);
+    
+    [[vc1 expect] viewWillAppear:NO];
+    [[vc1 expect] viewDidAppear:NO];
+    [[vc2 expect] viewWillDisappear:NO];
+    [[vc2 expect] viewDidDisappear:NO];
+    [[vc0 expect] viewWillAppear:NO];
+    [[vc0 expect] viewDidAppear:NO];
+    
+    [flowController flowInViewController:vc1 animated:NO];
+    
+    [vc1 verify];
 }
 
 - (void)testFlowOutToRootViewControllerAnimated
