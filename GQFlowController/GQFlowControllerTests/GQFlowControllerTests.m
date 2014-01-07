@@ -25,6 +25,8 @@
 
 @property (nonatomic) BOOL isiOS6;
 
+@property (nonatomic, weak) UIView *dummyView;
+
 @end
 
 @implementation GQFlowControllerTests
@@ -139,7 +141,7 @@
     
     [[vc1 expect] viewDidLoad];
     
-    NSLog(@"dummy %@", self.flowController.view);
+    self.dummyView = self.flowController.view;
     
     [[vc1 expect] viewWillAppear:NO];
     
@@ -194,7 +196,7 @@
     
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2]];
     
-    NSLog(@"dummy %@", flowController.view);
+    self.dummyView = flowController.view;
     
     [(UIViewController *)vc1 view].frame = CGRectOffset([(UIViewController *)vc1 view].frame, 100.0, .0);
     
@@ -267,7 +269,7 @@
     GQFlowController *flowController = nil;
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a]];
-    NSLog(@"dummy %@", flowController.view);
+    self.dummyView = flowController.view;
     
     [flowController didReceiveMemoryWarning];
     
@@ -285,7 +287,7 @@
     XCTAssertTrue([a isViewLoaded], @"正常显示");
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b]];
-    NSLog(@"dummy %@", flowController.view);
+    self.dummyView = flowController.view;
     
     b.view.backgroundColor = [UIColor clearColor];
     
@@ -295,7 +297,7 @@
     XCTAssertTrue([b isViewLoaded], @"不能释放");
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d]];
-    NSLog(@"dummy %@", flowController.view);
+    self.dummyView = flowController.view;
     
     d.view.frame = CGRectOffset(d.view.frame, 100.0, .0);
 
@@ -309,7 +311,7 @@
     UIViewController *e = [UIViewController new];
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d, e]];
-    NSLog(@"dummy %@", flowController.view);
+    self.dummyView = flowController.view;
 
     [flowController didReceiveMemoryWarning];
 
