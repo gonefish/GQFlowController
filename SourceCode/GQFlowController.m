@@ -1446,14 +1446,15 @@ static char kQGOverlayViewObjectKey;
 
 - (void)setOverlayContent:(BOOL)yesOrNo enabledShotView:(BOOL)yesOrNoShotView
 {
+    UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
+    
     // 优化状态处理
-    if (self.isOverlayContent == yesOrNo) {
+    if (self.isOverlayContent == yesOrNo
+        && overlayView.superview) {
         return;
     }
     
     objc_setAssociatedObject(self, &kQGOverlayContentObjectKey, [NSNumber numberWithInt:yesOrNo], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    
-    UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
     
     if (overlayView == nil) {
         overlayView = [[UIView alloc] initWithFrame:self.view.bounds];

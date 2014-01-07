@@ -379,8 +379,35 @@
     [vc setOverlayContent:YES enabledShotView:YES];
     
     XCTAssertEqual([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
+    
+    
+    
+    UIViewController *vc1 = [[UIViewController alloc] init];
+    
+    [self.flowController flowInViewController:vc1 animated:NO];
+    
+    self.dummyView = self.flowController.view;
+    
+    UIViewController *vc2 = [[UIViewController alloc] init];
+    
+    [self.flowController flowInViewController:vc2 animated:NO];
+    
+    XCTAssertTrue(vc1.isOverlayContent, @"有遮罩层");
+    
+    UIViewController *vc3 = [[UIViewController alloc] init];
+    
+    [self.flowController flowInViewController:vc3 animated:NO];
+    
+    XCTAssertTrue(vc1.isOverlayContent, @"有遮罩层");
+    XCTAssertTrue(vc2.isOverlayContent, @"有遮罩层");
+    
+    [self.flowController didReceiveMemoryWarning];
+    
+    [self.flowController flowOutViewControllerAnimated:NO];
+    
+    XCTAssertTrue(vc1.isOverlayContent, @"有遮罩层");
+    XCTAssertFalse(vc2.isOverlayContent, @"没有遮罩层");
 }
-
 
 
 #pragma mark - GQViewController Protocol
