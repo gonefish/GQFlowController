@@ -1457,7 +1457,15 @@ static char kQGOverlayViewObjectKey;
     objc_setAssociatedObject(self, &kQGOverlayContentObjectKey, [NSNumber numberWithInt:yesOrNo], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     if (overlayView == nil) {
-        overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        if ([self respondsToSelector:@selector(overlayContentView)]) {
+            overlayView = [(id<GQViewController>)self overlayContentView];
+        }
+        
+        if (overlayView == nil
+            && ![overlayView isKindOfClass:[UIView class]]) {
+            overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+        }
+        
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
         
         if ([self respondsToSelector:@selector(overlayContentTapAction:)]) {

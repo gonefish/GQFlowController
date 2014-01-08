@@ -117,16 +117,9 @@ typedef enum {
  */
 - (CGFloat)flowingBoundary;
 
-
-/** 覆盖层的Tap Gesture Recongnizer Action
- */
-- (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer;
-
-
 /** 是否跟随Top View滑动，默认值为YES
  */
 - (BOOL)shouldFollowAboveViewFlowing;
-
 
 /** 滑动动画的持续时间
  
@@ -140,6 +133,14 @@ typedef enum {
  @return 默认为YES
  */
 - (BOOL)shouldAutomaticallyOverlayContent;
+
+/** 自定义覆盖层视图
+ */
+- (UIView *)overlayContentView;
+
+/** 覆盖层的Tap Gesture Recongnizer Action
+ */
+- (void)overlayContentTapAction:(UITapGestureRecognizer *)gestureRecognizer;
 
 @end
 
