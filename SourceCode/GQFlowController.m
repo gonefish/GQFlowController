@@ -1441,11 +1441,6 @@ static char kQGOverlayViewObjectKey;
 
 - (void)setOverlayContent:(BOOL)yesOrNo
 {
-    [self setOverlayContent:yesOrNo enabledShotView:NO];
-}
-
-- (void)setOverlayContent:(BOOL)yesOrNo enabledShotView:(BOOL)yesOrNoShotView
-{
     UIView *overlayView = objc_getAssociatedObject(self, &kQGOverlayViewObjectKey);
     
     // 优化状态处理
@@ -1478,33 +1473,9 @@ static char kQGOverlayViewObjectKey;
     }
     
     if (yesOrNo) {
-        if (yesOrNoShotView) {
-            [overlayView setBackgroundColor:[UIColor blackColor]];
-            
-            UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.0);
-            
-            CGContextRef context = UIGraphicsGetCurrentContext();
-            
-            [self.view.layer renderInContext:context];
-            
-            UIImage *contentShot = UIGraphicsGetImageFromCurrentImageContext();
-            
-            UIGraphicsEndImageContext();
-            
-            UIImageView *shotView = [[UIImageView alloc] initWithImage:contentShot];
-            
-            [overlayView addSubview:shotView];
-            
-            UIView *maskView = [[UIView alloc] initWithFrame:self.view.bounds];
-            
-            maskView.backgroundColor = [UIColor clearColor];
-            
-            [overlayView addSubview:maskView];
-        } else {
-            if (![self respondsToSelector:@selector(overlayContentView)]
-                || [(id<GQViewController>)self overlayContentView] == nil) {
-                [overlayView setBackgroundColor:[UIColor clearColor]];
-            }
+        if (![self respondsToSelector:@selector(overlayContentView)]
+            || [(id<GQViewController>)self overlayContentView] == nil) {
+            [overlayView setBackgroundColor:[UIColor clearColor]];
         }
         
         [self.view addSubview:overlayView];

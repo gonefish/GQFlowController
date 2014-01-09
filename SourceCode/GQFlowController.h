@@ -154,6 +154,4 @@ typedef enum {
 
 @property (nonatomic, getter=isOverlayContent) BOOL overlayContent;
 
-- (void)setOverlayContent:(BOOL)yesOrNo enabledShotView:(BOOL)yesOrNoShotView;
-
 @end

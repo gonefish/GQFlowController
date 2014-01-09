@@ -380,11 +380,6 @@
     
     XCTAssertEqual([[vc.view subviews] count], (NSUInteger)0, @"");
     
-    [vc setOverlayContent:YES enabledShotView:YES];
-    
-    XCTAssertEqual([[[[vc.view subviews] lastObject] subviews] count], (NSUInteger)2, @"截图已经添加");
-    
-    
     
     UIViewController *vc1 = [[UIViewController alloc] init];
     
