@@ -17,6 +17,10 @@
     
 }
 
+- (UIView *)overlayContentView {
+    return nil;
+}
+
 @end
 
 @interface GQFlowControllerTests ()
@@ -407,6 +411,17 @@
     
     XCTAssertTrue(vc1.isOverlayContent, @"有遮罩层");
     XCTAssertFalse(vc2.isOverlayContent, @"没有遮罩层");
+    
+    
+    UIViewController *partial4 = [UIViewController new];
+    
+    id vc4 = [OCMockObject partialMockForObject:partial4];
+    UIView *aOverlayView = [[UIView alloc] init];
+    [[[vc4 stub] andReturn:aOverlayView] overlayContentView];
+    
+    [vc4 setOverlayContent:YES];
+    
+    XCTAssertEqualObjects([[[(UIViewController *)vc4 view] subviews] lastObject], aOverlayView, @"自定义遮罩层无效");
 }
 
 
