@@ -670,12 +670,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 {
     UIViewController *belowVC = self.topViewController;
     
+    // 添加到容器中，并设置将要滑入的起始位置
+    [self addTopViewController:viewController];
+    
     if ([self shouldAutomaticallyOverlayContentForViewController:belowVC]) {
         belowVC.overlayContent = YES;
     }
-    
-    // 添加到容器中，并设置将要滑入的起始位置
-    [self addTopViewController:viewController];
     
     if ([self shouldAutomaticallyOverlayContentForViewController:viewController]) {
         viewController.overlayContent = YES;
@@ -1501,7 +1501,10 @@ static char kQGOverlayViewObjectKey;
             
             [overlayView addSubview:maskView];
         } else {
-            [overlayView setBackgroundColor:[UIColor clearColor]];
+            if (![self respondsToSelector:@selector(overlayContentView)]
+                || [(id<GQViewController>)self overlayContentView] == nil) {
+                [overlayView setBackgroundColor:[UIColor clearColor]];
+            }
         }
         
         [self.view addSubview:overlayView];

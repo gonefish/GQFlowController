@@ -413,15 +413,25 @@
     XCTAssertFalse(vc2.isOverlayContent, @"没有遮罩层");
     
     
-    UIViewController *partial4 = [UIViewController new];
+    UIViewController *partial4 = [[UIViewController alloc] init];
     
     id vc4 = [OCMockObject partialMockForObject:partial4];
     UIView *aOverlayView = [[UIView alloc] init];
+    aOverlayView.backgroundColor = [UIColor redColor];
     [[[vc4 stub] andReturn:aOverlayView] overlayContentView];
     
     [vc4 setOverlayContent:YES];
     
     XCTAssertEqualObjects([[[(UIViewController *)vc4 view] subviews] lastObject], aOverlayView, @"自定义遮罩层无效");
+    XCTAssertEqualObjects([[[[(UIViewController *)vc4 view] subviews] lastObject] backgroundColor], [UIColor redColor], @"自定义遮罩层颜色正常");
+    
+    UIViewController *partial5 = [[UIViewController alloc] init];
+    id vc5 = [OCMockObject partialMockForObject:partial5];
+    UIView *aOverlayView5 = [[UIView alloc] init];
+    aOverlayView5.backgroundColor = [UIColor redColor];
+    [[[vc5 stub] andReturn:nil] overlayContentView];
+    
+    XCTAssertNotEqualObjects([[[[(UIViewController *)vc5 view] subviews] lastObject] backgroundColor], [UIColor redColor], @"自定义遮罩层颜色正常");
 }
 
 
