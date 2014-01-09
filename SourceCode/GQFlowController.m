@@ -1459,6 +1459,7 @@ static char kQGOverlayViewObjectKey;
         if (overlayView == nil
             && ![overlayView isKindOfClass:[UIView class]]) {
             overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+            overlayView.backgroundColor = [UIColor clearColor];
         }
         
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
@@ -1473,18 +1474,9 @@ static char kQGOverlayViewObjectKey;
     }
     
     if (yesOrNo) {
-        if (![self respondsToSelector:@selector(overlayContentView)]
-            || [(id<GQViewController>)self overlayContentView] == nil) {
-            [overlayView setBackgroundColor:[UIColor clearColor]];
-        }
-        
         [self.view addSubview:overlayView];
     } else {
         [overlayView removeFromSuperview];
-        
-        [overlayView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-            [(UIView *)obj removeFromSuperview];
-        }];
     }
 }
 
