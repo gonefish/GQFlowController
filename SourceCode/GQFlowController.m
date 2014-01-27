@@ -93,14 +93,13 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
     
-    // 计算需要添加的视图，然后统一添加
+    // 计算需要添加的视图控制器
+    NSArray *vcs = [self viewDidLoadViewControllers];
     
-    // 默认添加最顶层视图
-    
-    // 计算下层需要显示的视图
-    [self layoutViewControllers];
+    for (UIViewController *vc in vcs) {
+        [self addChildContentViewController:vc];
+    }
     
     // 添加手势
     [self addPanGestureRecognizer];
@@ -566,7 +565,11 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (void)addChildContentViewController:(UIViewController *)childController
 {
+    [self addChildViewController:childController];
     
+    [self.view addSubview:childController.view];
+    
+    [childController didMoveToParentViewController:self];
 }
 
 - (void)holdViewControllers:(NSArray *)viewControllers
@@ -1024,7 +1027,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [self.innerViewControllers
      enumerateObjectsWithOptions:NSEnumerationReverse
      usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
-         [vcs addObject:obj];
+         [vcs insertObject:obj atIndex:0];
          
          // 设置frame
          NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];

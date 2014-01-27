@@ -315,17 +315,24 @@
     XCTAssertTrue([a isViewLoaded], @"不能释放");
     XCTAssertTrue([b isViewLoaded], @"不能释放");
     
-    flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d]];
-    self.dummyView = flowController.view;
+    GQMockViewController *mockvcd = [[GQMockViewController alloc] init];
     
-    d.view.frame = CGRectOffset(d.view.frame, 100.0, .0);
+    CGRect frame = CGRectMake(10, 10, 10, 10);
+    
+    id dmock= [OCMockObject partialMockForObject:mockvcd];
+    
+    [[[dmock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
+    
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, dmock]];
+    
+    self.dummyView = flowController.view;
 
     [flowController didReceiveMemoryWarning];
 
     XCTAssertFalse([a isViewLoaded], @"安全释放");
     XCTAssertFalse([b isViewLoaded], @"安全释放");
     XCTAssertTrue([c isViewLoaded], @"不能释放");
-    XCTAssertTrue([d isViewLoaded], @"不能释放");
+    XCTAssertTrue([dmock isViewLoaded], @"不能释放");
 
     UIViewController *e = [UIViewController new];
     
@@ -365,6 +372,8 @@
     NSArray *vcs2 = [flowController2 performSelector:@selector(viewDidLoadViewControllers)];
     
     XCTAssertEqual([vcs2 count], (NSUInteger)2, @"需要加载vc2, vc3");
+    XCTAssertEqualObjects(vc2, vcs2[0], @"加载的视图是vc2");
+    XCTAssertEqualObjects(vc3mock, vcs2[1], @"加载的视图是vc3mock");
 }
 
 #pragma mark - GQFlowControllerAdditions
