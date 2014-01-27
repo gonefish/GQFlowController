@@ -11,6 +11,21 @@
 
 #import "GQFlowController.h"
 
+@interface GQMockViewController : UIViewController <GQViewController>
+
+- (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction;
+
+@end
+
+@implementation GQMockViewController
+
+- (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction
+{
+    return CGRectZero;
+}
+
+@end
+
 @implementation UIViewController (XCTestHelper)
 
 - (void)addChildViewController:(UIViewController *)childController {
@@ -324,6 +339,32 @@
     XCTAssertFalse([c isViewLoaded], @"安全释放");
     XCTAssertFalse([d isViewLoaded], @"安全释放");
     XCTAssertTrue([e isViewLoaded], @"不能释放");
+}
+
+- (void)testViewDidLoadViewControllers
+{
+    UIViewController *vc0 = [[UIViewController alloc] init];
+    UIViewController *vc1 = [[UIViewController alloc] init];
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
+    
+    NSArray *vcs = [flowController performSelector:@selector(viewDidLoadViewControllers)];
+    
+    XCTAssertEqual([vcs count], (NSUInteger)1, @"只需要加载vc1");
+    XCTAssertEqualObjects(vc1, vcs[0], @"加载的视图是vc1");
+    
+    UIViewController *vc2 = [[UIViewController alloc] init];
+    GQMockViewController *vc3 = [[GQMockViewController alloc] init];
+    
+    CGRect frame = CGRectMake(10, 10, 10, 10);
+    
+    id vc3mock= [OCMockObject partialMockForObject:vc3];
+    [[[vc3mock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
+    
+    GQFlowController *flowController2 = [[GQFlowController alloc] initWithViewControllers:@[vc2, vc3mock]];
+    
+    NSArray *vcs2 = [flowController2 performSelector:@selector(viewDidLoadViewControllers)];
+    
+    XCTAssertEqual([vcs2 count], (NSUInteger)2, @"需要加载vc2, vc3");
 }
 
 #pragma mark - GQFlowControllerAdditions

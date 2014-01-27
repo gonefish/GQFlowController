@@ -95,8 +95,14 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    // 计算需要添加的视图，然后统一添加
+    
+    // 默认添加最顶层视图
+    
+    // 计算下层需要显示的视图
     [self layoutViewControllers];
     
+    // 添加手势
     [self addPanGestureRecognizer];
 }
 
@@ -463,6 +469,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     [self holdViewControllers:@[[newArray lastObject]]];
                     
                     [self updateChildViewControllers:newArray];
+                    // 可以lazy处理，不立即加入
                     
                     [self addPanGestureRecognizer];
                 } else {
@@ -555,7 +562,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 }
 
 
-#pragma mark - UIViewController Container Method
+#pragma mark - Container View Controller Method
+
+- (void)addChildContentViewController:(UIViewController *)childController
+{
+    
+}
 
 - (void)holdViewControllers:(NSArray *)viewControllers
 {
@@ -991,17 +1003,70 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [self.topViewController.view addGestureRecognizer:self.topViewPanGestureRecognizer];
 }
 
+// 移除手势
 - (void)removePanGestureRecognizer
 {
-    // 判断是否实现GQViewControllerProtocol
-    if (![self.topViewController conformsToProtocol:@protocol(GQViewController)]) {
-        return;
-    }
-    
     if (self.topViewPanGestureRecognizer) {
         self.topViewPanGestureRecognizer.delegate = nil;
         [self.topViewController.view removeGestureRecognizer:self.topViewPanGestureRecognizer];
     }
+}
+
+- (NSArray *)viewDidLoadViewControllers
+{
+    __block CGRect checkRect = CGRectZero;
+    __block NSMutableArray *vcs = [NSMutableArray arrayWithCapacity:1];
+    CGRect defaultRect = CGRectMake(.0,
+                                    .0,
+                                    self.view.bounds.size.width,
+                                    self.view.bounds.size.height);
+    
+    [self.innerViewControllers
+     enumerateObjectsWithOptions:NSEnumerationReverse
+     usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+         [vcs addObject:obj];
+         
+         // 设置frame
+         NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
+         
+         NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
+         
+         if (viewInfo) {
+             NSString *frameString = viewInfo[@"frame"];
+             
+             if (frameString) {
+                 obj.view.frame = CGRectFromString(frameString);
+             }
+             
+             NSNumber *isOverlayContent = viewInfo[@"isOverlayContent"];
+             
+             if (isOverlayContent) {
+                 obj.overlayContent = [isOverlayContent boolValue];
+             }
+             
+             [self.releaseViewInfos removeObjectForKey:belowVCKey];
+         } else {
+             if ([obj respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
+                 obj.view.frame = [(id<GQViewController>)obj destinationRectForFlowDirection:obj.flowInDirection];
+             } else {
+                 obj.view.frame = defaultRect;
+             }
+         }
+         
+         if (idx == [self.innerViewControllers count] - 1) {
+             checkRect = obj.view.frame;
+         } else {
+             checkRect = CGRectUnion(checkRect, obj.view.frame);
+         }
+         
+         // 检测是否遮盖住其它视图
+         if (CGRectEqualToRect(checkRect, defaultRect)
+             || !CGRectContainsRect(defaultRect, checkRect)) {
+             *stop = YES;
+         }
+     }];
+    
+    return [vcs copy];
 }
 
 /** 确保下层视图是否已经添加
