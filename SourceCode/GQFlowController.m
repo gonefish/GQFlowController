@@ -513,9 +513,26 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             }
         } else {
             // 移除现在的视图控制器
-            [self holdViewControllers:nil];
+            [self removePanGestureRecognizer];
             
-            [self updateChildViewControllers:newArray];
+            [self removeAllChildContentViewControllers];
+            
+            self.innerViewControllers = newArray;
+            
+            // 计算需要添加的视图控制器
+            NSArray *vcs = [self viewDidLoadViewControllers];
+            
+            BOOL lazy = NO;
+            
+            for (UIViewController *vc in self.innerViewControllers) {
+                if ([vcs containsObject:vc]) {
+                    lazy = NO;
+                } else {
+                    lazy = YES;
+                }
+                
+                [self addChildContentViewController:vc lazy:lazy];
+            }
             
             [self addPanGestureRecognizer];
         }
@@ -565,11 +582,25 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (void)addChildContentViewController:(UIViewController *)childController
 {
+    [self addChildContentViewController:childController lazy:NO];
+}
+
+- (void)addChildContentViewController:(UIViewController *)childController lazy:(BOOL)lazy
+{
     [self addChildViewController:childController];
     
-    [self.view addSubview:childController.view];
+    if (lazy == NO) {
+        [self.view addSubview:childController.view];
+    }
     
     [childController didMoveToParentViewController:self];
+}
+
+- (void)removeAllChildContentViewControllers
+{
+    for (UIViewController *vc in self.innerViewControllers) {
+        [self removeContentViewControler:vc];
+    }
 }
 
 - (void)holdViewControllers:(NSArray *)viewControllers

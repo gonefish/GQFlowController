@@ -52,6 +52,13 @@
 
 + (id)mockViewController
 {
+    UIViewController *mockVC = [[UIViewController alloc] init];
+    
+    return [OCMockObject partialMockForObject:mockVC];
+}
+
++ (id)mockGQViewController
+{
     GQMockViewController *mockVC = [[GQMockViewController alloc] init];
     
     return [OCMockObject partialMockForObject:mockVC];
@@ -101,17 +108,21 @@
     id vc0 = [GQFlowControllerTests mockViewController];
     id vc1 = [GQFlowControllerTests mockViewController];
     
-    NSArray *aViewControllers = @[vc0, vc1];
-    
-    self.flowController.viewControllers = aViewControllers;
+    self.flowController.viewControllers = @[vc0, vc1];
     
     XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
     
-    NSArray *bViewControllers = @[vc0, vc1, [GQFlowController new]];
-    
-    self.flowController.viewControllers = bViewControllers;
+    self.flowController.viewControllers = @[vc0, vc1, [GQFlowController new]];
     
     XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"非法视图控制器没有过滤");
+    
+    self.dummyView = self.flowController.view;
+    
+    id vc2 = [GQFlowControllerTests mockViewController];
+    
+    self.flowController.viewControllers = @[vc2, vc1];
+    
+    XCTAssertFalse([vc2 isViewLoaded], @"vc2应该延迟加载");
 }
 
 - (void)testTopViewController
@@ -323,7 +334,7 @@
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
-    id dmock = [GQFlowControllerTests mockViewController];
+    id dmock = [GQFlowControllerTests mockGQViewController];
     
     [[[dmock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
@@ -367,7 +378,7 @@
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
-    id vc3mock = [GQFlowControllerTests mockViewController];
+    id vc3mock = [GQFlowControllerTests mockGQViewController];
     
     [[[vc3mock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
