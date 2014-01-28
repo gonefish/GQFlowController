@@ -26,7 +26,7 @@
 
 @end
 
-@implementation UIViewController (XCTestHelper)
+@implementation UIViewController (GQFlowControllerAdditionsHelper)
 
 - (void)addChildViewController:(UIViewController *)childController {
     
@@ -49,6 +49,13 @@
 @end
 
 @implementation GQFlowControllerTests
+
++ (id)mockViewController
+{
+    GQMockViewController *mockVC = [[GQMockViewController alloc] init];
+    
+    return [OCMockObject partialMockForObject:mockVC];
+}
 
 - (void)setUp
 {
@@ -315,11 +322,9 @@
     XCTAssertTrue([a isViewLoaded], @"不能释放");
     XCTAssertTrue([b isViewLoaded], @"不能释放");
     
-    GQMockViewController *mockvcd = [[GQMockViewController alloc] init];
-    
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
-    id dmock= [OCMockObject partialMockForObject:mockvcd];
+    id dmock = [GQFlowControllerTests mockViewController];
     
     [[[dmock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
@@ -360,11 +365,11 @@
     XCTAssertEqualObjects(vc1, vcs[0], @"加载的视图是vc1");
     
     UIViewController *vc2 = [[UIViewController alloc] init];
-    GQMockViewController *vc3 = [[GQMockViewController alloc] init];
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
-    id vc3mock= [OCMockObject partialMockForObject:vc3];
+    id vc3mock = [GQFlowControllerTests mockViewController];
+    
     [[[vc3mock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
     GQFlowController *flowController2 = [[GQFlowController alloc] initWithViewControllers:@[vc2, vc3mock]];
