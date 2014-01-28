@@ -97,22 +97,21 @@
 }
 
 - (void)testSetViewControllersAnimated
-{    
-    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
+{
+    id vc0 = [GQFlowControllerTests mockViewController];
+    id vc1 = [GQFlowControllerTests mockViewController];
+    
+    NSArray *aViewControllers = @[vc0, vc1];
     
     self.flowController.viewControllers = aViewControllers;
     
     XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
     
-    for (UIViewController *controller in self.flowController.viewControllers) {
-        XCTAssertEqualObjects(controller.flowController, self.flowController, @"子控制器访问不了");
-    }
-    
-    NSArray *bViewControllers = @[[UIViewController new], [UIViewController new], [GQFlowController new]];
+    NSArray *bViewControllers = @[vc0, vc1, [GQFlowController new]];
     
     self.flowController.viewControllers = bViewControllers;
     
-    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"属性设置不正确");
+    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"非法视图控制器没有过滤");
 }
 
 - (void)testTopViewController
@@ -395,6 +394,20 @@
              withObject:flowController];
     
     XCTAssertNotNil(vc.flowController, @"flowController settings");
+}
+
+- (void)testFlowController
+{
+    id vc0 = [GQFlowControllerTests mockViewController];
+    id vc1 = [GQFlowControllerTests mockViewController];
+    
+    NSArray *aViewControllers = @[vc0, vc1];
+    
+    self.flowController.viewControllers = aViewControllers;
+    
+    for (UIViewController *controller in self.flowController.viewControllers) {
+        XCTAssertEqualObjects(controller.flowController, self.flowController, @"flowController控制器访问不了");
+    }
 }
 
 - (void)testFlowInDirection
