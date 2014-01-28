@@ -11,13 +11,13 @@
 
 #import "GQFlowController.h"
 
-@interface GQMockViewController : UIViewController <GQViewController>
+@interface MockGQViewController : UIViewController <GQViewController>
 
 - (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction;
 
 @end
 
-@implementation GQMockViewController
+@implementation MockGQViewController
 
 - (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction
 {
@@ -59,7 +59,7 @@
 
 + (id)mockGQViewController
 {
-    GQMockViewController *mockVC = [[GQMockViewController alloc] init];
+    MockGQViewController *mockVC = [[MockGQViewController alloc] init];
     
     return [OCMockObject partialMockForObject:mockVC];
 }
@@ -165,15 +165,11 @@
 
 - (void)testFlowInViewControllerAnimated
 {
-    UIViewController *partial0 = [UIViewController new];
-    
-    id vc0 = [OCMockObject partialMockForObject:partial0];
+    id vc0 = [GQFlowControllerTests mockViewController];
     
     self.flowController.viewControllers = @[vc0];
     
-    UIViewController *partial1 = [UIViewController new];
-    
-    id vc1 = [OCMockObject partialMockForObject:partial1];
+    id vc1 = [GQFlowControllerTests mockViewController];
     
     [[vc1 expect] viewDidLoad];
     
@@ -218,17 +214,11 @@
     XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
     
 
-    UIViewController *partial0 = [UIViewController new];
+    id vc0 = [GQFlowControllerTests mockViewController];
     
-    id vc0 = [OCMockObject partialMockForObject:partial0];
+    id vc1 = [GQFlowControllerTests mockViewController];
     
-    UIViewController *partial1 = [UIViewController new];
-    
-    id vc1 = [OCMockObject partialMockForObject:partial1];
-    
-    UIViewController *partial2 = [UIViewController new];
-    
-    id vc2 = [OCMockObject partialMockForObject:partial2];
+    id vc2 = [GQFlowControllerTests mockViewController];
     
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2]];
     
@@ -487,9 +477,7 @@
     XCTAssertFalse(vc2.isOverlayContent, @"没有遮罩层");
     
     
-    UIViewController *partial4 = [[UIViewController alloc] init];
-    
-    id vc4 = [OCMockObject partialMockForObject:partial4];
+    id vc4 = [GQFlowControllerTests mockViewController];
     UIView *aOverlayView = [[UIView alloc] init];
     aOverlayView.backgroundColor = [UIColor redColor];
     [[[vc4 stub] andReturn:aOverlayView] overlayContentView];
@@ -499,8 +487,7 @@
     XCTAssertEqualObjects([[[(UIViewController *)vc4 view] subviews] lastObject], aOverlayView, @"自定义遮罩层无效");
     XCTAssertEqualObjects([[[[(UIViewController *)vc4 view] subviews] lastObject] backgroundColor], [UIColor redColor], @"自定义遮罩层颜色正常");
     
-    UIViewController *partial5 = [[UIViewController alloc] init];
-    id vc5 = [OCMockObject partialMockForObject:partial5];
+    id vc5 = [GQFlowControllerTests mockViewController];
     UIView *aOverlayView5 = [[UIView alloc] init];
     aOverlayView5.backgroundColor = [UIColor redColor];
     [[[vc5 stub] andReturn:nil] overlayContentView];
