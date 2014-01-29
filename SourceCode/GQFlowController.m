@@ -468,9 +468,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     [self holdViewControllers:@[[newArray lastObject]]];
                     
                     [self updateChildViewControllers:newArray];
-                    // 可以lazy处理，不立即加入
-                    
-                    [self addPanGestureRecognizer];
                 } else {
                     // Flow Out
                     // 保留最上面的视图控制器
@@ -479,18 +476,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     [newArray addObject:lastViewController];
                     
                     [self updateChildViewControllers:newArray];
-                    
-                    CGRect originFrame = [self inOriginRectForViewController:self.topViewController];
-                    CGRect toFrame = [self inDestinationRectForViewController:self.topViewController];
-                    
-                    for (UIViewController *vc in newArray) {
-                        if (vc != lastViewController) {
-                            vc.view.frame = GQBelowViewRectOffset(vc.view.frame,
-                                                                  originFrame.origin,
-                                                                  toFrame.origin,
-                                                                  lastViewController.flowInDirection);
-                        }
-                    }
                     
                     [self flowOutViewControllerAnimated:YES];
                 }
@@ -506,33 +491,15 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                [self holdViewControllers:@[[newArray lastObject]]];
                                
                                [self updateChildViewControllers:newArray];
-                               
-                               // 添加手势
-                               [self addPanGestureRecognizer];
                            }];
             }
         } else {
-            // 移除现在的视图控制器
             [self removePanGestureRecognizer];
             
+            // 移除现在的视图控制器
             [self removeAllChildContentViewControllers];
             
-            self.innerViewControllers = newArray;
-            
-            // 计算需要添加的视图控制器
-            NSArray *vcs = [self viewDidLoadViewControllers];
-            
-            BOOL lazy = NO;
-            
-            for (UIViewController *vc in self.innerViewControllers) {
-                if ([vcs containsObject:vc]) {
-                    lazy = NO;
-                } else {
-                    lazy = YES;
-                }
-                
-                [self addChildContentViewController:vc lazy:lazy];
-            }
+            [self updateChildViewControllers:newArray];
             
             [self addPanGestureRecognizer];
         }
@@ -582,16 +549,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (void)addChildContentViewController:(UIViewController *)childController
 {
-    [self addChildContentViewController:childController lazy:NO];
-}
-
-- (void)addChildContentViewController:(UIViewController *)childController lazy:(BOOL)lazy
-{
     [self addChildViewController:childController];
     
-    if (lazy == NO) {
-        [self.view addSubview:childController.view];
-    }
+    [self.view addSubview:childController.view];
     
     [childController didMoveToParentViewController:self];
 }
@@ -684,9 +644,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
  */
 - (void)layoutViewControllers
 {
-    [self.innerViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-        [self addContentViewController:obj];
-    }];
+    // 计算需要添加的视图控制器
+    NSArray *vcs = [self viewDidLoadViewControllers];
+    
+    for (UIViewController *vc in vcs) {
+        [self addChildContentViewController:vc];
+    }
 }
 
 
