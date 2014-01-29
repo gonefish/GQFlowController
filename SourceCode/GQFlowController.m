@@ -11,9 +11,14 @@
 
 #define BELOW_VIEW_OFFSET_SCALE .6
 
+/**
+ 
+ @param belowRect 下层视图的原始位置
+ @param startPoint 上层视图的开始点
+ @param endPoint 上层视图的结束点
+ @param direction 上层视图移动的方法
+ */
 static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoint endPoint, GQFlowDirection direction) {
-    
-    // originalFrame 下层视图的原始位置；toFrame 当前视图将要移动到的位置
     CGFloat belowVCOffset = .0;
     
     if (direction == GQFlowDirectionLeft
@@ -117,7 +122,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
     
     if ([self isViewLoaded] == NO) return;
     
@@ -167,7 +171,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              }
             
              // 检测是否遮盖住其它视图
-             if (CGRectContainsRect(checkFrame, self.view.bounds)) {
+             if (CGRectEqualToRect(checkFrame, self.view.bounds)
+                 || !CGRectContainsRect(self.view.bounds, checkFrame)) {
                  safeReleaseView = YES;
              }
          }
@@ -1013,6 +1018,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 {
     __block CGRect checkRect = CGRectZero;
     __block NSMutableArray *vcs = [NSMutableArray arrayWithCapacity:1];
+    __block UIViewController *aboveVC = nil;
     CGRect defaultRect = CGRectMake(.0,
                                     .0,
                                     self.view.bounds.size.width,
@@ -1048,13 +1054,27 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              } else {
                  obj.view.frame = defaultRect;
              }
+             
+             if (aboveVC) {
+                 CGRect aboveVCInOriginRect = [self inOriginRectForViewController:obj];
+                 
+                 CGRect objFrame = GQBelowViewRectOffset(obj.view.frame,
+                                                         aboveVCInOriginRect.origin,
+                                                         aboveVC.view.frame.origin,
+                                                         obj.flowInDirection);
+                 
+                 [self flowingBelowViewController:obj
+                                           toRect:objFrame];
+             }
          }
          
-         if (idx == [self.innerViewControllers count] - 1) {
+         if (aboveVC == nil) {
              checkRect = obj.view.frame;
          } else {
              checkRect = CGRectUnion(checkRect, obj.view.frame);
          }
+         
+         aboveVC = obj;
          
          // 检测是否遮盖住其它视图
          if (CGRectEqualToRect(checkRect, defaultRect)

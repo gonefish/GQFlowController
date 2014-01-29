@@ -379,6 +379,7 @@
     XCTAssertEqual([vcs2 count], (NSUInteger)2, @"需要加载vc2, vc3");
     XCTAssertEqualObjects(vc2, vcs2[0], @"加载的视图是vc2");
     XCTAssertEqualObjects(vc3mock, vcs2[1], @"加载的视图是vc3mock");
+    XCTAssertNotEqual(vc2.view.frame.origin.x, (CGFloat)10.0, @"下文视图默认偏移");
 }
 
 #pragma mark - GQFlowControllerAdditions
