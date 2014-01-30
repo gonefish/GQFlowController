@@ -354,7 +354,7 @@
     XCTAssertTrue([e isViewLoaded], @"不能释放");
 }
 
-- (void)testViewDidLoadViewControllers
+- (void)testViewVisibleViewControllers
 {
     UIViewController *vc0 = [[UIViewController alloc] init];
     UIViewController *vc1 = [[UIViewController alloc] init];
@@ -364,6 +364,12 @@
     
     XCTAssertEqual([vcs count], (NSUInteger)1, @"只需要加载vc1");
     XCTAssertEqualObjects(vc1, vcs[0], @"加载的视图是vc1");
+    
+    vc1.view.alpha = .5;
+    
+    vcs = [flowController performSelector:@selector(visibleViewControllers)];
+    
+    XCTAssertEqual([vcs count], (NSUInteger)2, @"需要加载vc1和vc2");
     
     UIViewController *vc2 = [[UIViewController alloc] init];
     

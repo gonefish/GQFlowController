@@ -1047,6 +1047,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              }
          }
          
+         if ([obj.view.backgroundColor isEqual:[UIColor colorWithRed:.0 green:.0 blue:.0 alpha:.0]]
+             || [obj.view.backgroundColor isEqual:[UIColor clearColor]]
+             || obj.view.alpha < 1.0) {
+             return;
+         }
+         
          if (aboveVC == nil) {
              checkRect = obj.view.frame;
          } else {
