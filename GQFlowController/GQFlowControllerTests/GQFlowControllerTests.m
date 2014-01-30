@@ -216,15 +216,15 @@
 
     id vc0 = [GQFlowControllerTests mockViewController];
     
-    id vc1 = [GQFlowControllerTests mockViewController];
+    id vc1 = [GQFlowControllerTests mockGQViewController];
+    CGRect frame = CGRectMake(10.0, 10.0, 100.0, 100.0);
+    [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
     id vc2 = [GQFlowControllerTests mockViewController];
     
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2]];
     
     self.dummyView = flowController.view;
-    
-    [(UIViewController *)vc1 view].frame = CGRectOffset([(UIViewController *)vc1 view].frame, 100.0, .0);
     
     [[vc1 expect] viewWillAppear:NO];
     [[vc1 expect] viewDidAppear:NO];

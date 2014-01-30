@@ -115,7 +115,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [super viewDidUnload];
     
     for (UIViewController *vc in self.innerViewControllers) {
-        [self removeContentViewControler:vc];
+        [self removeChildContentViewControler:vc];
     }
 }
 
@@ -409,18 +409,18 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         return nil;
     }
     
-    __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
-    
-    [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
-                                                usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-                                                    if (obj == viewController) {
-                                                        *stop = YES;
-                                                    } else {
-                                                        [indexSet addIndex:idx];
-                                                    }
-                                                }];
-    
-    if ([self.innerViewControllers count] > 0) {
+    if ([self.innerViewControllers count] > 1) {
+        __block NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+        
+        [self.innerViewControllers enumerateObjectsWithOptions:NSEnumerationReverse
+                                                    usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+                                                        if (obj == viewController) {
+                                                            *stop = YES;
+                                                        } else {
+                                                            [indexSet addIndex:idx];
+                                                        }
+                                                    }];
+        
         return [self flowOutIndexSet:indexSet
                             animated:animated];
     } else {
@@ -564,7 +564,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (void)removeAllChildContentViewControllers
 {
     for (UIViewController *vc in self.innerViewControllers) {
-        [self removeContentViewControler:vc];
+        [self removeChildContentViewControler:vc];
     }
 }
 
@@ -574,23 +574,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     for (UIViewController *vc in self.innerViewControllers) {
         if (viewControllers == nil
             || ![viewControllers containsObject:vc]) {
-            [self removeContentViewControler:vc];
+            [self removeChildContentViewControler:vc];
         }
     }
 }
 
-- (void)addContentViewController:(UIViewController *)viewController
-{
-    [self addChildViewController:viewController];
-    
-    viewController.view.frame = self.view.bounds;
-    
-    [self.view addSubview:viewController.view];
-    
-    [viewController didMoveToParentViewController:self];
-}
-
-- (void)removeContentViewControler:(UIViewController *)viewController
+- (void)removeChildContentViewControler:(UIViewController *)viewController
 {
     [viewController willMoveToParentViewController:nil];
     
@@ -746,20 +735,15 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [self.innerViewControllers removeObjectsAtIndexes:indexSet];
     
     if ([self isViewLoaded]) {
-        [popViewControllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        for (UIViewController *vc in popViewControllers) {
             // 设置UIViewController的flowController属性为nil
-            [obj performSelector:@selector(setFlowController:)
-                      withObject:nil];
+            [vc performSelector:@selector(setFlowController:)
+                     withObject:nil];
             
-            // 如果不是topViewController则移除视图
-            if (obj != self.topViewController) {
-                [obj willMoveToParentViewController:nil];
-                
-                [[obj view] removeFromSuperview];
-                
-                [obj removeFromParentViewController];
+            if (vc != self.topViewController) {
+                [self removeChildContentViewControler:vc];
             }
-        }];
+        }
 
         UIViewController *belowVC = [self.innerViewControllers lastObject];
         
@@ -767,7 +751,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                                  animated:animated];
         
         // 确保视图已经添加
-        NSArray *appearanceBelowViewControllers = [self prepareBelowViewControllers];
+        NSArray *appearanceBelowViewControllers = [self viewDidLoadViewControllers];
         
         for (UIViewController *vc in appearanceBelowViewControllers) {
             [vc beginAppearanceTransition:YES
@@ -1016,6 +1000,11 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (NSArray *)viewDidLoadViewControllers
 {
+    return [self visibleViewControllers:self.innerViewControllers];
+}
+
+- (NSArray *)visibleViewControllers:(NSArray *)controllers
+{
     __block CGRect checkRect = CGRectZero;
     __block NSMutableArray *vcs = [NSMutableArray arrayWithCapacity:1];
     __block UIViewController *aboveVC = nil;
@@ -1024,7 +1013,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                     self.view.bounds.size.width,
                                     self.view.bounds.size.height);
     
-    [self.innerViewControllers
+    [controllers
      enumerateObjectsWithOptions:NSEnumerationReverse
      usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
          [vcs insertObject:obj atIndex:0];
@@ -1090,54 +1079,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
  */
 - (NSArray *)prepareBelowViewControllers
 {
-    __block CGRect checkFrame = CGRectZero;
-    __block NSMutableArray *vcs = [NSMutableArray array];
+    NSMutableArray *newVCS = [NSMutableArray arrayWithArray:self.innerViewControllers];
+    [newVCS removeLastObject];
     
-    [self.innerViewControllers
-     enumerateObjectsWithOptions:NSEnumerationReverse
-     usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
-         [vcs addObject:obj];
-         
-         if (self.topViewController != obj) {
-             if (obj.view.superview == nil) {
-                 NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
-                 
-                 NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
-                 
-                 if (viewInfo) {
-                     NSString *frameString = viewInfo[@"frame"];
-                     
-                     if (frameString) {
-                         obj.view.frame = CGRectFromString(frameString);
-                     }
-                     
-                     NSNumber *isOverlayContent = viewInfo[@"isOverlayContent"];
-                     
-                     if (isOverlayContent) {
-                         obj.overlayContent = [isOverlayContent boolValue];
-                     }
-                     
-                     [self.releaseViewInfos removeObjectForKey:belowVCKey];
-                 }
-                 
-                 [self.view insertSubview:obj.view
-                                  atIndex:0];
-             }
-             
-             if (CGRectEqualToRect(checkFrame, CGRectZero)) {
-                 checkFrame = obj.view.frame;
-             } else {
-                 checkFrame = CGRectUnion(checkFrame, obj.view.frame);
-             }
-             
-             // 检测是否遮盖住其它视图
-             if (CGRectContainsRect(checkFrame, self.topViewController.view.bounds)) {
-                 *stop = YES;
-             }
-         }
-     }];
-    
-    return [vcs copy];
+    return [self visibleViewControllers:newVCS];
 }
 
 - (void)panGestureAction
