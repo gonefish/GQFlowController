@@ -100,7 +100,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [super viewDidLoad];
     
     // 计算需要添加的视图控制器
-    NSArray *vcs = [self viewDidLoadViewControllers];
+    NSArray *vcs = [self visibleViewControllers];
     
     for (UIViewController *vc in vcs) {
         [self addChildContentViewController:vc];
@@ -631,7 +631,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (void)layoutViewControllers
 {
     // 计算需要添加的视图控制器
-    NSArray *vcs = [self viewDidLoadViewControllers];
+    NSArray *vcs = [self visibleViewControllers];
     
     for (UIViewController *vc in vcs) {
         [self addChildContentViewController:vc];
@@ -743,7 +743,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                                  animated:animated];
         
         // 确保视图已经添加
-        NSArray *appearanceBelowViewControllers = [self viewDidLoadViewControllers];
+        NSArray *appearanceBelowViewControllers = [self prepareBelowViewControllers];
         
         for (UIViewController *vc in appearanceBelowViewControllers) {
             [vc beginAppearanceTransition:YES
@@ -990,12 +990,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
-- (NSArray *)viewDidLoadViewControllers
-{
-    return [self visibleViewControllers:self.innerViewControllers];
-}
-
-- (NSArray *)visibleViewControllers:(NSArray *)controllers
+- (NSArray *)visibleViewControllers
 {
     __block CGRect checkRect = CGRectZero;
     __block NSMutableArray *vcs = [NSMutableArray arrayWithCapacity:1];
@@ -1005,16 +1000,16 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                     self.view.bounds.size.width,
                                     self.view.bounds.size.height);
     
-    [controllers
+    [self.innerViewControllers
      enumerateObjectsWithOptions:NSEnumerationReverse
      usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
          [vcs insertObject:obj atIndex:0];
          
-         // 设置frame
          NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
          
          NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
          
+         // 检测是否存在内存警告时保存的信息
          if (viewInfo) {
              NSString *frameString = viewInfo[@"frame"];
              
@@ -1030,22 +1025,25 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
              
              [self.releaseViewInfos removeObjectForKey:belowVCKey];
          } else {
-             if ([obj respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
-                 obj.view.frame = [(id<GQViewController>)obj destinationRectForFlowDirection:obj.flowInDirection];
-             } else {
-                 obj.view.frame = defaultRect;
-             }
-             
-             if (aboveVC) {
-                 CGRect aboveVCInOriginRect = [self inOriginRectForViewController:obj];
+             // 需要初始化位置
+             if (![obj isViewLoaded]) {
+                 if ([obj respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
+                     obj.view.frame = [(id<GQViewController>)obj destinationRectForFlowDirection:obj.flowInDirection];
+                 } else {
+                     obj.view.frame = defaultRect;
+                 }
                  
-                 CGRect objFrame = GQBelowViewRectOffset(obj.view.frame,
-                                                         aboveVCInOriginRect.origin,
-                                                         aboveVC.view.frame.origin,
-                                                         obj.flowInDirection);
-                 
-                 [self flowingBelowViewController:obj
-                                           toRect:objFrame];
+                 if (aboveVC) {
+                     CGRect aboveVCInOriginRect = [self inOriginRectForViewController:obj];
+                     
+                     CGRect objFrame = GQBelowViewRectOffset(obj.view.frame,
+                                                             aboveVCInOriginRect.origin,
+                                                             aboveVC.view.frame.origin,
+                                                             obj.flowInDirection);
+                     
+                     [self flowingBelowViewController:obj
+                                               toRect:objFrame];
+                 }
              }
          }
          
@@ -1071,10 +1069,17 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
  */
 - (NSArray *)prepareBelowViewControllers
 {
-    NSMutableArray *newVCS = [NSMutableArray arrayWithArray:self.innerViewControllers];
-    [newVCS removeLastObject];
+    NSMutableArray *newVCs = [NSMutableArray array];
     
-    return [self visibleViewControllers:newVCS];
+    for (UIViewController *vc in [self visibleViewControllers]) {
+        if (vc != self.topViewController) {
+            [self.view insertSubview:vc.view atIndex:0];
+            
+            [newVCs addObject:vc];
+        }
+    }
+    
+    return [newVCs copy];
 }
 
 - (void)panGestureAction

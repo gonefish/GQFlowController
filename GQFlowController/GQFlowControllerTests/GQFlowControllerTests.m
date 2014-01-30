@@ -311,6 +311,7 @@
     [flowController flowOutViewControllerAnimated:NO];
     
     XCTAssertTrue([a isViewLoaded], @"正常显示");
+    XCTAssertTrue(a.view.superview, @"a的视图没有被添加");
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b]];
     self.dummyView = flowController.view;
@@ -359,7 +360,7 @@
     UIViewController *vc1 = [[UIViewController alloc] init];
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
     
-    NSArray *vcs = [flowController performSelector:@selector(viewDidLoadViewControllers)];
+    NSArray *vcs = [flowController performSelector:@selector(visibleViewControllers)];
     
     XCTAssertEqual([vcs count], (NSUInteger)1, @"只需要加载vc1");
     XCTAssertEqualObjects(vc1, vcs[0], @"加载的视图是vc1");
@@ -374,7 +375,7 @@
     
     GQFlowController *flowController2 = [[GQFlowController alloc] initWithViewControllers:@[vc2, vc3mock]];
     
-    NSArray *vcs2 = [flowController2 performSelector:@selector(viewDidLoadViewControllers)];
+    NSArray *vcs2 = [flowController2 performSelector:@selector(visibleViewControllers)];
     
     XCTAssertEqual([vcs2 count], (NSUInteger)2, @"需要加载vc2, vc3");
     XCTAssertEqualObjects(vc2, vcs2[0], @"加载的视图是vc2");
