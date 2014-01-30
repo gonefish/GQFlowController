@@ -125,58 +125,33 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     if ([self isViewLoaded] == NO) return;
     
-    // 安全释放已经不在显示的视图
-    __block BOOL safeReleaseView = NO;
+    NSArray *newVC = [self visibleViewControllers];
     
-    __block CGRect checkFrame = CGRectZero;
-    
-    [self.innerViewControllers
-     enumerateObjectsWithOptions:NSEnumerationReverse
-     usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
-         if ([obj isViewLoaded] == NO) return;
-         
-         if (safeReleaseView) {
-             NSDictionary *viewInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       NSStringFromCGRect(obj.view.frame), @"frame",
-                                       [NSNumber numberWithBool:obj.isOverlayContent], @"isOverlayContent",
-                                       nil];
-             NSString *viewKey = [NSString stringWithFormat:@"%u", [obj hash]];
-             
-             (self.releaseViewInfos)[viewKey] = viewInfo;
+    for (UIViewController *obj in self.innerViewControllers) {
+        if (![newVC containsObject:obj]) {
+            NSDictionary *viewInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      NSStringFromCGRect(obj.view.frame), @"frame",
+                                      [NSNumber numberWithBool:obj.isOverlayContent], @"isOverlayContent",
+                                      nil];
+            NSString *viewKey = [NSString stringWithFormat:@"%u", [obj hash]];
             
-             [obj.view removeFromSuperview];
-             
-             NSInteger systemVersion = [[[UIDevice currentDevice] systemVersion] integerValue];
+            (self.releaseViewInfos)[viewKey] = viewInfo;
             
-             if (systemVersion < 6) {
-                 [obj viewWillUnload];
-             }
+            [obj.view removeFromSuperview];
             
-             obj.view = nil;
+            NSInteger systemVersion = [[[UIDevice currentDevice] systemVersion] integerValue];
             
-             if (systemVersion < 6) {
-                 [obj viewDidUnload];
-             }
-         } else {
-             if ([obj.view.backgroundColor isEqual:[UIColor colorWithRed:.0 green:.0 blue:.0 alpha:.0]]
-                 || [obj.view.backgroundColor isEqual:[UIColor clearColor]]
-                 || obj.view.alpha < 1.0) {
-                 return;
-             }
-             
-             if (CGRectEqualToRect(checkFrame, CGRectZero)) {
-                 checkFrame = obj.view.frame;
-             } else {
-                 checkFrame = CGRectUnion(checkFrame, obj.view.frame);
-             }
+            if (systemVersion < 6) {
+                [obj viewWillUnload];
+            }
             
-             // 检测是否遮盖住其它视图
-             if (CGRectEqualToRect(checkFrame, self.view.bounds)
-                 || !CGRectContainsRect(self.view.bounds, checkFrame)) {
-                 safeReleaseView = YES;
-             }
-         }
-     }];
+            obj.view = nil;
+            
+            if (systemVersion < 6) {
+                [obj viewDidUnload];
+            }
+        }
+    }
 }
 
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
