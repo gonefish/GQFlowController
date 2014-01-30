@@ -610,24 +610,16 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     [self.innerViewControllers addObject:viewController];
     
-    [self addChildViewController:viewController];
+    [self addChildContentViewController:viewController];
     
     viewController.view.frame = [self inOriginRectForViewController:viewController];
-    
-    [self.view addSubview:viewController.view];
-    
-    [viewController didMoveToParentViewController:self];
 }
 
 - (void)removeTopViewController
 {
     [self removePanGestureRecognizer];
     
-    [self.topViewController willMoveToParentViewController:nil];
-    
-    [self.topViewController.view removeFromSuperview];
-    
-    [self.topViewController removeFromParentViewController];
+    [self removeChildContentViewControler:self.topViewController];
     
     // 不自己删除lastObject是因为确保viewControllers被设置时的正确性
     self.topViewController = [self.innerViewControllers lastObject];
