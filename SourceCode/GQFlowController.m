@@ -110,15 +110,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [self addPanGestureRecognizer];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    for (UIViewController *vc in self.innerViewControllers) {
-        [self removeChildContentViewControler:vc];
-    }
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
