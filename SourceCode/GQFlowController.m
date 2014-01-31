@@ -164,30 +164,28 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 {
     [super viewWillAppear:animated];
     
-    [self.topViewController beginAppearanceTransition:YES
-                                             animated:animated];
+    [self visibleViewControllersBeginAppearanceTransition:YES animated:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    [self.topViewController endAppearanceTransition];
+    [self visibleViewControllersEndAppearanceTransition];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [self.topViewController beginAppearanceTransition:NO
-                                             animated:animated];
+    [self visibleViewControllersBeginAppearanceTransition:NO animated:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     
-    [self.topViewController endAppearanceTransition];
+    [self visibleViewControllersEndAppearanceTransition];
 }
 
 - (BOOL)shouldAutorotate
@@ -1321,28 +1319,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
-
-- (GQFlowDirection)flowDirectionWithPoint:(CGPoint)point otherPoint:(CGPoint)otherPoint
-{
-    GQFlowDirection flowingDirection = GQFlowDirectionUnknow;
-    
-    if (point.x == otherPoint.x) {
-        if (point.y < otherPoint.y) {
-            flowingDirection = GQFlowDirectionUp;
-        } else if (point.y > otherPoint.y) {
-            flowingDirection = GQFlowDirectionDown;
-        }
-    } else if (point.y == otherPoint.y) {
-        if (point.x > otherPoint.x) {
-            flowingDirection = GQFlowDirectionRight;
-        } else if (point.x < otherPoint.x) {
-            flowingDirection = GQFlowDirectionLeft;
-        }
-    }
-    
-    return flowingDirection;
-}
-
 - (void)safeDismissFlowController
 {
     if (self.presentedViewController == nil
@@ -1367,6 +1343,24 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     if (follow
         && !CGRectEqualToRect(rect, CGRectZero)) {
         viewController.view.frame = rect;
+    }
+}
+
+- (void)visibleViewControllersEndAppearanceTransition
+{
+    NSArray *vcs = [self visibleViewControllers];
+    
+    for (UIViewController *vc in vcs) {
+        [vc endAppearanceTransition];
+    }
+}
+
+- (void)visibleViewControllersBeginAppearanceTransition:(BOOL)transition animated:(BOOL)animated
+{
+    NSArray *vcs = [self visibleViewControllers];
+    
+    for (UIViewController *vc in vcs) {
+        [vc beginAppearanceTransition:transition animated:animated];
     }
 }
 

@@ -389,6 +389,33 @@
     XCTAssertNotEqual(vc2.view.frame.origin.x, (CGFloat)10.0, @"下文视图默认偏移");
 }
 
+- (void)testViewWillAppear
+{
+    id vc0 = [GQFlowControllerTests mockViewController];
+    id vc1 = [GQFlowControllerTests mockGQViewController];
+    
+    CGRect frame = CGRectMake(10, 10, 10, 10);
+    [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
+    
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
+    
+    [[vc0 expect] viewWillAppear:NO];
+    [[vc1 expect] viewWillAppear:NO];
+    
+    [flowController viewWillAppear:NO];
+    
+    [vc0 verify];
+    [vc1 verify];
+    
+    [[vc0 expect] viewDidAppear:NO];
+    [[vc1 expect] viewDidAppear:NO];
+    
+    [flowController viewDidAppear:NO];
+    
+    [vc0 verify];
+    [vc1 verify];
+}
+
 #pragma mark - GQFlowControllerAdditions
 
 - (void)testPrivateFlowControllerSetter
