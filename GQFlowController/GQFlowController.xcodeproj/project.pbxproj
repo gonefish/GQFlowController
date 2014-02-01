@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E31FEF81186E65F200E2DC06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E31FEF80186E65F200E2DC06 /* XCTest.framework */; };
+		E328A35E189CC98F00317A51 /* GQStoryboardSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = E328A35D189CC98F00317A51 /* GQStoryboardSegue.m */; };
 		E34A63FE16FEB8DD0053A496 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FD16FEB8DD0053A496 /* UIKit.framework */; };
 		E34A640016FEB8DD0053A496 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A63FF16FEB8DD0053A496 /* Foundation.framework */; };
 		E34A640216FEB8DD0053A496 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34A640116FEB8DD0053A496 /* CoreGraphics.framework */; };
@@ -59,6 +60,8 @@
 
 /* Begin PBXFileReference section */
 		E31FEF80186E65F200E2DC06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		E328A35C189CC98F00317A51 /* GQStoryboardSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQStoryboardSegue.h; sourceTree = "<group>"; };
+		E328A35D189CC98F00317A51 /* GQStoryboardSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQStoryboardSegue.m; sourceTree = "<group>"; };
 		E34A63FA16FEB8DD0053A496 /* GQFlowController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GQFlowController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E34A63FD16FEB8DD0053A496 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E34A63FF16FEB8DD0053A496 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -231,6 +234,8 @@
 			children = (
 				E35D6073175280CA00398CCD /* GQFlowController.h */,
 				E35D6074175280CA00398CCD /* GQFlowController.m */,
+				E328A35C189CC98F00317A51 /* GQStoryboardSegue.h */,
+				E328A35D189CC98F00317A51 /* GQStoryboardSegue.m */,
 			);
 			name = SourceCode;
 			path = ../SourceCode;
@@ -430,6 +435,7 @@
 				E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */,
 				E35D6078175280CA00398CCD /* GQFlowController.m in Sources */,
 				E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */,
+				E328A35E189CC98F00317A51 /* GQStoryboardSegue.m in Sources */,
 				E38CCDDC17976C27001E4064 /* Demo3AViewController.m in Sources */,
 				E35CEF24179AB46C00352379 /* Demo3BViewController.m in Sources */,
 				E35CEF29179ABA8300352379 /* Demo3CViewController.m in Sources */,
