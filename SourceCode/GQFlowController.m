@@ -954,85 +954,89 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     }
 }
 
-- (NSArray *)visibleViewControllers
+- (NSArray *)visibleViewControllersWithViewControllers:(NSArray *)vcs
 {
     __block CGRect checkRect = CGRectZero;
-    __block NSMutableArray *vcs = [NSMutableArray arrayWithCapacity:1];
+    __block NSMutableArray *nvcs = [NSMutableArray arrayWithCapacity:1];
     __block UIViewController *aboveVC = nil;
     CGRect defaultRect = CGRectMake(.0,
                                     .0,
                                     self.view.bounds.size.width,
                                     self.view.bounds.size.height);
     
-    [self.innerViewControllers
-     enumerateObjectsWithOptions:NSEnumerationReverse
-     usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
-         [vcs insertObject:obj atIndex:0];
-         
-         NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
-         
-         NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
-         
-         // 检测是否存在内存警告时保存的信息
-         if (viewInfo) {
-             NSString *frameString = viewInfo[@"frame"];
-             
-             if (frameString) {
-                 obj.view.frame = CGRectFromString(frameString);
-             }
-             
-             NSNumber *isOverlayContent = viewInfo[@"isOverlayContent"];
-             
-             if (isOverlayContent) {
-                 obj.overlayContent = [isOverlayContent boolValue];
-             }
-             
-             [self.releaseViewInfos removeObjectForKey:belowVCKey];
-         } else {
-             // 需要初始化位置
-             if (![obj isViewLoaded]) {
-                 if ([obj respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
-                     obj.view.frame = [(id<GQViewController>)obj destinationRectForFlowDirection:obj.flowInDirection];
-                 } else {
-                     obj.view.frame = defaultRect;
-                 }
-                 
-                 if (aboveVC) {
-                     CGRect aboveVCInOriginRect = [self inOriginRectForViewController:obj];
-                     
-                     CGRect objFrame = GQBelowViewRectOffset(obj.view.frame,
-                                                             aboveVCInOriginRect.origin,
-                                                             aboveVC.view.frame.origin,
-                                                             obj.flowInDirection);
-                     
-                     [self flowingBelowViewController:obj
-                                               toRect:objFrame];
-                 }
-             }
-         }
-         
-         if ([obj.view.backgroundColor isEqual:[UIColor colorWithRed:.0 green:.0 blue:.0 alpha:.0]]
-             || [obj.view.backgroundColor isEqual:[UIColor clearColor]]
-             || obj.view.alpha < 1.0) {
-             return;
-         }
-         
-         if (aboveVC == nil) {
-             checkRect = obj.view.frame;
-         } else {
-             checkRect = CGRectUnion(checkRect, obj.view.frame);
-         }
-         
-         aboveVC = obj;
-         
-         // 检测是否遮盖住其它视图
-         if (CGRectEqualToRect(checkRect, defaultRect)
-             || !CGRectContainsRect(defaultRect, checkRect)) {
-             *stop = YES;
-         }
-     }];
+    [vcs enumerateObjectsWithOptions:NSEnumerationReverse
+                          usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+                              [nvcs insertObject:obj atIndex:0];
+                              
+                              NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
+                              
+                              NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
+                              
+                              // 检测是否存在内存警告时保存的信息
+                              if (viewInfo) {
+                                  NSString *frameString = viewInfo[@"frame"];
+                                  
+                                  if (frameString) {
+                                      obj.view.frame = CGRectFromString(frameString);
+                                  }
+                                  
+                                  NSNumber *isOverlayContent = viewInfo[@"isOverlayContent"];
+                                  
+                                  if (isOverlayContent) {
+                                      obj.overlayContent = [isOverlayContent boolValue];
+                                  }
+                                  
+                                  [self.releaseViewInfos removeObjectForKey:belowVCKey];
+                              } else {
+                                  // 需要初始化位置
+                                  if (![obj isViewLoaded]) {
+                                      if ([obj respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
+                                          obj.view.frame = [(id<GQViewController>)obj destinationRectForFlowDirection:obj.flowInDirection];
+                                      } else {
+                                          obj.view.frame = defaultRect;
+                                      }
+                                      
+                                      if (aboveVC) {
+                                          CGRect aboveVCInOriginRect = [self inOriginRectForViewController:obj];
+                                          
+                                          CGRect objFrame = GQBelowViewRectOffset(obj.view.frame,
+                                                                                  aboveVCInOriginRect.origin,
+                                                                                  aboveVC.view.frame.origin,
+                                                                                  obj.flowInDirection);
+                                          
+                                          [self flowingBelowViewController:obj
+                                                                    toRect:objFrame];
+                                      }
+                                  }
+                              }
+                              
+                              if ([obj.view.backgroundColor isEqual:[UIColor colorWithRed:.0 green:.0 blue:.0 alpha:.0]]
+                                  || [obj.view.backgroundColor isEqual:[UIColor clearColor]]
+                                  || obj.view.alpha < 1.0) {
+                                  return;
+                              }
+                              
+                              if (aboveVC == nil) {
+                                  checkRect = obj.view.frame;
+                              } else {
+                                  checkRect = CGRectUnion(checkRect, obj.view.frame);
+                              }
+                              
+                              aboveVC = obj;
+                              
+                              // 检测是否遮盖住其它视图
+                              if (CGRectEqualToRect(checkRect, defaultRect)
+                                  || !CGRectContainsRect(defaultRect, checkRect)) {
+                                  *stop = YES;
+                              }
+                          }];
     
-    return [vcs copy];
+    return [nvcs copy];
+}
+
+- (NSArray *)visibleViewControllers
+{
+    return [self visibleViewControllersWithViewControllers:self.innerViewControllers];
 }
 
 /** 确保下层视图是否已经添加
