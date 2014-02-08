@@ -1044,13 +1044,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 - (NSArray *)prepareBelowViewControllers
 {
     NSMutableArray *newVCs = [NSMutableArray array];
+    NSMutableArray *prepareVCS = [NSMutableArray arrayWithArray:self.innerViewControllers];
+    [prepareVCS removeLastObject];
     
-    for (UIViewController *vc in [self visibleViewControllers]) {
-        if (vc != self.topViewController) {
-            [self.view insertSubview:vc.view atIndex:0];
-            
-            [newVCs addObject:vc];
-        }
+    for (UIViewController *vc in [self visibleViewControllersWithViewControllers:prepareVCS]) {
+        [self.view insertSubview:vc.view atIndex:0];
+        [newVCs addObject:vc];
     }
     
     return [newVCs copy];
