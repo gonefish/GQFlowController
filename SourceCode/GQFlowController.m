@@ -488,6 +488,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         return;
     }
     
+    [self prepareBelowViewControllers];
+    
     NSTimeInterval duration = self.viewFlowingDuration;
     
     if ([viewController respondsToSelector:@selector(flowingDuration)]) {
@@ -1025,9 +1027,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                               }
                               
                               if (aboveVC == nil) {
-                                  checkRect = obj.view.frame;
+                                  checkRect = CGRectIntersection(obj.view.frame, defaultRect);
                               } else {
-                                  checkRect = CGRectUnion(checkRect, obj.view.frame);
+                                  checkRect = CGRectUnion(checkRect, CGRectIntersection(obj.view.frame, defaultRect));
                               }
                               
                               aboveVC = obj;
@@ -1056,8 +1058,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [prepareVCS removeLastObject];
     
     for (UIViewController *vc in [self visibleViewControllersWithViewControllers:prepareVCS]) {
-        [self.view insertSubview:vc.view atIndex:0];
-        [newVCs addObject:vc];
+        if (vc.view.superview == nil) {
+            [self.view insertSubview:vc.view atIndex:[self.innerViewControllers indexOfObject:vc]];
+            [newVCs addObject:vc];
+        }
     }
     
     return [newVCs copy];
