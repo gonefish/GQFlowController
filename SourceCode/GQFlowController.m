@@ -685,12 +685,16 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (NSArray *)flowOutIndexSet:(NSIndexSet *)indexSet animated:(BOOL)animated
 {
-    // 准备移除控制器
-    NSArray *popViewControllers = [self.innerViewControllers objectsAtIndexes:indexSet];
-    
-    [self.innerViewControllers removeObjectsAtIndexes:indexSet];
+    NSArray *flowOutVCs = [self.innerViewControllers objectsAtIndexes:indexSet];
     
     if ([self isViewLoaded]) {
+        // 准备移除控制器
+        NSMutableArray *popViewControllers = [flowOutVCs mutableCopy];
+        
+        [popViewControllers removeLastObject];
+        
+        [self.innerViewControllers removeObjectsInArray:popViewControllers];
+        
         for (UIViewController *vc in popViewControllers) {
             // 设置UIViewController的flowController属性为nil
             [vc performSelector:@selector(setFlowController:)
@@ -701,7 +705,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             }
         }
 
-        UIViewController *belowVC = [self.innerViewControllers lastObject];
+        UIViewController *belowVC = [self belowViewController];
         
         [self.topViewController beginAppearanceTransition:NO
                                                  animated:animated];
@@ -740,6 +744,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                 [vc endAppearanceTransition];
             }
             
+            [self.innerViewControllers removeLastObject];
+            
             [self removeTopViewController];
             
             [self addPanGestureRecognizer];
@@ -762,11 +768,13 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         
     } else {
         // 设置UIViewController的flowController属性为nil
-        [popViewControllers makeObjectsPerformSelector:@selector(setFlowController:)
-                                            withObject:nil];
+        [flowOutVCs makeObjectsPerformSelector:@selector(setFlowController:)
+                                    withObject:nil];
+        
+        [self.innerViewControllers removeObjectsInArray:flowOutVCs];
     }
     
-    return popViewControllers;
+    return flowOutVCs;
 }
 
 // 滑入的起初位置
