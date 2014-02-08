@@ -10,7 +10,7 @@
 
 @interface GQFlowControllerTests : XCTestCase
 
-+ (id)mockViewController;
-+ (id)mockGQViewController;
+- (id)mockViewController;
+- (id)mockGQViewController;
 
 @end

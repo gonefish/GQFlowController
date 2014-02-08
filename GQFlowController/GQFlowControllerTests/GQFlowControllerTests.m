@@ -46,22 +46,32 @@
 
 @property (nonatomic, weak) UIView *dummyView;
 
+@property (nonatomic, strong) NSMutableArray *autoVerifiedObjects;
+
 @end
 
 @implementation GQFlowControllerTests
 
-+ (id)mockViewController
+- (id)mockViewController
 {
     UIViewController *mockVC = [[UIViewController alloc] init];
     
-    return [OCMockObject partialMockForObject:mockVC];
+    id mockObject = [OCMockObject partialMockForObject:mockVC];
+    
+    [self.autoVerifiedObjects addObject:mockObject];
+    
+    return mockObject;
 }
 
-+ (id)mockGQViewController
+- (id)mockGQViewController
 {
     MockGQViewController *mockVC = [[MockGQViewController alloc] init];
     
-    return [OCMockObject partialMockForObject:mockVC];
+    id mockObject = [OCMockObject partialMockForObject:mockVC];
+    
+    [self.autoVerifiedObjects addObject:mockObject];
+    
+    return mockObject;
 }
 
 - (void)setUp
@@ -72,6 +82,10 @@
     self.flowController = [GQFlowController new];
     
     self.isiOS6 = [[[UIDevice currentDevice] systemVersion] integerValue] > 5;
+    
+    if (self.autoVerifiedObjects == nil) {
+        self.autoVerifiedObjects = [NSMutableArray array];
+    }
 }
 
 - (void)tearDown
@@ -81,6 +95,10 @@
     [super tearDown];
     
     self.flowController = nil;
+    
+    [self.autoVerifiedObjects makeObjectsPerformSelector:@selector(verify)];
+    
+    [self.autoVerifiedObjects removeAllObjects];
 }
 
 
@@ -105,8 +123,8 @@
 
 - (void)testSetViewControllersAnimated
 {
-    id vc0 = [GQFlowControllerTests mockViewController];
-    id vc1 = [GQFlowControllerTests mockViewController];
+    id vc0 = [self mockViewController];
+    id vc1 = [self mockViewController];
     
     self.flowController.viewControllers = @[vc0, vc1];
     
@@ -118,7 +136,7 @@
     
     self.dummyView = self.flowController.view;
     
-    id vc2 = [GQFlowControllerTests mockViewController];
+    id vc2 = [self mockViewController];
     
     self.flowController.viewControllers = @[vc2, vc1];
     
@@ -165,11 +183,11 @@
 
 - (void)testFlowInViewControllerAnimated
 {
-    id vc0 = [GQFlowControllerTests mockViewController];
+    id vc0 = [self mockViewController];
     
     self.flowController.viewControllers = @[vc0];
     
-    id vc1 = [GQFlowControllerTests mockViewController];
+    id vc1 = [self mockViewController];
     
     [[vc1 expect] viewDidLoad];
     
@@ -184,8 +202,6 @@
     [[vc0 expect] viewDidDisappear:NO];
     
     [self.flowController flowInViewController:vc1 animated:NO];
-    
-    [vc1 verify];
     
     XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"");
     
@@ -214,13 +230,13 @@
     XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
     
 
-    id vc0 = [GQFlowControllerTests mockViewController];
+    id vc0 = [self mockViewController];
     
-    id vc1 = [GQFlowControllerTests mockGQViewController];
+    id vc1 = [self mockGQViewController];
     CGRect frame = CGRectMake(10.0, 10.0, 100.0, 100.0);
     [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
-    id vc2 = [GQFlowControllerTests mockViewController];
+    id vc2 = [self mockViewController];
     
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2]];
     
@@ -235,9 +251,6 @@
     
     [flowController flowOutViewControllerAnimated:NO];
     
-    [vc1 verify];
-    [vc0 verify];
-    [vc2 verify];
 }
 
 - (void)testFlowOutToRootViewControllerAnimated
@@ -325,7 +338,7 @@
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
-    id dmock = [GQFlowControllerTests mockGQViewController];
+    id dmock = [self mockGQViewController];
     
     [[[dmock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
@@ -375,7 +388,7 @@
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
-    id vc3mock = [GQFlowControllerTests mockGQViewController];
+    id vc3mock = [self mockGQViewController];
     
     [[[vc3mock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
@@ -391,8 +404,8 @@
 
 - (void)testViewWillAppear
 {
-    id vc0 = [GQFlowControllerTests mockViewController];
-    id vc1 = [GQFlowControllerTests mockGQViewController];
+    id vc0 = [self mockViewController];
+    id vc1 = [self mockGQViewController];
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
@@ -404,16 +417,12 @@
     
     [flowController viewWillAppear:NO];
     
-    [vc0 verify];
-    [vc1 verify];
     
     [[vc0 expect] viewDidAppear:NO];
     [[vc1 expect] viewDidAppear:NO];
     
     [flowController viewDidAppear:NO];
     
-    [vc0 verify];
-    [vc1 verify];
 }
 
 #pragma mark - GQFlowControllerAdditions
@@ -434,8 +443,8 @@
 
 - (void)testFlowController
 {
-    id vc0 = [GQFlowControllerTests mockViewController];
-    id vc1 = [GQFlowControllerTests mockViewController];
+    id vc0 = [self mockViewController];
+    id vc1 = [self mockViewController];
     
     NSArray *aViewControllers = @[vc0, vc1];
     
@@ -512,7 +521,7 @@
     XCTAssertFalse(vc2.isOverlayContent, @"没有遮罩层");
     
     
-    id vc4 = [GQFlowControllerTests mockViewController];
+    id vc4 = [self mockViewController];
     UIView *aOverlayView = [[UIView alloc] init];
     aOverlayView.backgroundColor = [UIColor redColor];
     [[[vc4 stub] andReturn:aOverlayView] overlayContentView];
@@ -522,7 +531,7 @@
     XCTAssertEqualObjects([[[(UIViewController *)vc4 view] subviews] lastObject], aOverlayView, @"自定义遮罩层无效");
     XCTAssertEqualObjects([[[[(UIViewController *)vc4 view] subviews] lastObject] backgroundColor], [UIColor redColor], @"自定义遮罩层颜色正常");
     
-    id vc5 = [GQFlowControllerTests mockViewController];
+    id vc5 = [self mockViewController];
     UIView *aOverlayView5 = [[UIView alloc] init];
     aOverlayView5.backgroundColor = [UIColor redColor];
     [[[vc5 stub] andReturn:nil] overlayContentView];
