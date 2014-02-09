@@ -101,24 +101,28 @@
     [self.autoVerifiedObjects removeAllObjects];
 }
 
+#pragma mark - Public API
 
-- (void)testFlowControllersIsViewLoaded
+- (void)testInitWithViewControllers
 {
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    UIViewController *vc0 = [[UIViewController alloc] init];
     
-    NSArray *viewControllers = @[[UIViewController new], [UIViewController new]];
+    UIViewController *vc1 = [[UIViewController alloc] init];
     
-    self.flowController.viewControllers = viewControllers;
+    GQFlowController *flowController =[[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
     
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)2, @"视图控制器初始化失败");
     
-    [self.flowController flowInViewController:[UIViewController new] animated:YES];
+    XCTAssertEqualObjects(flowController.topViewController, vc1, @"topViewController属性错误");
+}
+
+- (void)testInitWithRootViewController
+{
+    UIViewController *vc0 = [[UIViewController alloc] init];
     
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    GQFlowController *flowController =[[GQFlowController alloc] initWithRootViewController:vc0];
     
-    [self.flowController flowOutToRootViewControllerAnimated:YES];
-    
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)1, @"视图控制器初始化失败");
 }
 
 - (void)testSetViewControllersAnimated
@@ -141,44 +145,6 @@
     self.flowController.viewControllers = @[vc2, vc1];
     
     XCTAssertFalse([vc2 isViewLoaded], @"vc2应该延迟加载");
-}
-
-- (void)testTopViewController
-{
-    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
-    
-    self.flowController.viewControllers = aViewControllers;
-    
-    XCTAssertEqualObjects(self.flowController.topViewController, aViewControllers[1], @"");
-}
-
-- (void)testInitWithViewControllers
-{
-    UIViewController *v1 = [UIViewController new];
-    UIViewController *v2 = [UIViewController new];
-    
-    NSArray *aViewControllers = @[v1, v2];
-    
-    GQFlowController *flowController =[[GQFlowController alloc] initWithViewControllers:aViewControllers];
-    
-    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)2, @"");
-    
-    XCTAssertEqualObjects(flowController.topViewController, v2, @"");
-    
-    XCTAssertEqualObjects(flowController, v1.flowController, @"");
-    XCTAssertEqualObjects(flowController, v2.flowController, @"");
-}
-
-- (void)testInitWithRootViewController
-{
-    UIViewController *testController = [UIViewController new];
-    GQFlowController *flowController =[[GQFlowController alloc] initWithRootViewController:testController];
-    
-    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)1, @"");
-    
-    XCTAssertEqualObjects(flowController.topViewController, testController, @"");
-    
-    XCTAssertEqualObjects(flowController, testController.flowController, @"");
 }
 
 - (void)testFlowInViewControllerAnimated
@@ -229,7 +195,7 @@
     
     XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
     
-
+    
     id vc0 = [self mockViewController];
     
     id vc1 = [self mockGQViewController];
@@ -274,6 +240,39 @@
     XCTAssertEqual([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
     
     XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
+}
+
+#pragma mark -
+
+
+- (void)testFlowControllersIsViewLoaded
+{
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    NSArray *viewControllers = @[[UIViewController new], [UIViewController new]];
+    
+    self.flowController.viewControllers = viewControllers;
+    
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    [self.flowController flowInViewController:[UIViewController new] animated:YES];
+    
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    [self.flowController flowOutToRootViewControllerAnimated:YES];
+    
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+}
+
+
+
+- (void)testTopViewController
+{
+    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
+    
+    self.flowController.viewControllers = aViewControllers;
+    
+    XCTAssertEqualObjects(self.flowController.topViewController, aViewControllers[1], @"");
 }
 
 - (void)testRotations
@@ -443,15 +442,13 @@
 
 - (void)testFlowController
 {
-    id vc0 = [self mockViewController];
-    id vc1 = [self mockViewController];
+    id vc0 = [[UIViewController alloc] init];
+    id vc1 = [[UIViewController alloc] init];
     
-    NSArray *aViewControllers = @[vc0, vc1];
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
     
-    self.flowController.viewControllers = aViewControllers;
-    
-    for (UIViewController *controller in self.flowController.viewControllers) {
-        XCTAssertEqualObjects(controller.flowController, self.flowController, @"flowController控制器访问不了");
+    for (UIViewController *vc in flowController.viewControllers) {
+        XCTAssertEqualObjects(vc.flowController, flowController, @"flowController控制器访问不了");
     }
 }
 
