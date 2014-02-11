@@ -74,6 +74,15 @@
     return mockObject;
 }
 
+- (id)niceMockForClass:(Class)aClass;
+{
+    id mockObject = [OCMockObject niceMockForClass:aClass];
+    
+    [self.autoVerifiedObjects addObject:mockObject];
+    
+    return mockObject;
+}
+
 - (void)setUp
 {
     [super setUp];
@@ -151,13 +160,13 @@
 {
     id vc0 = [self mockViewController];
     
-    self.flowController.viewControllers = @[vc0];
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0]];
+    
+    self.dummyView = flowController.view;
     
     id vc1 = [self mockViewController];
     
     [[vc1 expect] viewDidLoad];
-    
-    self.dummyView = self.flowController.view;
     
     [[vc1 expect] viewWillAppear:NO];
     
@@ -167,33 +176,32 @@
     
     [[vc0 expect] viewDidDisappear:NO];
     
-    [self.flowController flowInViewController:vc1 animated:NO];
+    [flowController flowInViewController:vc1 animated:NO];
+    [flowController flowInViewController:vc1 animated:NO];
     
-    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)2, @"");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)2, @"viewControllers错误");
     
-    XCTAssertEqual([(UIViewController *)vc1 view].frame.origin.x, (CGFloat).0, @"");
+    XCTAssertNotNil([[(UIViewController *)vc1 view] superview], @"vc1的view没有正确添加");
+    
+    XCTAssertEqual(flowController.topViewController, vc1, @"topViewController属性错误");
 }
 
 - (void)testFlowOutViewControllerAnimated
 {
-    UIViewController *a = [UIViewController new];
-    UIViewController *b = [UIViewController new];
+    UIViewController *vca = [[UIViewController alloc] init];
+    UIViewController *vcb = [[UIViewController alloc] init];
     
-    XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"没有viewControllers时，应该nil");
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vca, vcb]];
     
-    self.flowController.viewControllers = @[a, b];
+    UIViewController *flowOutVC = [flowController flowOutViewControllerAnimated:NO];
     
-    XCTAssertEqualObjects(b.flowController, self.flowController, @"flowController属性没有被设置");
+    XCTAssertEqualObjects(flowOutVC, vcb, @"滑出对象不正确");
     
-    UIViewController *pop = [self.flowController flowOutViewControllerAnimated:NO];
+    XCTAssertNil(flowOutVC.flowController, @"滑出对象的flowController应该为空");
     
-    XCTAssertEqualObjects(pop, b, @"滑出的对象不正确");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)1, @"viewControllers错误");
     
-    XCTAssertNil(pop.flowController, @"滑出对象的flowController应该为空");
-    
-    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
-    
-    XCTAssertNil([self.flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
+    XCTAssertNil([flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
     
     
     id vc0 = [self mockViewController];
@@ -204,42 +212,54 @@
     
     id vc2 = [self mockViewController];
     
-    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2]];
+    id vc3 = [self niceMockForClass:[UIViewController class]];
+    
+    id vc4 = [self mockViewController];
+    
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[vc4, vc0, vc1, vc2]];
     
     self.dummyView = flowController.view;
     
+    [[vc2 expect] viewWillDisappear:NO];
+    [[vc2 expect] viewDidDisappear:NO];
     [[vc1 expect] viewWillAppear:NO];
     [[vc1 expect] viewDidAppear:NO];
     [[vc0 expect] viewWillAppear:NO];
     [[vc0 expect] viewDidAppear:NO];
-    [[vc2 expect] viewWillDisappear:NO];
-    [[vc2 expect] viewDidDisappear:NO];
+    [[vc4 expect] viewWillAppear:NO];
+    [[vc4 expect] viewDidAppear:NO];
+//    [[vc3 reject] viewWillAppear:NO];
+//    [[vc3 reject] viewDidAppear:NO];
     
     [flowController flowOutViewControllerAnimated:NO];
-    
 }
 
 - (void)testFlowOutToRootViewControllerAnimated
 {
-    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new], [UIViewController new], [UIViewController new]];
+    UIViewController *vc0 = [[UIViewController alloc] init];
+    UIViewController *vc1 = [[UIViewController alloc] init];
+    UIViewController *vc2 = [[UIViewController alloc] init];
+    UIViewController *vc3 = [[UIViewController alloc] init];
     
-    self.flowController.viewControllers = aViewControllers;
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2, vc3]];
     
-    XCTAssertEqual([[self.flowController flowOutToRootViewControllerAnimated:NO] count], (NSUInteger)3, @"");
+    XCTAssertEqual([[flowController flowOutToRootViewControllerAnimated:NO] count], (NSUInteger)3, @"滑出的视图控制器不对");
     
-    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)1, @"viewControllers没有更新");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)1, @"viewControllers属性错误");
 }
 
 - (void)testFlowOutToViewControllerAnimated
 {
-    UIViewController *toViewController = [UIViewController new];
-    NSArray *aViewControllers = @[[UIViewController new], [UIViewController new], toViewController, [UIViewController new]];
+    UIViewController *vc0 = [[UIViewController alloc] init];
+    UIViewController *vc1 = [[UIViewController alloc] init];
+    UIViewController *vc2 = [[UIViewController alloc] init];
+    UIViewController *vc3 = [[UIViewController alloc] init];
     
-    self.flowController.viewControllers = aViewControllers;
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2, vc3]];
     
-    XCTAssertEqual([[self.flowController flowOutToViewController:toViewController animated:NO] count], (NSUInteger)1, @"");
+    XCTAssertEqual([[flowController flowOutToViewController:vc2 animated:NO] count], (NSUInteger)1, @"滑出的视图控制器不对");
     
-    XCTAssertEqual([self.flowController.viewControllers count], (NSUInteger)3, @"viewControllers没有更新");
+    XCTAssertEqual([flowController.viewControllers count], (NSUInteger)3, @"viewControllers属性错误");
 }
 
 #pragma mark -

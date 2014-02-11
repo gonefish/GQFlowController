@@ -311,7 +311,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
     if ([viewController isKindOfClass:[self class]]
-        || self.isAnimating == YES) {
+        || self.isAnimating == YES
+        || [self.innerViewControllers containsObject:viewController]) {
         return;
     }
     

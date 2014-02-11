@@ -12,5 +12,6 @@
 
 - (id)mockViewController;
 - (id)mockGQViewController;
+- (id)niceMockForClass:(Class)aClass;
 
 @end
