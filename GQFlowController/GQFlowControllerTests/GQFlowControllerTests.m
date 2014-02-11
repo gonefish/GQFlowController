@@ -188,8 +188,8 @@
 
 - (void)testFlowOutViewControllerAnimated
 {
-    UIViewController *vca = [[UIViewController alloc] init];
-    UIViewController *vcb = [[UIViewController alloc] init];
+    id vca = [self niceMockForClass:[UIViewController class]];
+    id vcb = [self mockViewController];
     
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vca, vcb]];
     
@@ -203,34 +203,43 @@
     
     XCTAssertNil([flowController flowOutViewControllerAnimated:NO], @"至少要有一个");
     
+    [flowController flowInViewController:vcb animated:NO];
     
-    id vc0 = [self mockViewController];
+    id vcc = [self mockViewController];
     
-    id vc1 = [self mockGQViewController];
-    CGRect frame = CGRectMake(10.0, 10.0, 100.0, 100.0);
-    [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
-    
-    id vc2 = [self mockViewController];
-    
-    id vc3 = [self niceMockForClass:[UIViewController class]];
-    
-    id vc4 = [self mockViewController];
-    
-    flowController = [[GQFlowController alloc] initWithViewControllers:@[vc4, vc0, vc1, vc2]];
+    [flowController flowInViewController:vcc animated:NO];
     
     self.dummyView = flowController.view;
     
-    [[vc2 expect] viewWillDisappear:NO];
-    [[vc2 expect] viewDidDisappear:NO];
-    [[vc1 expect] viewWillAppear:NO];
-    [[vc1 expect] viewDidAppear:NO];
-    [[vc0 expect] viewWillAppear:NO];
-    [[vc0 expect] viewDidAppear:NO];
-    [[vc4 expect] viewWillAppear:NO];
-    [[vc4 expect] viewDidAppear:NO];
-//    [[vc3 reject] viewWillAppear:NO];
-//    [[vc3 reject] viewDidAppear:NO];
+    [[vcb expect] viewWillAppear:NO];
+    [[vcc expect] viewWillDisappear:NO];
+    [[vcb expect] viewDidAppear:NO];
+    [[vcc expect] viewDidDisappear:NO];
+    [[vca reject] viewWillAppear:NO];
+    [[vca reject] viewDidAppear:NO];
     
+    [flowController flowOutViewControllerAnimated:NO];
+    
+    
+    id vc0 = [self niceMockForClass:[UIViewController class]];
+    
+    id vc1 = [self mockViewController];
+
+    id vc2 = [self mockGQViewController];
+    CGRect frame = CGRectMake(10.0, 10.0, 100.0, 100.0);
+    [[[vc2 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
+    
+    id vc3 = [self mockViewController];
+    
+    flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1, vc2, vc3]];
+
+    self.dummyView = flowController.view;
+    
+    [[vc3 expect] beginAppearanceTransition:NO animated:NO];
+    [[vc2 expect] beginAppearanceTransition:YES animated:NO];
+    [[vc1 expect] beginAppearanceTransition:YES animated:NO];
+    [[vc0 reject] beginAppearanceTransition:YES animated:NO];
+
     [flowController flowOutViewControllerAnimated:NO];
 }
 
