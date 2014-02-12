@@ -377,8 +377,8 @@
 
     [flowController didReceiveMemoryWarning];
 
-    XCTAssertFalse([a isViewLoaded], @"安全释放");
-    XCTAssertFalse([b isViewLoaded], @"安全释放");
+    XCTAssertTrue([a isViewLoaded], @"不能释放");
+    XCTAssertTrue([b isViewLoaded], @"不能释放");
     XCTAssertTrue([c isViewLoaded], @"不能释放");
     XCTAssertTrue([dmock isViewLoaded], @"不能释放");
 
