@@ -168,13 +168,13 @@
     
     [[vc1 expect] viewDidLoad];
     
-    [[vc1 expect] viewWillAppear:NO];
+    [[vc1 expect] beginAppearanceTransition:YES animated:NO];
     
-    [[vc0 expect] viewWillDisappear:NO];
+    [[vc0 expect] beginAppearanceTransition:NO animated:NO];
     
-    [[vc1 expect] viewDidAppear:NO];
+    [[vc1 expect] endAppearanceTransition];
     
-    [[vc0 expect] viewDidDisappear:NO];
+    [[vc0 expect] endAppearanceTransition];
     
     [flowController flowInViewController:vc1 animated:NO];
     [flowController flowInViewController:vc1 animated:NO];
@@ -211,12 +211,13 @@
     
     self.dummyView = flowController.view;
     
-    [[vcb expect] viewWillAppear:NO];
-    [[vcc expect] viewWillDisappear:NO];
-    [[vcb expect] viewDidAppear:NO];
-    [[vcc expect] viewDidDisappear:NO];
-    [[vca reject] viewWillAppear:NO];
-    [[vca reject] viewDidAppear:NO];
+    [[vcb expect] beginAppearanceTransition:YES animated:NO];
+    [[vcc expect] beginAppearanceTransition:NO animated:NO];
+    [[vca reject] beginAppearanceTransition:YES animated:NO];
+    
+    [[vcb expect] endAppearanceTransition];
+    [[vcc expect] endAppearanceTransition];
+    [[vca reject] endAppearanceTransition];
     
     [flowController flowOutViewControllerAnimated:NO];
     
@@ -226,7 +227,7 @@
     id vc1 = [self mockViewController];
 
     id vc2 = [self mockGQViewController];
-    CGRect frame = CGRectMake(10.0, 10.0, 100.0, 100.0);
+    CGRect frame = CGRectMake(20.0, .0, 300.0, flowController.view.frame.size.height);
     [[[vc2 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
     id vc3 = [self mockViewController];
@@ -440,15 +441,13 @@
     
     GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
     
-    [[vc0 expect] viewWillAppear:NO];
-    [[vc1 expect] viewWillAppear:NO];
+    [[vc0 expect] beginAppearanceTransition:YES animated:NO];
+    [[vc1 expect] beginAppearanceTransition:YES animated:NO];
+    
+    [[vc0 expect] endAppearanceTransition];
+    [[vc1 expect] endAppearanceTransition];
     
     [flowController viewWillAppear:NO];
-    
-    
-    [[vc0 expect] viewDidAppear:NO];
-    [[vc1 expect] viewDidAppear:NO];
-    
     [flowController viewDidAppear:NO];
     
 }

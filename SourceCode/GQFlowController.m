@@ -1004,7 +1004,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                       if ([obj respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
                                           obj.view.frame = [(id<GQViewController>)obj destinationRectForFlowDirection:obj.flowInDirection];
                                       } else {
-                                          obj.view.frame = defaultRect;
+                                          obj.view.frame = [self inDestinationRectForViewController:obj];
                                       }
                                       
                                       if (aboveVC) {
