@@ -1060,9 +1060,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     for (UIViewController *vc in [self visibleViewControllersWithViewControllers:prepareVCS]) {
         if (vc.view.superview == nil) {
-            [self.view insertSubview:vc.view atIndex:[self.innerViewControllers indexOfObject:vc]];
-            [newVCs addObject:vc];
+            [self.view insertSubview:vc.view atIndex:0];
         }
+        
+        [newVCs addObject:vc];
     }
     
     return [newVCs copy];
