@@ -331,8 +331,6 @@
 {
     UIViewController *a = [UIViewController new];
     UIViewController *b = [UIViewController new];
-    UIViewController *c = [UIViewController new];
-    UIViewController *d = [UIViewController new];
     
     GQFlowController *flowController = nil;
     
@@ -365,6 +363,8 @@
     XCTAssertTrue([a isViewLoaded], @"不能释放");
     XCTAssertTrue([b isViewLoaded], @"不能释放");
     
+    UIViewController *c = [UIViewController new];
+    
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
     id dmock = [self mockGQViewController];
@@ -377,11 +377,12 @@
 
     [flowController didReceiveMemoryWarning];
 
-    XCTAssertTrue([a isViewLoaded], @"不能释放");
-    XCTAssertTrue([b isViewLoaded], @"不能释放");
+    XCTAssertFalse([a isViewLoaded], @"不能释放");
+    XCTAssertFalse([b isViewLoaded], @"不能释放");
     XCTAssertTrue([c isViewLoaded], @"不能释放");
     XCTAssertTrue([dmock isViewLoaded], @"不能释放");
 
+    UIViewController *d = [UIViewController new];
     UIViewController *e = [UIViewController new];
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d, e]];

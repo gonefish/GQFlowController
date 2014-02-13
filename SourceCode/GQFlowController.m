@@ -990,6 +990,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     [vcs enumerateObjectsWithOptions:NSEnumerationReverse
                           usingBlock:^(UIViewController *obj, NSUInteger idx, BOOL *stop) {
+                              // 跳过被上一视图完全覆盖的view
+                              if (aboveVC
+                                  && CGRectEqualToRect(aboveVC.view.frame, obj.view.frame)) {
+                                  return;
+                              }
+                              
                               [nvcs insertObject:obj atIndex:0];
                               
                               NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
