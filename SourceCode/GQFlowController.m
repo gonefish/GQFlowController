@@ -482,6 +482,15 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 - (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock
 {
+    [self flowingViewController:viewController
+                        toFrame:toFrame
+                animationsBlock:animationsBlock
+                completionBlock:completionBlock
+               prepareBelowView:YES];
+}
+
+- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock prepareBelowView:(BOOL)yesOrNo
+{
     NSAssert([NSThread isMainThread], @"必须在主线程调用");
     
     if (viewController.view.superview == nil
@@ -489,7 +498,9 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
         return;
     }
     
-    [self prepareBelowViewControllers];
+    if (yesOrNo) {
+        [self prepareBelowViewControllers];
+    }
     
     NSTimeInterval duration = self.viewFlowingDuration;
     
@@ -678,7 +689,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                     animationsBlock:^{
                         [self flowingBelowViewController:belowVC toRect:belowVCFrame];
                     }
-                    completionBlock:completionBlock];
+                    completionBlock:completionBlock
+                   prepareBelowView:NO];
     } else {
         viewController.view.frame = toFrame;
         
@@ -762,7 +774,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
             [self flowingViewController:self.topViewController
                                 toFrame:toFrame
                         animationsBlock:animationsBlock
-                        completionBlock:completionBlock];
+                        completionBlock:completionBlock
+                       prepareBelowView:NO];
         } else {
             animationsBlock();
             completionBlock(YES);
@@ -1054,17 +1067,20 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
  */
 - (NSArray *)prepareBelowViewControllers
 {
-    NSMutableArray *newVCs = [NSMutableArray array];
+    __block NSMutableArray *newVCs = [NSMutableArray array];
+    
     NSMutableArray *prepareVCS = [NSMutableArray arrayWithArray:self.innerViewControllers];
     [prepareVCS removeLastObject];
     
-    for (UIViewController *vc in [self visibleViewControllersWithViewControllers:prepareVCS]) {
+    NSArray *visibleViewControllers = [self visibleViewControllersWithViewControllers:prepareVCS];
+    
+    [visibleViewControllers enumerateObjectsUsingBlock:^(UIViewController *vc, NSUInteger idx, BOOL *stop){
         if (vc.view.superview == nil) {
-            [self.view insertSubview:vc.view atIndex:0];
+            [self.view insertSubview:vc.view atIndex:idx];
         }
         
         [newVCs addObject:vc];
-    }
+    }];
     
     return [newVCs copy];
 }
@@ -1321,7 +1337,8 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                         if ([topViewController respondsToSelector:@selector(didFlowToDestinationRect)]) {
                             [(id<GQViewController>)topViewController didFlowToDestinationRect];
                         }
-                    }];
+                    }
+                   prepareBelowView:NO];
     }
 }
 
