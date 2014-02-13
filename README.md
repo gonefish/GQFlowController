@@ -5,7 +5,7 @@ A multiple content layer container view controller.
 
 [![Travis-ci](https://travis-ci.org/gonefish/GQFlowController.png)](https://travis-ci.org/gonefish/GQFlowController)
 
-GQFlowController是一个多层次内容的容器视图控制器，其目标是实现类似于[网易新闻客户端](https://itunes.apple.com/cn/app/wang-yi-xin-wen/id425349261?mt=8)iPhone的UI结构（主要是3.0之后的版本）。
+GQFlowController是一个多层次视图的容器控制器，其目标是实现灵活的UI结构。
 
 特性：
 * 支持自定义的滑入或滑出视图控制器方位
@@ -96,9 +96,7 @@ Demo3展示了iPad的使用例子。
 
 Requirements
 ------------
-GQFlowController requires Xcode 4.5 and iOS 6.0 or later SDK (LLVM Compiler 4.0)。
-
-[Objective-C Feature Availability Index](http://developer.apple.com/library/ios/#releasenotes/ObjectiveC/ObjCAvailabilityIndex/)
+GQFlowController requires Xcode 5 and iOS 7.0 or later SDK.
 
 
 联系方式
