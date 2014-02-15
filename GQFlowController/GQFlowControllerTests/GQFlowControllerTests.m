@@ -272,30 +272,6 @@
     XCTAssertEqual([flowController.viewControllers count], (NSUInteger)3, @"viewControllers属性错误");
 }
 
-#pragma mark -
-
-
-- (void)testFlowControllersIsViewLoaded
-{
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
-    
-    NSArray *viewControllers = @[[UIViewController new], [UIViewController new]];
-    
-    self.flowController.viewControllers = viewControllers;
-    
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
-    
-    [self.flowController flowInViewController:[UIViewController new] animated:YES];
-    
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
-    
-    [self.flowController flowOutToRootViewControllerAnimated:YES];
-    
-    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
-}
-
-
-
 - (void)testTopViewController
 {
     NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];
@@ -305,26 +281,44 @@
     XCTAssertEqualObjects(self.flowController.topViewController, aViewControllers[1], @"");
 }
 
-- (void)testRotations
-{    
-    id topViewController = [OCMockObject mockForClass:[UIViewController class]];
+- (void)testViewWillAppear
+{
+    id vc0 = [self mockViewController];
+    id vc1 = [self mockGQViewController];
     
-    if (self.isiOS6) {
-        XCTAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
-    } else {
-        XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
-    }
+    CGRect frame = CGRectMake(10, 10, 10, 10);
+    [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
-    [self.flowController performSelector:@selector(setTopViewController:)
-                              withObject:topViewController];
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
     
-    XCTAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
+    [[vc0 expect] beginAppearanceTransition:YES animated:NO];
+    [[vc1 expect] beginAppearanceTransition:YES animated:NO];
     
-    if (!self.isiOS6) {
-        [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
-        
-        XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
-    }
+    [[vc0 expect] endAppearanceTransition];
+    [[vc1 expect] endAppearanceTransition];
+    
+    [flowController viewWillAppear:NO];
+    [flowController viewDidAppear:NO];
+}
+
+- (void)testViewWillDisappear
+{
+    id vc0 = [self mockViewController];
+    id vc1 = [self mockGQViewController];
+    
+    CGRect frame = CGRectMake(10, 10, 10, 10);
+    [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
+    
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
+    
+    [[vc0 expect] beginAppearanceTransition:NO animated:NO];
+    [[vc1 expect] beginAppearanceTransition:NO animated:NO];
+    
+    [[vc0 expect] endAppearanceTransition];
+    [[vc1 expect] endAppearanceTransition];
+    
+    [flowController viewWillDisappear:NO];
+    [flowController viewDidDisappear:NO];
 }
 
 - (void)testDidReceiveMemoryWarning
@@ -374,27 +368,70 @@
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, dmock]];
     
     self.dummyView = flowController.view;
-
+    
     [flowController didReceiveMemoryWarning];
-
+    
     XCTAssertFalse([a isViewLoaded], @"不能释放");
     XCTAssertFalse([b isViewLoaded], @"不能释放");
     XCTAssertTrue([c isViewLoaded], @"不能释放");
     XCTAssertTrue([dmock isViewLoaded], @"不能释放");
-
+    
     UIViewController *d = [UIViewController new];
     UIViewController *e = [UIViewController new];
     
     flowController = [[GQFlowController alloc] initWithViewControllers:@[a, b, c, d, e]];
     self.dummyView = flowController.view;
-
+    
     [flowController didReceiveMemoryWarning];
-
+    
     XCTAssertFalse([a isViewLoaded], @"安全释放");
     XCTAssertFalse([b isViewLoaded], @"安全释放");
     XCTAssertFalse([c isViewLoaded], @"安全释放");
     XCTAssertFalse([d isViewLoaded], @"安全释放");
     XCTAssertTrue([e isViewLoaded], @"不能释放");
+}
+
+- (void)testFlowControllersIsViewLoaded
+{
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    NSArray *viewControllers = @[[UIViewController new], [UIViewController new]];
+    
+    self.flowController.viewControllers = viewControllers;
+    
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    [self.flowController flowInViewController:[UIViewController new] animated:YES];
+    
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+    
+    [self.flowController flowOutToRootViewControllerAnimated:YES];
+    
+    XCTAssertFalse([self.flowController isViewLoaded], @"视图不应该被加载");
+}
+
+#pragma mark -
+
+- (void)testRotations
+{    
+    id topViewController = [OCMockObject mockForClass:[UIViewController class]];
+    
+    if (self.isiOS6) {
+        XCTAssertTrue([self.flowController supportedInterfaceOrientations], @"没有调用默认的方法");
+    } else {
+        XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortrait], @"没有调用默认的方法");
+    }
+    
+    [self.flowController performSelector:@selector(setTopViewController:)
+                              withObject:topViewController];
+    
+    XCTAssertEqualObjects(topViewController, self.flowController.topViewController, @"私有属性设置不正确");
+    
+    if (!self.isiOS6) {
+        [[[topViewController stub] andReturnValue:@YES] shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown];
+        
+        XCTAssertTrue([self.flowController shouldAutorotateToInterfaceOrientation:UIInterfaceOrientationPortraitUpsideDown], @"没有调用topViewController的说法");
+    }
 }
 
 - (void)testViewVisibleViewControllers
@@ -415,6 +452,7 @@
     XCTAssertEqual([vcs count], (NSUInteger)2, @"需要加载vc1和vc2");
     
     UIViewController *vc2 = [[UIViewController alloc] init];
+    UIViewController *vc4 = [[UIViewController alloc] init];
     
     CGRect frame = CGRectMake(10, 10, 10, 10);
     
@@ -422,7 +460,7 @@
     
     [[[vc3mock stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
     
-    GQFlowController *flowController2 = [[GQFlowController alloc] initWithViewControllers:@[vc2, vc3mock]];
+    GQFlowController *flowController2 = [[GQFlowController alloc] initWithViewControllers:@[vc4, vc2, vc3mock]];
     
     NSArray *vcs2 = [flowController2 performSelector:@selector(visibleViewControllers)];
     
@@ -430,27 +468,6 @@
     XCTAssertEqualObjects(vc2, vcs2[0], @"加载的视图是vc2");
     XCTAssertEqualObjects(vc3mock, vcs2[1], @"加载的视图是vc3mock");
     XCTAssertNotEqual(vc2.view.frame.origin.x, (CGFloat)10.0, @"下文视图默认偏移");
-}
-
-- (void)testViewWillAppear
-{
-    id vc0 = [self mockViewController];
-    id vc1 = [self mockGQViewController];
-    
-    CGRect frame = CGRectMake(10, 10, 10, 10);
-    [[[vc1 stub] andReturnValue:OCMOCK_VALUE(frame)] destinationRectForFlowDirection:GQFlowDirectionLeft];
-    
-    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
-    
-    [[vc0 expect] beginAppearanceTransition:YES animated:NO];
-    [[vc1 expect] beginAppearanceTransition:YES animated:NO];
-    
-    [[vc0 expect] endAppearanceTransition];
-    [[vc1 expect] endAppearanceTransition];
-    
-    [flowController viewWillAppear:NO];
-    [flowController viewDidAppear:NO];
-    
 }
 
 #pragma mark - GQFlowControllerAdditions
