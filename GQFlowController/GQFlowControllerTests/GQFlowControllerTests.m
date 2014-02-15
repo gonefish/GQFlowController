@@ -272,6 +272,22 @@
     XCTAssertEqual([flowController.viewControllers count], (NSUInteger)3, @"viewControllers属性错误");
 }
 
+- (void)testFlowingViewControllerToFrameAnimationsBlockCompletionBlock
+{
+    UIViewController *vc0 = [[UIViewController alloc] init];
+    UIViewController *vc1 = [[UIViewController alloc] init];
+    
+    GQFlowController *flowController = [[GQFlowController alloc] initWithViewControllers:@[vc0, vc1]];
+    
+    CGRect toFrame = CGRectMake(10.0, 10.0, 100.0, 100.0);
+    
+    self.dummyView = flowController.view;
+    
+    [flowController flowingViewController:vc1 toFrame:toFrame animationsBlock:Nil completionBlock:nil];
+
+    XCTAssertEqualObjects(NSStringFromCGRect(toFrame), NSStringFromCGRect(vc1.view.frame), @"位置滑动错误");
+}
+
 - (void)testTopViewController
 {
     NSArray *aViewControllers = @[[UIViewController new], [UIViewController new]];

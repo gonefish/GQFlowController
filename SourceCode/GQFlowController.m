@@ -489,45 +489,6 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                prepareBelowView:YES];
 }
 
-- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock prepareBelowView:(BOOL)yesOrNo
-{
-    NSAssert([NSThread isMainThread], @"必须在主线程调用");
-    
-    if (viewController.view.superview == nil
-        || self.isAnimating) {
-        return;
-    }
-    
-    if (yesOrNo) {
-        [self prepareBelowViewControllers];
-    }
-    
-    NSTimeInterval duration = self.viewFlowingDuration;
-    
-    if ([viewController respondsToSelector:@selector(flowingDuration)]) {
-        duration = [(id <GQViewController>)viewController flowingDuration];
-    }
-    
-    self.isAnimating = YES;
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         viewController.view.frame = toFrame;
-                         
-                         if (animationsBlock) {
-                             animationsBlock();
-                         }
-                     }
-                     completion:^(BOOL finished){
-                         if (completionBlock) {
-                             completionBlock(finished);
-                         }
-                         
-                         self.isAnimating = NO;
-                     }];
-}
-
-
 #pragma mark - Container View Controller Method
 
 - (void)addChildContentViewController:(UIViewController *)childController
@@ -618,6 +579,44 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 
 
 #pragma mark - Other Method
+
+- (void)flowingViewController:(UIViewController *)viewController toFrame:(CGRect)toFrame animationsBlock:(void(^)(void))animationsBlock completionBlock:(void(^)(BOOL finished))completionBlock prepareBelowView:(BOOL)yesOrNo
+{
+    NSAssert([NSThread isMainThread], @"必须在主线程调用");
+    
+    if (viewController.view.superview == nil
+        || self.isAnimating) {
+        return;
+    }
+    
+    if (yesOrNo) {
+        [self prepareBelowViewControllers];
+    }
+    
+    NSTimeInterval duration = self.viewFlowingDuration;
+    
+    if ([viewController respondsToSelector:@selector(flowingDuration)]) {
+        duration = [(id <GQViewController>)viewController flowingDuration];
+    }
+    
+    self.isAnimating = YES;
+    
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         viewController.view.frame = toFrame;
+                         
+                         if (animationsBlock) {
+                             animationsBlock();
+                         }
+                     }
+                     completion:^(BOOL finished){
+                         if (completionBlock) {
+                             completionBlock(finished);
+                         }
+                         
+                         self.isAnimating = NO;
+                     }];
+}
 
 - (NSMutableArray *)innerViewControllers
 {
