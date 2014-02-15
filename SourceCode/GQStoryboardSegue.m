@@ -12,10 +12,14 @@
 
 - (void)perform
 {
-    GQFlowController *flowController = [(UIViewController *)self.sourceViewController flowController];
-    
-    [flowController flowInViewController:self.destinationViewController
-                                animated:YES];
+    if ([self.sourceViewController respondsToSelector:@selector(flowController)]) {
+        GQFlowController *flowController = [(UIViewController *)self.sourceViewController flowController];
+        
+        if (flowController) {
+            [flowController flowInViewController:self.destinationViewController
+                                        animated:YES];
+        }
+    }
 }
 
 @end
