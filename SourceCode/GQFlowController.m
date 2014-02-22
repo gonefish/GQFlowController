@@ -74,30 +74,12 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
 @implementation GQFlowController
 @dynamic viewControllers;
 
-- (void)loadView
-{    
-    CGRect initFrame = [[UIScreen mainScreen] bounds];
-    
-    if ([[[UIDevice currentDevice] systemVersion] integerValue] < 7
-        && [self respondsToSelector:@selector(wantsFullScreenLayout)]) {
-        if (self.wantsFullScreenLayout == NO) {
-            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-            initFrame = CGRectMake(.0,
-                                   statusBarFrame.size.height,
-                                   initFrame.size.width,
-                                   initFrame.size.height - statusBarFrame.size.height);
-        }
-    }
-    
-    self.view = [[UIView alloc] initWithFrame:initFrame];
-    self.view.backgroundColor = [UIColor whiteColor];
-
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
     
     // 计算需要添加的视图控制器
     NSArray *vcs = [self visibleViewControllers];
@@ -847,40 +829,39 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     
     // 允许自定义滑入时的最终frame
     if ([self.topViewController respondsToSelector:@selector(destinationRectForFlowDirection:)]) {
-        destinationFrame = [(id <GQViewController>)self.topViewController
-                                                                 destinationRectForFlowDirection:viewController.flowInDirection];
+        destinationFrame = [(id <GQViewController>)self.topViewController destinationRectForFlowDirection:viewController.flowInDirection];
     } else {
-        // 默认的目标frame以容器为基准
-        CGRect viewBounds = self.view.bounds;
+        // 默认的目标frame
+        CGRect defaultViewFrame = CGRectMake(.0, .0, self.view.bounds.size.width, self.view.bounds.size.height);
         
         // 通过容器的bounds计算滑入的frame
         switch (viewController.flowInDirection) {
             case GQFlowDirectionLeft:
-                destinationFrame = CGRectMake(self.view.bounds.size.width - viewBounds.size.width,
-                                              viewBounds.origin.y,
-                                              viewBounds.size.width,
-                                              viewBounds.size.height);
+                destinationFrame = CGRectMake(defaultViewFrame.size.width - viewController.view.frame.size.width,
+                                              defaultViewFrame.origin.y,
+                                              defaultViewFrame.size.width,
+                                              defaultViewFrame.size.height);
                 break;
             case GQFlowDirectionRight:
                 destinationFrame = CGRectMake(.0,
-                                              viewBounds.origin.y,
-                                              viewBounds.size.width,
-                                              viewBounds.size.height);
+                                              defaultViewFrame.origin.y,
+                                              defaultViewFrame.size.width,
+                                              defaultViewFrame.size.height);
                 break;
             case GQFlowDirectionUp:
-                destinationFrame = CGRectMake(viewBounds.origin.x,
-                                              self.view.bounds.size.height - viewBounds.size.height,
-                                              viewBounds.size.width,
-                                              viewBounds.size.height);
+                destinationFrame = CGRectMake(defaultViewFrame.origin.x,
+                                              defaultViewFrame.size.height - viewController.view.frame.size.height,
+                                              defaultViewFrame.size.width,
+                                              defaultViewFrame.size.height);
                 break;
             case GQFlowDirectionDown:
-                destinationFrame = CGRectMake(viewBounds.origin.x,
+                destinationFrame = CGRectMake(defaultViewFrame.origin.x,
                                               .0,
-                                              viewBounds.size.width,
-                                              viewBounds.size.height);
+                                              defaultViewFrame.size.width,
+                                              defaultViewFrame.size.height);
                 break;
             default:
-                destinationFrame = viewBounds;
+                destinationFrame = defaultViewFrame;
                 break;
         }
     }
