@@ -1063,6 +1063,17 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     [visibleViewControllers enumerateObjectsUsingBlock:^(UIViewController *vc, NSUInteger idx, BOOL *stop){
         if (vc.view.superview == nil) {
             [self.view insertSubview:vc.view atIndex:idx];
+            
+            // 修正初始化下层视图的偏移
+            CGRect aboveVCInOriginRect = [self inOriginRectForViewController:self.topViewController];
+            
+            CGRect objFrame = GQBelowViewRectOffset(vc.view.frame,
+                                                    aboveVCInOriginRect.origin,
+                                                    self.topViewController.view.frame.origin,
+                                                    self.topViewController.flowInDirection);
+
+            [self flowingBelowViewController:vc
+                                      toRect:objFrame];
         }
         
         [newVCs addObject:vc];
