@@ -101,6 +101,10 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
     NSArray *newVC = [self visibleViewControllers];
     
     for (UIViewController *obj in self.innerViewControllers) {
+        if ([obj isViewLoaded] == NO) {
+            continue;
+        }
+        
         if (![newVC containsObject:obj]) {
             NSDictionary *viewInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                       NSStringFromCGRect(obj.view.frame), @"frame",
