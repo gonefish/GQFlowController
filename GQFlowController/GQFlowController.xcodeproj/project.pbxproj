@@ -28,7 +28,6 @@
 		E35CEF2A179ABA8300352379 /* Demo3CViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E35CEF28179ABA8300352379 /* Demo3CViewController.xib */; };
 		E35D6078175280CA00398CCD /* GQFlowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E35D6074175280CA00398CCD /* GQFlowController.m */; };
 		E36D9977177E794F004B9B64 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E36D9976177E794F004B9B64 /* QuartzCore.framework */; };
-		E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E372229C173FFEAA001907BE /* libOCMock.a */; };
 		E37222A81741493D001907BE /* Demo2AViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37222A61741493D001907BE /* Demo2AViewController.m */; };
 		E37222A91741493D001907BE /* Demo2AViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E37222A71741493D001907BE /* Demo2AViewController.xib */; };
 		E38CCDD617961821001E4064 /* Demo3ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E38CCDD417961821001E4064 /* Demo3ViewController.m */; };
@@ -46,6 +45,7 @@
 		E3CEF5761723BAB100A33CFE /* Demo1RightViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3CEF5741723BAB100A33CFE /* Demo1RightViewController.xib */; };
 		E3D757BC1747566100A56E83 /* Demo2BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3D757BA1747566100A56E83 /* Demo2BViewController.m */; };
 		E3D757BD1747566100A56E83 /* Demo2BViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3D757BB1747566100A56E83 /* Demo2BViewController.xib */; };
+		F7CF71581C77470E83D69CF5 /* libPods-GQFlowControllerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19C5CC6FA6D947E391EE02ED /* libPods-GQFlowControllerTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +59,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		19C5CC6FA6D947E391EE02ED /* libPods-GQFlowControllerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GQFlowControllerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3919E48131D3479384878450 /* Pods-GQFlowControllerTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GQFlowControllerTests.xcconfig"; path = "../Pods/Pods-GQFlowControllerTests.xcconfig"; sourceTree = "<group>"; };
 		E31FEF80186E65F200E2DC06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		E328A35C189CC98F00317A51 /* GQStoryboardSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQStoryboardSegue.h; sourceTree = "<group>"; };
 		E328A35D189CC98F00317A51 /* GQStoryboardSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQStoryboardSegue.m; sourceTree = "<group>"; };
@@ -89,13 +91,6 @@
 		E35D6073175280CA00398CCD /* GQFlowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQFlowController.h; sourceTree = "<group>"; };
 		E35D6074175280CA00398CCD /* GQFlowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQFlowController.m; sourceTree = "<group>"; };
 		E36D9976177E794F004B9B64 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		E372229C173FFEAA001907BE /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
-		E372229E173FFEAA001907BE /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
-		E372229F173FFEAA001907BE /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
-		E37222A0173FFEAA001907BE /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
-		E37222A1173FFEAA001907BE /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
-		E37222A2173FFEAA001907BE /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
-		E37222A3173FFEAA001907BE /* OCMockRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockRecorder.h; sourceTree = "<group>"; };
 		E37222A51741493D001907BE /* Demo2AViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo2AViewController.h; sourceTree = "<group>"; };
 		E37222A61741493D001907BE /* Demo2AViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Demo2AViewController.m; sourceTree = "<group>"; };
 		E37222A71741493D001907BE /* Demo2AViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Demo2AViewController.xib; sourceTree = "<group>"; };
@@ -142,7 +137,7 @@
 				E31FEF81186E65F200E2DC06 /* XCTest.framework in Frameworks */,
 				E34A641D16FEB8DD0053A496 /* UIKit.framework in Frameworks */,
 				E34A641E16FEB8DD0053A496 /* Foundation.framework in Frameworks */,
-				E37222A4173FFEAA001907BE /* libOCMock.a in Frameworks */,
+				F7CF71581C77470E83D69CF5 /* libPods-GQFlowControllerTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +152,7 @@
 				E34A642116FEB8DD0053A496 /* GQFlowControllerTests */,
 				E34A63FC16FEB8DD0053A496 /* Frameworks */,
 				E34A63FB16FEB8DD0053A496 /* Products */,
+				3919E48131D3479384878450 /* Pods-GQFlowControllerTests.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -177,6 +173,7 @@
 				E34A63FD16FEB8DD0053A496 /* UIKit.framework */,
 				E34A63FF16FEB8DD0053A496 /* Foundation.framework */,
 				E34A640116FEB8DD0053A496 /* CoreGraphics.framework */,
+				19C5CC6FA6D947E391EE02ED /* libPods-GQFlowControllerTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -211,8 +208,6 @@
 		E34A642116FEB8DD0053A496 /* GQFlowControllerTests */ = {
 			isa = PBXGroup;
 			children = (
-				E372229C173FFEAA001907BE /* libOCMock.a */,
-				E372229D173FFEAA001907BE /* OCMock */,
 				E34A642716FEB8DD0053A496 /* GQFlowControllerTests.h */,
 				E34A642816FEB8DD0053A496 /* GQFlowControllerTests.m */,
 				E34A642216FEB8DD0053A496 /* Supporting Files */,
@@ -239,19 +234,6 @@
 			);
 			name = SourceCode;
 			path = ../SourceCode;
-			sourceTree = "<group>";
-		};
-		E372229D173FFEAA001907BE /* OCMock */ = {
-			isa = PBXGroup;
-			children = (
-				E372229E173FFEAA001907BE /* NSNotificationCenter+OCMAdditions.h */,
-				E372229F173FFEAA001907BE /* OCMArg.h */,
-				E37222A0173FFEAA001907BE /* OCMConstraint.h */,
-				E37222A1173FFEAA001907BE /* OCMock.h */,
-				E37222A2173FFEAA001907BE /* OCMockObject.h */,
-				E37222A3173FFEAA001907BE /* OCMockRecorder.h */,
-			);
-			path = OCMock;
 			sourceTree = "<group>";
 		};
 		E38CCDD817961829001E4064 /* Demo3 */ = {
@@ -329,10 +311,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E34A642F16FEB8DD0053A496 /* Build configuration list for PBXNativeTarget "GQFlowControllerTests" */;
 			buildPhases = (
+				8D08577077D24409A5E84E01 /* Check Pods Manifest.lock */,
 				E34A641516FEB8DD0053A496 /* Sources */,
 				E34A641616FEB8DD0053A496 /* Frameworks */,
 				E34A641716FEB8DD0053A496 /* Resources */,
 				E34A641816FEB8DD0053A496 /* ShellScript */,
+				EA757937BF3D4F6781E9DA04 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -405,6 +389,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		8D08577077D24409A5E84E01 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		E34A641816FEB8DD0053A496 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -417,6 +416,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		EA757937BF3D4F6781E9DA04 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Pods-GQFlowControllerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -562,6 +576,7 @@
 		};
 		E34A643016FEB8DD0053A496 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3919E48131D3479384878450 /* Pods-GQFlowControllerTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GQFlowController.app/GQFlowController";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -572,16 +587,13 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/GQFlowControllerTests\"";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "GQFlowControllerTests/GQFlowControllerTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/GQFlowControllerTests\"",
 				);
-				OTHER_LDFLAGS = (
-					"-force_load",
-					"$(SRCROOT)/GQFlowControllerTests/libOCMock.a",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
@@ -589,6 +601,7 @@
 		};
 		E34A643116FEB8DD0053A496 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3919E48131D3479384878450 /* Pods-GQFlowControllerTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GQFlowController.app/GQFlowController";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -599,16 +612,13 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GQFlowController/GQFlowController-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/GQFlowControllerTests\"";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "GQFlowControllerTests/GQFlowControllerTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/GQFlowControllerTests\"",
 				);
-				OTHER_LDFLAGS = (
-					"-force_load",
-					"$(SRCROOT)/GQFlowControllerTests/libOCMock.a",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
