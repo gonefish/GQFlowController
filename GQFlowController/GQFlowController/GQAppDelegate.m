@@ -45,7 +45,8 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo2ViewControllers]];
+        self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo1ViewControllers]];
+        self.flowController.customShouldAutorotate = YES;
     } else {
         self.flowController = [[GQFlowController alloc] initWithViewControllers:[self demo3ViewControllers]];
     }

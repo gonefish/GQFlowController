@@ -110,7 +110,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                                       NSStringFromCGRect(obj.view.frame), @"frame",
                                       [NSNumber numberWithBool:obj.isOverlayContent], @"isOverlayContent",
                                       nil];
-            NSString *viewKey = [NSString stringWithFormat:@"%u", [obj hash]];
+            NSString *viewKey = [NSString stringWithFormat:@"%@", @([obj hash])];
             
             (self.releaseViewInfos)[viewKey] = viewInfo;
             
@@ -982,7 +982,7 @@ static CGRect GQBelowViewRectOffset(CGRect belowRect, CGPoint startPoint, CGPoin
                               
                               [nvcs insertObject:obj atIndex:0];
                               
-                              NSString *belowVCKey = [NSString stringWithFormat:@"%u", [obj hash]];
+                              NSString *belowVCKey = [NSString stringWithFormat:@"%@", @([obj hash])];
                               
                               NSDictionary *viewInfo = [self.releaseViewInfos objectForKey:belowVCKey];
                               
