@@ -42,7 +42,7 @@
 
 - (CGRect)destinationRectForFlowDirection:(GQFlowDirection)direction
 {
-    CGRect destinationFrect = CGRectZero;
+    CGRect destinationFrect = self.flowController.view.bounds;
     
     if (direction == GQFlowDirectionLeft) {
         // 右滑后，左滑回
